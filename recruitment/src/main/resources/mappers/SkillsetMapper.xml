@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzj.recruitment.dao.SkillsetMapper" >
+  <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.Skillset" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="sName" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="sPositionTypeId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, sName, sPositionTypeId, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from skillset
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from skillset
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zzj.recruitment.pojo.Skillset" >
+    insert into skillset (id, sName, sPositionTypeId, 
+      createTime, updateTime)
+    values (#{id,jdbcType=INTEGER}, #{sname,jdbcType=VARCHAR}, #{spositiontypeid,jdbcType=INTEGER}, 
+      now(), now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.Skillset" >
+    insert into skillset
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="sname != null" >
+        sName,
+      </if>
+      <if test="spositiontypeid != null" >
+        sPositionTypeId,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="updatetime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="sname != null" >
+        #{sname,jdbcType=VARCHAR},
+      </if>
+      <if test="spositiontypeid != null" >
+        #{spositiontypeid,jdbcType=INTEGER},
+      </if>
+      now(),
+        now(),
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.Skillset" >
+    update skillset
+    <set >
+      <if test="sname != null" >
+        sName = #{sname,jdbcType=VARCHAR},
+      </if>
+      <if test="spositiontypeid != null" >
+        sPositionTypeId = #{spositiontypeid,jdbcType=INTEGER},
+      </if>
+        updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.Skillset" >
+    update skillset
+    set sName = #{sname,jdbcType=VARCHAR},
+      sPositionTypeId = #{spositiontypeid,jdbcType=INTEGER},
+      updateTime = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

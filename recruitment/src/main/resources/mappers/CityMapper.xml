@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzj.recruitment.dao.CityMapper" >
+  <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.City" >
+    <constructor >
+      <idArg column="id" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="cityName" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="parentID" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="level" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="namePath" jdbcType="VARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cityName, parentID, level, namePath
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from city
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from city
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zzj.recruitment.pojo.City" >
+    insert into city (id, cityName, parentID, 
+      level, namePath)
+    values (#{id,jdbcType=VARCHAR}, #{cityname,jdbcType=VARCHAR}, #{parentid,jdbcType=VARCHAR}, 
+      #{level,jdbcType=INTEGER}, #{namepath,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.City" >
+    insert into city
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="cityname != null" >
+        cityName,
+      </if>
+      <if test="parentid != null" >
+        parentID,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="namepath != null" >
+        namePath,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="cityname != null" >
+        #{cityname,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="namepath != null" >
+        #{namepath,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.City" >
+    update city
+    <set >
+      <if test="cityname != null" >
+        cityName = #{cityname,jdbcType=VARCHAR},
+      </if>
+      <if test="parentid != null" >
+        parentID = #{parentid,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="namepath != null" >
+        namePath = #{namepath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.City" >
+    update city
+    set cityName = #{cityname,jdbcType=VARCHAR},
+      parentID = #{parentid,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      namePath = #{namepath,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

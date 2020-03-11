@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzj.recruitment.dao.EducationExpMapper" >
+  <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.EducationExp" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="resumeId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="schoolId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="schoolType" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="degree" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="major" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="startDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="endDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="schoolExper" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, resumeId, schoolId, schoolType, degree, major, startDate, endDate, schoolExper, 
+    createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from education
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from education
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zzj.recruitment.pojo.EducationExp" >
+    insert into education (id, resumeId, schoolId, 
+      schoolType, degree, major, 
+      startDate, endDate, schoolExper, 
+      createTime, updateTime)
+    values (#{id,jdbcType=INTEGER}, #{resumeid,jdbcType=INTEGER}, #{schoolid,jdbcType=INTEGER}, 
+      #{schooltype,jdbcType=INTEGER}, #{degree,jdbcType=INTEGER}, #{major,jdbcType=VARCHAR}, 
+      #{startdate,jdbcType=TIMESTAMP}, #{enddate,jdbcType=TIMESTAMP}, #{schoolexper,jdbcType=VARCHAR}, 
+      now(), now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.EducationExp" >
+    insert into education
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="resumeid != null" >
+        resumeId,
+      </if>
+      <if test="schoolid != null" >
+        schoolId,
+      </if>
+      <if test="schooltype != null" >
+        schoolType,
+      </if>
+      <if test="degree != null" >
+        degree,
+      </if>
+      <if test="major != null" >
+        major,
+      </if>
+      <if test="startdate != null" >
+        startDate,
+      </if>
+      <if test="enddate != null" >
+        endDate,
+      </if>
+      <if test="schoolexper != null" >
+        schoolExper,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="updatetime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="resumeid != null" >
+        #{resumeid,jdbcType=INTEGER},
+      </if>
+      <if test="schoolid != null" >
+        #{schoolid,jdbcType=INTEGER},
+      </if>
+      <if test="schooltype != null" >
+        #{schooltype,jdbcType=INTEGER},
+      </if>
+      <if test="degree != null" >
+        #{degree,jdbcType=INTEGER},
+      </if>
+      <if test="major != null" >
+        #{major,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="schoolexper != null" >
+        #{schoolexper,jdbcType=VARCHAR},
+      </if>
+        now(),
+        now(),
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.EducationExp" >
+    update education
+    <set >
+      <if test="resumeid != null" >
+        resumeId = #{resumeid,jdbcType=INTEGER},
+      </if>
+      <if test="schoolid != null" >
+        schoolId = #{schoolid,jdbcType=INTEGER},
+      </if>
+      <if test="schooltype != null" >
+        schoolType = #{schooltype,jdbcType=INTEGER},
+      </if>
+      <if test="degree != null" >
+        degree = #{degree,jdbcType=INTEGER},
+      </if>
+      <if test="major != null" >
+        major = #{major,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        startDate = #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        endDate = #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="schoolexper != null" >
+        schoolExper = #{schoolexper,jdbcType=VARCHAR},
+      </if>
+        updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.EducationExp" >
+    update education
+    set resumeId = #{resumeid,jdbcType=INTEGER},
+      schoolId = #{schoolid,jdbcType=INTEGER},
+      schoolType = #{schooltype,jdbcType=INTEGER},
+      degree = #{degree,jdbcType=INTEGER},
+      major = #{major,jdbcType=VARCHAR},
+      startDate = #{startdate,jdbcType=TIMESTAMP},
+      endDate = #{enddate,jdbcType=TIMESTAMP},
+      schoolExper = #{schoolexper,jdbcType=VARCHAR},
+      updateTime = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

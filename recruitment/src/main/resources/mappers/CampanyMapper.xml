@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzj.recruitment.dao.CampanyMapper" >
+  <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.Campany" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="logo" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="cname" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="productId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="cIntroduction" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="financing" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="industryId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="csize" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="ccity" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="fullname" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="representative" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="assets" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="establishTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="photo" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, logo, cname, productId, cIntroduction, financing, industryId, csize, ccity, fullname, 
+    representative, assets, establishTime, photo, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from company
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from company
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zzj.recruitment.pojo.Campany" >
+    insert into company (id, logo, cname, 
+      productId, cIntroduction, financing, 
+      industryId, csize, ccity, 
+      fullname, representative, assets, 
+      establishTime, photo, createTime, 
+      updateTime)
+    values (#{id,jdbcType=INTEGER}, #{logo,jdbcType=VARCHAR}, #{cname,jdbcType=VARCHAR}, 
+      #{productid,jdbcType=INTEGER}, #{cintroduction,jdbcType=VARCHAR}, #{financing,jdbcType=INTEGER}, 
+      #{industryid,jdbcType=INTEGER}, #{csize,jdbcType=INTEGER}, #{ccity,jdbcType=INTEGER}, 
+      #{fullname,jdbcType=VARCHAR}, #{representative,jdbcType=VARCHAR}, #{assets,jdbcType=INTEGER}, 
+      #{establishtime,jdbcType=TIMESTAMP}, #{photo,jdbcType=VARCHAR}, now(),
+      now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.Campany" >
+    insert into company
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="logo != null" >
+        logo,
+      </if>
+      <if test="cname != null" >
+        cname,
+      </if>
+      <if test="productid != null" >
+        productId,
+      </if>
+      <if test="cintroduction != null" >
+        cIntroduction,
+      </if>
+      <if test="financing != null" >
+        financing,
+      </if>
+      <if test="industryid != null" >
+        industryId,
+      </if>
+      <if test="csize != null" >
+        csize,
+      </if>
+      <if test="ccity != null" >
+        ccity,
+      </if>
+      <if test="fullname != null" >
+        fullname,
+      </if>
+      <if test="representative != null" >
+        representative,
+      </if>
+      <if test="assets != null" >
+        assets,
+      </if>
+      <if test="establishtime != null" >
+        establishTime,
+      </if>
+      <if test="photo != null" >
+        photo,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="updatetime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="logo != null" >
+        #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="cname != null" >
+        #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="productid != null" >
+        #{productid,jdbcType=INTEGER},
+      </if>
+      <if test="cintroduction != null" >
+        #{cintroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="financing != null" >
+        #{financing,jdbcType=INTEGER},
+      </if>
+      <if test="industryid != null" >
+        #{industryid,jdbcType=INTEGER},
+      </if>
+      <if test="csize != null" >
+        #{csize,jdbcType=INTEGER},
+      </if>
+      <if test="ccity != null" >
+        #{ccity,jdbcType=INTEGER},
+      </if>
+      <if test="fullname != null" >
+        #{fullname,jdbcType=VARCHAR},
+      </if>
+      <if test="representative != null" >
+        #{representative,jdbcType=VARCHAR},
+      </if>
+      <if test="assets != null" >
+        #{assets,jdbcType=INTEGER},
+      </if>
+      <if test="establishtime != null" >
+        #{establishtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="photo != null" >
+        #{photo,jdbcType=VARCHAR},
+      </if>
+        now(),
+        now(),
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.Campany" >
+    update company
+    <set >
+      <if test="logo != null" >
+        logo = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="cname != null" >
+        cname = #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="productid != null" >
+        productId = #{productid,jdbcType=INTEGER},
+      </if>
+      <if test="cintroduction != null" >
+        cIntroduction = #{cintroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="financing != null" >
+        financing = #{financing,jdbcType=INTEGER},
+      </if>
+      <if test="industryid != null" >
+        industryId = #{industryid,jdbcType=INTEGER},
+      </if>
+      <if test="csize != null" >
+        csize = #{csize,jdbcType=INTEGER},
+      </if>
+      <if test="ccity != null" >
+        ccity = #{ccity,jdbcType=INTEGER},
+      </if>
+      <if test="fullname != null" >
+        fullname = #{fullname,jdbcType=VARCHAR},
+      </if>
+      <if test="representative != null" >
+        representative = #{representative,jdbcType=VARCHAR},
+      </if>
+      <if test="assets != null" >
+        assets = #{assets,jdbcType=INTEGER},
+      </if>
+      <if test="establishtime != null" >
+        establishTime = #{establishtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="photo != null" >
+        photo = #{photo,jdbcType=VARCHAR},
+      </if>
+        updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.Campany" >
+    update company
+    set logo = #{logo,jdbcType=VARCHAR},
+      cname = #{cname,jdbcType=VARCHAR},
+      productId = #{productid,jdbcType=INTEGER},
+      cIntroduction = #{cintroduction,jdbcType=VARCHAR},
+      financing = #{financing,jdbcType=INTEGER},
+      industryId = #{industryid,jdbcType=INTEGER},
+      csize = #{csize,jdbcType=INTEGER},
+      ccity = #{ccity,jdbcType=INTEGER},
+      fullname = #{fullname,jdbcType=VARCHAR},
+      representative = #{representative,jdbcType=VARCHAR},
+      assets = #{assets,jdbcType=INTEGER},
+      establishTime = #{establishtime,jdbcType=TIMESTAMP},
+      photo = #{photo,jdbcType=VARCHAR},
+      updateTime = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

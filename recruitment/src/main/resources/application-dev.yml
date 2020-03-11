@@ -1,0 +1,15 @@
+server:
+  port: 8081
+
+debug: true
+logging:
+  file:
+    name: myfile.log
+
+spring:
+    # database configuration
+    datasource:
+      url: jdbc:mysql://localhost:3306/recruitment?serverTimezone=UTC&characterEncoding=utf-8&nullCatalogMeansCurrent=true
+      username: root
+      password: root
+

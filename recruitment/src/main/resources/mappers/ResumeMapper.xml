@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzj.recruitment.dao.ResumeMapper" >
+  <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.Resume" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="headerMask" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="realName" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="gender" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="birthday" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="currentStatus" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="advantage" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="socialPage" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="otherAttachment" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="resumeAttachment" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="positionId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="lowSalary" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="highSalary" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="industryIid" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="cityId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="qcId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, headerMask, realName, gender, birthday, currentStatus, advantage, socialPage, 
+    otherAttachment, resumeAttachment, positionId, lowSalary, highSalary, industryIid, 
+    cityId, qcId, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from resume
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from resume
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zzj.recruitment.pojo.Resume" >
+    insert into resume (id, headerMask, realName, 
+      gender, birthday, currentStatus, 
+      advantage, socialPage, otherAttachment, 
+      resumeAttachment, positionId, lowSalary, 
+      highSalary, industryIid, cityId, 
+      qcId, createTime, updateTime
+      )
+    values (#{id,jdbcType=INTEGER}, #{headermask,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
+      #{gender,jdbcType=INTEGER}, #{birthday,jdbcType=TIMESTAMP}, #{currentstatus,jdbcType=INTEGER}, 
+      #{advantage,jdbcType=VARCHAR}, #{socialpage,jdbcType=VARCHAR}, #{otherattachment,jdbcType=VARCHAR}, 
+      #{resumeattachment,jdbcType=VARCHAR}, #{positionid,jdbcType=INTEGER}, #{lowsalary,jdbcType=DECIMAL}, 
+      #{highsalary,jdbcType=DECIMAL}, #{industryiid,jdbcType=INTEGER}, #{cityid,jdbcType=INTEGER}, 
+      #{qcid,jdbcType=INTEGER}, now(), now()
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.Resume" >
+    insert into resume
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="headermask != null" >
+        headerMask,
+      </if>
+      <if test="realname != null" >
+        realName,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+      <if test="birthday != null" >
+        birthday,
+      </if>
+      <if test="currentstatus != null" >
+        currentStatus,
+      </if>
+      <if test="advantage != null" >
+        advantage,
+      </if>
+      <if test="socialpage != null" >
+        socialPage,
+      </if>
+      <if test="otherattachment != null" >
+        otherAttachment,
+      </if>
+      <if test="resumeattachment != null" >
+        resumeAttachment,
+      </if>
+      <if test="positionid != null" >
+        positionId,
+      </if>
+      <if test="lowsalary != null" >
+        lowSalary,
+      </if>
+      <if test="highsalary != null" >
+        highSalary,
+      </if>
+      <if test="industryiid != null" >
+        industryIid,
+      </if>
+      <if test="cityid != null" >
+        cityId,
+      </if>
+      <if test="qcid != null" >
+        qcId,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="updatetime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="headermask != null" >
+        #{headermask,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="currentstatus != null" >
+        #{currentstatus,jdbcType=INTEGER},
+      </if>
+      <if test="advantage != null" >
+        #{advantage,jdbcType=VARCHAR},
+      </if>
+      <if test="socialpage != null" >
+        #{socialpage,jdbcType=VARCHAR},
+      </if>
+      <if test="otherattachment != null" >
+        #{otherattachment,jdbcType=VARCHAR},
+      </if>
+      <if test="resumeattachment != null" >
+        #{resumeattachment,jdbcType=VARCHAR},
+      </if>
+      <if test="positionid != null" >
+        #{positionid,jdbcType=INTEGER},
+      </if>
+      <if test="lowsalary != null" >
+        #{lowsalary,jdbcType=DECIMAL},
+      </if>
+      <if test="highsalary != null" >
+        #{highsalary,jdbcType=DECIMAL},
+      </if>
+      <if test="industryiid != null" >
+        #{industryiid,jdbcType=INTEGER},
+      </if>
+      <if test="cityid != null" >
+        #{cityid,jdbcType=INTEGER},
+      </if>
+      <if test="qcid != null" >
+        #{qcid,jdbcType=INTEGER},
+      </if>
+      now(),
+        now(),
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.Resume" >
+    update resume
+    <set >
+      <if test="headermask != null" >
+        headerMask = #{headermask,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null" >
+        realName = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="birthday != null" >
+        birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="currentstatus != null" >
+        currentStatus = #{currentstatus,jdbcType=INTEGER},
+      </if>
+      <if test="advantage != null" >
+        advantage = #{advantage,jdbcType=VARCHAR},
+      </if>
+      <if test="socialpage != null" >
+        socialPage = #{socialpage,jdbcType=VARCHAR},
+      </if>
+      <if test="otherattachment != null" >
+        otherAttachment = #{otherattachment,jdbcType=VARCHAR},
+      </if>
+      <if test="resumeattachment != null" >
+        resumeAttachment = #{resumeattachment,jdbcType=VARCHAR},
+      </if>
+      <if test="positionid != null" >
+        positionId = #{positionid,jdbcType=INTEGER},
+      </if>
+      <if test="lowsalary != null" >
+        lowSalary = #{lowsalary,jdbcType=DECIMAL},
+      </if>
+      <if test="highsalary != null" >
+        highSalary = #{highsalary,jdbcType=DECIMAL},
+      </if>
+      <if test="industryiid != null" >
+        industryIid = #{industryiid,jdbcType=INTEGER},
+      </if>
+      <if test="cityid != null" >
+        cityId = #{cityid,jdbcType=INTEGER},
+      </if>
+      <if test="qcid != null" >
+        qcId = #{qcid,jdbcType=INTEGER},
+      </if>
+        updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.Resume" >
+    update resume
+    set headerMask = #{headermask,jdbcType=VARCHAR},
+      realName = #{realname,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=INTEGER},
+      birthday = #{birthday,jdbcType=TIMESTAMP},
+      currentStatus = #{currentstatus,jdbcType=INTEGER},
+      advantage = #{advantage,jdbcType=VARCHAR},
+      socialPage = #{socialpage,jdbcType=VARCHAR},
+      otherAttachment = #{otherattachment,jdbcType=VARCHAR},
+      resumeAttachment = #{resumeattachment,jdbcType=VARCHAR},
+      positionId = #{positionid,jdbcType=INTEGER},
+      lowSalary = #{lowsalary,jdbcType=DECIMAL},
+      highSalary = #{highsalary,jdbcType=DECIMAL},
+      industryIid = #{industryiid,jdbcType=INTEGER},
+      cityId = #{cityid,jdbcType=INTEGER},
+      qcId = #{qcid,jdbcType=INTEGER},
+      updateTime = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

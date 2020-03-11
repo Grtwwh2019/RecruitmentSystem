@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: dev
+
+mybatis:
+  # type-aliases:scan path
+  # type-aliases-package:
+  # mapper xml:Implement scan path
+  mapper-locations: classpath:mappers/*.xml
+  property:
+    order: BEFORE

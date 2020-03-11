@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzj.recruitment.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.User" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="nickName" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="telephone" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="role" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="userName" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="passWord" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="license" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="companyId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="empNo" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="cardPhoto" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="enterpriseMail" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, nickName, telephone, email, role, userName, passWord, license, companyId, empNo, 
+    cardPhoto, enterpriseMail, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zzj.recruitment.pojo.User" >
+    insert into user (id, nickName, telephone, 
+      email, role, userName, 
+      passWord, license, companyId, 
+      empNo, cardPhoto, enterpriseMail, 
+      createTime, updateTime)
+    values (#{id,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{license,jdbcType=VARCHAR}, #{companyid,jdbcType=INTEGER}, 
+      #{empno,jdbcType=INTEGER}, #{cardphoto,jdbcType=VARCHAR}, #{enterprisemail,jdbcType=VARCHAR}, 
+      now(), now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.User" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="nickname != null" >
+        nickName,
+      </if>
+      <if test="telephone != null" >
+        telephone,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="role != null" >
+        role,
+      </if>
+      <if test="username != null" >
+        userName,
+      </if>
+      <if test="password != null" >
+        passWord,
+      </if>
+      <if test="license != null" >
+        license,
+      </if>
+      <if test="companyid != null" >
+        companyId,
+      </if>
+      <if test="empno != null" >
+        empNo,
+      </if>
+      <if test="cardphoto != null" >
+        cardPhoto,
+      </if>
+      <if test="enterprisemail != null" >
+        enterpriseMail,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="updatetime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="nickname != null" >
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null" >
+        #{role,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="license != null" >
+        #{license,jdbcType=VARCHAR},
+      </if>
+      <if test="companyid != null" >
+        #{companyid,jdbcType=INTEGER},
+      </if>
+      <if test="empno != null" >
+        #{empno,jdbcType=INTEGER},
+      </if>
+      <if test="cardphoto != null" >
+        #{cardphoto,jdbcType=VARCHAR},
+      </if>
+      <if test="enterprisemail != null" >
+        #{enterprisemail,jdbcType=VARCHAR},
+      </if>
+      now(),
+        now(),
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.User" >
+    update user
+    <set >
+      <if test="nickname != null" >
+        nickName = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="telephone != null" >
+        telephone = #{telephone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null" >
+        role = #{role,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        userName = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        passWord = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="license != null" >
+        license = #{license,jdbcType=VARCHAR},
+      </if>
+      <if test="companyid != null" >
+        companyId = #{companyid,jdbcType=INTEGER},
+      </if>
+      <if test="empno != null" >
+        empNo = #{empno,jdbcType=INTEGER},
+      </if>
+      <if test="cardphoto != null" >
+        cardPhoto = #{cardphoto,jdbcType=VARCHAR},
+      </if>
+      <if test="enterprisemail != null" >
+        enterpriseMail = #{enterprisemail,jdbcType=VARCHAR},
+      </if>
+        updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.User" >
+    update user
+    set nickName = #{nickname,jdbcType=VARCHAR},
+      telephone = #{telephone,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      role = #{role,jdbcType=INTEGER},
+      userName = #{username,jdbcType=VARCHAR},
+      passWord = #{password,jdbcType=VARCHAR},
+      license = #{license,jdbcType=VARCHAR},
+      companyId = #{companyid,jdbcType=INTEGER},
+      empNo = #{empno,jdbcType=INTEGER},
+      cardPhoto = #{cardphoto,jdbcType=VARCHAR},
+      enterpriseMail = #{enterprisemail,jdbcType=VARCHAR},
+      updateTime = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

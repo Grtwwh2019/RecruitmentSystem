@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzj.recruitment.dao.workExpMapper" >
+  <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.workExp" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="resuId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="cName" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="industryId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="department" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="wSkillId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="workContent" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="position" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="wPositionTypeId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="startDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="endDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, resuId, cName, industryId, department, wSkillId, workContent, position, wPositionTypeId, 
+    startDate, endDate, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from workexperience
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from workexperience
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zzj.recruitment.pojo.workExp" >
+    insert into workexperience (id, resuId, cName, 
+      industryId, department, wSkillId, 
+      workContent, position, wPositionTypeId, 
+      startDate, endDate, createTime, 
+      updateTime)
+    values (#{id,jdbcType=INTEGER}, #{resuid,jdbcType=INTEGER}, #{cname,jdbcType=VARCHAR}, 
+      #{industryid,jdbcType=INTEGER}, #{department,jdbcType=VARCHAR}, #{wskillid,jdbcType=INTEGER}, 
+      #{workcontent,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, #{wpositiontypeid,jdbcType=INTEGER}, 
+      #{startdate,jdbcType=TIMESTAMP}, #{enddate,jdbcType=TIMESTAMP}, now(),
+      now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.workExp" >
+    insert into workexperience
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="resuid != null" >
+        resuId,
+      </if>
+      <if test="cname != null" >
+        cName,
+      </if>
+      <if test="industryid != null" >
+        industryId,
+      </if>
+      <if test="department != null" >
+        department,
+      </if>
+      <if test="wskillid != null" >
+        wSkillId,
+      </if>
+      <if test="workcontent != null" >
+        workContent,
+      </if>
+      <if test="position != null" >
+        position,
+      </if>
+      <if test="wpositiontypeid != null" >
+        wPositionTypeId,
+      </if>
+      <if test="startdate != null" >
+        startDate,
+      </if>
+      <if test="enddate != null" >
+        endDate,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="updatetime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="resuid != null" >
+        #{resuid,jdbcType=INTEGER},
+      </if>
+      <if test="cname != null" >
+        #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="industryid != null" >
+        #{industryid,jdbcType=INTEGER},
+      </if>
+      <if test="department != null" >
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="wskillid != null" >
+        #{wskillid,jdbcType=INTEGER},
+      </if>
+      <if test="workcontent != null" >
+        #{workcontent,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="wpositiontypeid != null" >
+        #{wpositiontypeid,jdbcType=INTEGER},
+      </if>
+      <if test="startdate != null" >
+        #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      now(),
+        now(),
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.workExp" >
+    update workexperience
+    <set >
+      <if test="resuid != null" >
+        resuId = #{resuid,jdbcType=INTEGER},
+      </if>
+      <if test="cname != null" >
+        cName = #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="industryid != null" >
+        industryId = #{industryid,jdbcType=INTEGER},
+      </if>
+      <if test="department != null" >
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="wskillid != null" >
+        wSkillId = #{wskillid,jdbcType=INTEGER},
+      </if>
+      <if test="workcontent != null" >
+        workContent = #{workcontent,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="wpositiontypeid != null" >
+        wPositionTypeId = #{wpositiontypeid,jdbcType=INTEGER},
+      </if>
+      <if test="startdate != null" >
+        startDate = #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        endDate = #{enddate,jdbcType=TIMESTAMP},
+      </if>
+        updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.workExp" >
+    update workexperience
+    set resuId = #{resuid,jdbcType=INTEGER},
+      cName = #{cname,jdbcType=VARCHAR},
+      industryId = #{industryid,jdbcType=INTEGER},
+      department = #{department,jdbcType=VARCHAR},
+      wSkillId = #{wskillid,jdbcType=INTEGER},
+      workContent = #{workcontent,jdbcType=VARCHAR},
+      position = #{position,jdbcType=VARCHAR},
+      wPositionTypeId = #{wpositiontypeid,jdbcType=INTEGER},
+      startDate = #{startdate,jdbcType=TIMESTAMP},
+      endDate = #{enddate,jdbcType=TIMESTAMP},
+      updateTime = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

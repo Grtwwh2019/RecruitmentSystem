@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzj.recruitment.dao.EmploymentMapper" >
+  <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.Employment" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="ename" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="etypeid" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="ecityid" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="esalary" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="ecompanyId" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="eresponsibility" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="erequirement" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="epublisher" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="eupdater" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="estatus" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, ename, etypeid, ecityid, esalary, ecompanyId, eresponsibility, erequirement, 
+    epublisher, eupdater, estatus, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from employment
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from employment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zzj.recruitment.pojo.Employment" >
+    insert into employment (id, ename, etypeid, 
+      ecityid, esalary, ecompanyId, 
+      eresponsibility, erequirement, epublisher, 
+      eupdater, estatus, createTime, 
+      updateTime)
+    values (#{id,jdbcType=INTEGER}, #{ename,jdbcType=VARCHAR}, #{etypeid,jdbcType=INTEGER}, 
+      #{ecityid,jdbcType=INTEGER}, #{esalary,jdbcType=DECIMAL}, #{ecompanyid,jdbcType=INTEGER}, 
+      #{eresponsibility,jdbcType=VARCHAR}, #{erequirement,jdbcType=VARCHAR}, #{epublisher,jdbcType=INTEGER}, 
+      #{eupdater,jdbcType=INTEGER}, #{estatus,jdbcType=INTEGER}, now(),
+      now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.Employment" >
+    insert into employment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="ename != null" >
+        ename,
+      </if>
+      <if test="etypeid != null" >
+        etypeid,
+      </if>
+      <if test="ecityid != null" >
+        ecityid,
+      </if>
+      <if test="esalary != null" >
+        esalary,
+      </if>
+      <if test="ecompanyid != null" >
+        ecompanyId,
+      </if>
+      <if test="eresponsibility != null" >
+        eresponsibility,
+      </if>
+      <if test="erequirement != null" >
+        erequirement,
+      </if>
+      <if test="epublisher != null" >
+        epublisher,
+      </if>
+      <if test="eupdater != null" >
+        eupdater,
+      </if>
+      <if test="estatus != null" >
+        estatus,
+      </if>
+      <if test="createtime != null" >
+        createTime,
+      </if>
+      <if test="updatetime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="ename != null" >
+        #{ename,jdbcType=VARCHAR},
+      </if>
+      <if test="etypeid != null" >
+        #{etypeid,jdbcType=INTEGER},
+      </if>
+      <if test="ecityid != null" >
+        #{ecityid,jdbcType=INTEGER},
+      </if>
+      <if test="esalary != null" >
+        #{esalary,jdbcType=DECIMAL},
+      </if>
+      <if test="ecompanyid != null" >
+        #{ecompanyid,jdbcType=INTEGER},
+      </if>
+      <if test="eresponsibility != null" >
+        #{eresponsibility,jdbcType=VARCHAR},
+      </if>
+      <if test="erequirement != null" >
+        #{erequirement,jdbcType=VARCHAR},
+      </if>
+      <if test="epublisher != null" >
+        #{epublisher,jdbcType=INTEGER},
+      </if>
+      <if test="eupdater != null" >
+        #{eupdater,jdbcType=INTEGER},
+      </if>
+      <if test="estatus != null" >
+        #{estatus,jdbcType=INTEGER},
+      </if>
+        now(),
+        now(),
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.Employment" >
+    update employment
+    <set >
+      <if test="ename != null" >
+        ename = #{ename,jdbcType=VARCHAR},
+      </if>
+      <if test="etypeid != null" >
+        etypeid = #{etypeid,jdbcType=INTEGER},
+      </if>
+      <if test="ecityid != null" >
+        ecityid = #{ecityid,jdbcType=INTEGER},
+      </if>
+      <if test="esalary != null" >
+        esalary = #{esalary,jdbcType=DECIMAL},
+      </if>
+      <if test="ecompanyid != null" >
+        ecompanyId = #{ecompanyid,jdbcType=INTEGER},
+      </if>
+      <if test="eresponsibility != null" >
+        eresponsibility = #{eresponsibility,jdbcType=VARCHAR},
+      </if>
+      <if test="erequirement != null" >
+        erequirement = #{erequirement,jdbcType=VARCHAR},
+      </if>
+      <if test="epublisher != null" >
+        epublisher = #{epublisher,jdbcType=INTEGER},
+      </if>
+      <if test="eupdater != null" >
+        eupdater = #{eupdater,jdbcType=INTEGER},
+      </if>
+      <if test="estatus != null" >
+        estatus = #{estatus,jdbcType=INTEGER},
+      </if>
+        updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.Employment" >
+    update employment
+    set ename = #{ename,jdbcType=VARCHAR},
+      etypeid = #{etypeid,jdbcType=INTEGER},
+      ecityid = #{ecityid,jdbcType=INTEGER},
+      esalary = #{esalary,jdbcType=DECIMAL},
+      ecompanyId = #{ecompanyid,jdbcType=INTEGER},
+      eresponsibility = #{eresponsibility,jdbcType=VARCHAR},
+      erequirement = #{erequirement,jdbcType=VARCHAR},
+      epublisher = #{epublisher,jdbcType=INTEGER},
+      eupdater = #{eupdater,jdbcType=INTEGER},
+      estatus = #{estatus,jdbcType=INTEGER},
+      updateTime = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
