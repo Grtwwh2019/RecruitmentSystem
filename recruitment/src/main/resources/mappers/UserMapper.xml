@@ -7,7 +7,6 @@
       <arg column="nickName" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="telephone" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="role" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="userName" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="passWord" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="license" jdbcType="VARCHAR" javaType="java.lang.String" />
@@ -20,7 +19,7 @@
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, nickName, telephone, email, role, userName, passWord, license, companyId, empNo, 
+    id, nickName, telephone, email, userName, passWord, license, companyId, empNo,
     cardPhoto, enterpriseMail, createTime, updateTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -35,13 +34,13 @@
   </delete>
   <insert id="insert" parameterType="com.zzj.recruitment.pojo.User" >
     insert into user (id, nickName, telephone, 
-      email, role, userName, 
+      email, userName,
       passWord, license, companyId, 
       empNo, cardPhoto, enterpriseMail, 
       createTime, updateTime)
     values (#{id,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
-      #{email,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, 
-      #{password,jdbcType=VARCHAR}, #{license,jdbcType=VARCHAR}, #{companyid,jdbcType=INTEGER}, 
+      #{email,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR},
+      #{password,jdbcType=VARCHAR}, #{license,jdbcType=VARCHAR}, #{companyid,jdbcType=INTEGER},
       #{empno,jdbcType=INTEGER}, #{cardphoto,jdbcType=VARCHAR}, #{enterprisemail,jdbcType=VARCHAR}, 
       now(), now())
   </insert>
@@ -59,9 +58,6 @@
       </if>
       <if test="email != null" >
         email,
-      </if>
-      <if test="role != null" >
-        role,
       </if>
       <if test="username != null" >
         userName,
@@ -84,12 +80,8 @@
       <if test="enterprisemail != null" >
         enterpriseMail,
       </if>
-      <if test="createtime != null" >
         createTime,
-      </if>
-      <if test="updatetime != null" >
         updateTime,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -103,9 +95,6 @@
       </if>
       <if test="email != null" >
         #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="role != null" >
-        #{role,jdbcType=INTEGER},
       </if>
       <if test="username != null" >
         #{username,jdbcType=VARCHAR},
@@ -144,9 +133,6 @@
       <if test="email != null" >
         email = #{email,jdbcType=VARCHAR},
       </if>
-      <if test="role != null" >
-        role = #{role,jdbcType=INTEGER},
-      </if>
       <if test="username != null" >
         userName = #{username,jdbcType=VARCHAR},
       </if>
@@ -177,7 +163,6 @@
     set nickName = #{nickname,jdbcType=VARCHAR},
       telephone = #{telephone,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
-      role = #{role,jdbcType=INTEGER},
       userName = #{username,jdbcType=VARCHAR},
       passWord = #{password,jdbcType=VARCHAR},
       license = #{license,jdbcType=VARCHAR},
@@ -187,5 +172,47 @@
       enterpriseMail = #{enterprisemail,jdbcType=VARCHAR},
       updateTime = now()
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="checkRepetition" parameterType="com.zzj.recruitment.pojo.User" resultType="int">
+    select count(1) from `user`
+    <where>
+      <if test="type != null and type == 'nickName' ">
+      and nickName like concat('%', #{value}, '%')
+      </if>
+      <if test="type != null and type == 'userName' ">
+        and userName = #{value}
+      </if>
+      <if test="type != null and type == 'email' ">
+        and email = #{value}
+      </if>
+      <if test="type != null and type == 'telphone' ">
+        and telephone = #{value}
+      </if>
+      <if test="type != null and type == 'password' ">
+        and passWord = #{value}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectByUsername" parameterType="string" resultType="com.zzj.recruitment.pojo.User">
+    select
+    <include refid="Base_Column_List" />
+    from `user`
+    <where>
+      userName = #{username}
+    </where>
+  </select>
+
+  <select id="getUserRolesById" parameterType="java.lang.Integer" resultType="com.zzj.recruitment.pojo.Role">
+    select r.id, r.name, r.nameZh
+    from role as r
+    where r.id
+    in (select ur.role_id from user_role as ur where ur.user_id = #{id})
+  </select>
+
+  <update id="resetPasswordByUsername">
+    update user set passWord = #{passwordNew}
+    where username = #{username}
   </update>
 </mapper>

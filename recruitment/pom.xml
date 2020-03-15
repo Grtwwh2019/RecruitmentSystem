@@ -28,10 +28,18 @@
 	</properties>
 
 	<dependencies>
-		<!--<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-security</artifactId>-->
+<!--		</dependency>-->
+
+<!--&lt;!&ndash;		oauth2依赖&ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.security.oauth</groupId>-->
+<!--			<artifactId>spring-security-oauth2</artifactId>-->
+<!--			<version>2.3.6.RELEASE</version>-->
+<!--		</dependency>-->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -94,6 +102,116 @@
 			<artifactId>jsqlparser</artifactId>
 			<version>0.9.4</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+<!--		SpringBoot 提供的 Redis依赖-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+<!--			删除lettuce连接池-->
+			<exclusions>
+				<exclusion>
+					<groupId>io.lettuce</groupId>
+					<artifactId>lettuce-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+
+<!--        Java提供的使用Redis的API-->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
+
+<!--		序列化的依赖，配合SpringBoot redis-->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.9.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.9.5</version>
+		</dependency>
+
+<!--		处理Json转换——原生 -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.12</version>
+		</dependency>
+
+<!--		处理时间的依赖-->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+<!--		登录验证码的依赖-->
+<!--		<dependency>-->
+<!--			<groupId>com.google.code.kaptcha</groupId>-->
+<!--			<artifactId>kaptcha</artifactId>-->
+<!--			<version>2.3</version>-->
+<!--		</dependency>-->
+
+<!--		开启Spring Boot的缓存功能-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-cache</artifactId>-->
+<!--		</dependency>-->
+
+		<!-- spring-boot redis 和 连接池 的依赖 -->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-data-redis</artifactId>-->
+<!--		</dependency>-->
+
+<!--		<dependency>-->
+<!--			<groupId>org.apache.commons</groupId>-->
+<!--			<artifactId>commons-pool2</artifactId>-->
+<!--		</dependency>-->
+
+
+<!--        Jackson依赖，实现序列化和反序列化-->
+<!--		<dependency>-->
+<!--			<groupId>com.fasterxml.jackson.core</groupId>-->
+<!--			<artifactId>jackson-databind</artifactId>-->
+<!--			<version>2.3.2</version>-->
+<!--		</dependency>-->
+
+<!--		Spring Security 提供的加密算法的依赖，在spring-boot-starter-security中已经包含了该依赖-->
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>5.2.2.RELEASE</version>
+			<scope>compile</scope>
+		</dependency>
+
+
+<!--		定义配置文件的依赖-->
+<!--		即@ConfigurationProperties注解-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+<!--		String的常用工具类-->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.5</version>
+		</dependency>
+
+
 
 		<!--Spring Boot应用将自动使用logback作为应用日志框架，Spring Boot启动的时候，
 		由org.springframework.boot.logging.Logging-Application-Listener根据情况初始化并使用。-->

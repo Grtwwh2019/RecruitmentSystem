@@ -1,8 +1,20 @@
 package com.zzj.recruitment.pojo;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-public class User {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class User implements
+//        UserDetails,
+        Serializable {
     private Integer id;
 
     private String nickname;
@@ -10,8 +22,6 @@ public class User {
     private String telephone;
 
     private String email;
-
-    private Integer role;
 
     private String username;
 
@@ -31,12 +41,14 @@ public class User {
 
     private Date updatetime;
 
+    List<Role> roles;
+
+
     public User(Integer id, String nickname, String telephone, String email, Integer role, String username, String password, String license, Integer companyid, Integer empno, String cardphoto, String enterprisemail, Date createtime, Date updatetime) {
         this.id = id;
         this.nickname = nickname;
         this.telephone = telephone;
         this.email = email;
-        this.role = role;
         this.username = username;
         this.password = password;
         this.license = license;
@@ -82,14 +94,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email == null ? null : email.trim();
-    }
-
-    public Integer getRole() {
-        return role;
-    }
-
-    public void setRole(Integer role) {
-        this.role = role;
     }
 
     public String getUsername() {
@@ -163,4 +167,61 @@ public class User {
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
+
+   /* *//**
+     * 返回用户的所有角色
+     * @return
+     *//*
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+        return authorities;
+    }
+
+    *//**
+     * 账户是否未过期
+     * @return
+     *//*
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    *//**
+     * 账户是否未锁定
+     * @return
+     *//*
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    *//**
+     * 密码是否未过期
+     * @return
+     *//*
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    *//**
+     * 是否可用
+     * @return
+     *//*
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }*/
 }
