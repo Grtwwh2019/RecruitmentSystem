@@ -6,6 +6,8 @@ import java.util.Date;
 public class Resume {
     private Integer id;
 
+    private Integer ruserid;
+
     private String headermask;
 
     private String realname;
@@ -24,24 +26,21 @@ public class Resume {
 
     private String resumeattachment;
 
-    private Integer positionid;
+    private Integer expectpositionid;
 
     private BigDecimal lowsalary;
 
     private BigDecimal highsalary;
 
-    private Integer industryiid;
-
-    private Integer cityid;
-
-    private Integer qcid;
+    private String cityid;
 
     private Date createtime;
 
     private Date updatetime;
 
-    public Resume(Integer id, String headermask, String realname, Integer gender, Date birthday, Integer currentstatus, String advantage, String socialpage, String otherattachment, String resumeattachment, Integer positionid, BigDecimal lowsalary, BigDecimal highsalary, Integer industryiid, Integer cityid, Integer qcid, Date createtime, Date updatetime) {
+    public Resume(Integer id, Integer ruserid, String headermask, String realname, Integer gender, Date birthday, Integer currentstatus, String advantage, String socialpage, String otherattachment, String resumeattachment, Integer expectpositionid, BigDecimal lowsalary, BigDecimal highsalary, String cityid, Date createtime, Date updatetime) {
         this.id = id;
+        this.ruserid = ruserid;
         this.headermask = headermask;
         this.realname = realname;
         this.gender = gender;
@@ -51,12 +50,10 @@ public class Resume {
         this.socialpage = socialpage;
         this.otherattachment = otherattachment;
         this.resumeattachment = resumeattachment;
-        this.positionid = positionid;
+        this.expectpositionid = expectpositionid;
         this.lowsalary = lowsalary;
         this.highsalary = highsalary;
-        this.industryiid = industryiid;
         this.cityid = cityid;
-        this.qcid = qcid;
         this.createtime = createtime;
         this.updatetime = updatetime;
     }
@@ -71,6 +68,14 @@ public class Resume {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getRuserid() {
+        return ruserid;
+    }
+
+    public void setRuserid(Integer ruserid) {
+        this.ruserid = ruserid;
     }
 
     public String getHeadermask() {
@@ -145,12 +150,12 @@ public class Resume {
         this.resumeattachment = resumeattachment == null ? null : resumeattachment.trim();
     }
 
-    public Integer getPositionid() {
-        return positionid;
+    public Integer getExpectpositionid() {
+        return expectpositionid;
     }
 
-    public void setPositionid(Integer positionid) {
-        this.positionid = positionid;
+    public void setExpectpositionid(Integer expectpositionid) {
+        this.expectpositionid = expectpositionid;
     }
 
     public BigDecimal getLowsalary() {
@@ -169,28 +174,12 @@ public class Resume {
         this.highsalary = highsalary;
     }
 
-    public Integer getIndustryiid() {
-        return industryiid;
-    }
-
-    public void setIndustryiid(Integer industryiid) {
-        this.industryiid = industryiid;
-    }
-
-    public Integer getCityid() {
+    public String getCityid() {
         return cityid;
     }
 
-    public void setCityid(Integer cityid) {
-        this.cityid = cityid;
-    }
-
-    public Integer getQcid() {
-        return qcid;
-    }
-
-    public void setQcid(Integer qcid) {
-        this.qcid = qcid;
+    public void setCityid(String cityid) {
+        this.cityid = cityid == null ? null : cityid.trim();
     }
 
     public Date getCreatetime() {

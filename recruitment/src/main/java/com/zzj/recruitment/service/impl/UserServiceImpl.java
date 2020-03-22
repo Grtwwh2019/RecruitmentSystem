@@ -3,7 +3,9 @@ package com.zzj.recruitment.service.impl;
 import com.zzj.recruitment.common.ServerResponse;
 import com.zzj.recruitment.common.constant.Const;
 import com.zzj.recruitment.dao.UserMapper;
+import com.zzj.recruitment.dao.UserRoleMapper;
 import com.zzj.recruitment.pojo.User;
+import com.zzj.recruitment.pojo.UserRole;
 import com.zzj.recruitment.service.IUserService;
 import com.zzj.recruitment.util.EncryptionUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +34,11 @@ public class UserServiceImpl implements IUserService
     UserMapper userMapper;
 
     @Autowired
+    UserRoleMapper userRoleMapper;
+
+    @Autowired
     RedisTemplate redisTemplate;
+
 /*
     *//**
      * 根据用户名查询用户对象，然后返回
@@ -52,7 +59,8 @@ public class UserServiceImpl implements IUserService
     }*/
 
     @Override
-    public ServerResponse<String> register(User user) {
+    @Transactional
+    public ServerResponse<String> register(User user, Integer role) {
         // 1.校验昵称、账号、邮箱、手机号、密码是否符合要求
         ServerResponse<String> validResponse = this.checkValid(user.getNickname(), Const.NICK_NAME);
         if (!validResponse.isSuccess()) {
@@ -66,7 +74,7 @@ public class UserServiceImpl implements IUserService
         if (!validResponse.isSuccess()) {
             return validResponse;
         }
-        validResponse = this.checkValid(user.getTelephone(), Const.TELPHONE);
+        validResponse = this.checkValid(user.getTelephone(), Const.TELEPHONE);
         if (!validResponse.isSuccess()) {
             return validResponse;
         }
@@ -77,12 +85,22 @@ public class UserServiceImpl implements IUserService
         // 2.将密码加密后存储
         String EncryPassword = EncryptionUtil.encrypt(user.getPassword());
         user.setPassword(EncryPassword);
-//        if (user.getRole() == 1) {
-        int result = userMapper.insertSelective(user);
-        if (result > 0) {
-            return ServerResponse.createResponseBySuccessMsg("注册成功！");
+        Integer newUserId = userMapper.insertSelective(user);
+        if (newUserId != null) {
+            if (role != null) {
+                if (role == 4) { // 企业账号
+                    // todo 校验营业执照，公司ID，不能为空，格式要正确
+                }
+                UserRole userRole = new UserRole();
+                userRole.setRoleId(role);
+                userRole.setUserId(newUserId);
+                int result = userRoleMapper.insertSelective(userRole);
+                if (result > 0) {
+                    // todo 只要创建了用户就自动新建一个在线简历
+                    return ServerResponse.createResponseBySuccessMsg("注册成功！");
+                }
+            }
         }
-//        }
         return ServerResponse.createResponseByErrorMsg("注册失败，参数错误！");
     }
 
@@ -108,7 +126,7 @@ public class UserServiceImpl implements IUserService
         if (result > 0) {
             return ServerResponse.createResponseByErrorMsg("更新失败，邮箱已存在");
         }
-        result = userMapper.checkRepetition(user.getTelephone(), Const.TELPHONE);
+        result = userMapper.checkRepetition(user.getTelephone(), Const.TELEPHONE);
         if (result > 0) {
             return ServerResponse.createResponseByErrorMsg("更新失败，手机已存在");
         }
@@ -119,7 +137,6 @@ public class UserServiceImpl implements IUserService
         updateUser.setId(currentUser.getId());
         result = userMapper.updateByPrimaryKeySelective(updateUser);
         if (result > 0) {
-            redisTemplate.opsForValue().set(Const.LOGINED_USER, currentUser, Const.RedisCacheExtime.REDIS_SESSION_EXTIME, TimeUnit.SECONDS);
             return ServerResponse.createResponseBySuccess("更新成功！", updateUser);
         }
         return ServerResponse.createResponseByErrorMsg("更新失败，未知错误！");
@@ -138,7 +155,7 @@ public class UserServiceImpl implements IUserService
         User user = userMapper.selectByUsername(username);
         String result = null;
         switch (type.trim()) {
-            case Const.TELPHONE:
+            case Const.TELEPHONE:
                 // todo 获取手机号，发送验证码的逻辑
                 result = user.getTelephone();
                 break;
@@ -165,7 +182,7 @@ public class UserServiceImpl implements IUserService
         User user = userMapper.selectByUsername(username);
         boolean result = false;
         switch (type.trim()) {
-            case Const.TELPHONE:
+            case Const.TELEPHONE:
                 if (StringUtils.equals(user.getTelephone(), verificationCode)) {
                     result = true;
                 }
@@ -195,6 +212,7 @@ public class UserServiceImpl implements IUserService
      * @return
      */
     @Override
+    @Transactional
     public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
         if (StringUtils.equals(forgetToken, (String) (redisTemplate.opsForValue().get(Const.FORGET_TOKEN_PREFIX + username)))) {
             redisTemplate.delete(Const.FORGET_TOKEN_PREFIX + username);
@@ -276,7 +294,7 @@ public class UserServiceImpl implements IUserService
                         return ServerResponse.createResponseByErrorMsg("校验失败，邮箱不符合格式！");
                     }
                     break;
-                case Const.TELPHONE:
+                case Const.TELEPHONE:
                     // 手机号不能超过11位，不能为空，不能重复
                     if (!this.checkTelPhone(value) || StringUtils.isBlank(value)) {
                         return ServerResponse.createResponseByErrorMsg("手机号为空或格式不正确。");
@@ -290,6 +308,8 @@ public class UserServiceImpl implements IUserService
                         return ServerResponse.createResponseByErrorMsg("密码为空或长度超出范围18。");
                     }
                     break;
+                default:
+                    flag = false;
             }
         } else {
             flag = false;

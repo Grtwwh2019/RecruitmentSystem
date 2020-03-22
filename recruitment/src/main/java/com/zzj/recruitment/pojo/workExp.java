@@ -13,8 +13,6 @@ public class workExp {
 
     private String department;
 
-    private Integer wskillid;
-
     private String workcontent;
 
     private String position;
@@ -35,7 +33,6 @@ public class workExp {
         this.cname = cname;
         this.industryid = industryid;
         this.department = department;
-        this.wskillid = wskillid;
         this.workcontent = workcontent;
         this.position = position;
         this.wpositiontypeid = wpositiontypeid;
@@ -87,14 +84,6 @@ public class workExp {
 
     public void setDepartment(String department) {
         this.department = department == null ? null : department.trim();
-    }
-
-    public Integer getWskillid() {
-        return wskillid;
-    }
-
-    public void setWskillid(Integer wskillid) {
-        this.wskillid = wskillid;
     }
 
     public String getWorkcontent() {

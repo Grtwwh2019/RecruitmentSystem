@@ -95,4 +95,69 @@
       updateTime = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <delete id="removeByPositionUserId">
+    delete from collection where cpid = #{positionId} and cuserid= #{userId}
+  </delete>
+
+  <delete id="removeByCompanyUserId">
+    delete from collection where ccid = #{companyId} and cuserid= #{userId}
+  </delete>
+
+  <insert id="addByPositionUserId">
+    insert into collection (cpid, cuserid, createTime) values (#{positionId}, #{userId}, now())
+  </insert>
+
+  <insert id="addByCompanyUserId">
+    insert into collection (ccid, cuserid, createTime) values (#{companyId}, #{userId}, now())
+  </insert>
+
+  <select id="selectByPositionUserId" resultType="int">
+    select count(1) from collection where cpid = #{positionId} and cuserid = #{userId}
+  </select>
+
+
+  <select id="selectByCompanyUserId" resultType="int">
+    select count(1) from collection where cpid = #{companyId} and cuserid = #{userId}
+  </select>
+
+  <select id="selectPositionByUserId" resultType="int">
+    select cpid from collection where cuserid = #{userId} and cpid is not null
+  </select>
+
+
+  <select id="selectCompanyByUserId" resultType="int">
+    select ccid from collection where cuserid = #{userId} and ccid is not null
+  </select>
+
+
+  <select id="getPosisitonList" resultType="com.zzj.recruitment.vo.PosisitonListVo" parameterType="int">
+    select e.id as id, e.ename as ename, pt.ptName as etype, city.cityName as ecity,
+    e.esalaryfloor as esalaryfloor, e.esalaryceilie as esalaryceilie, e.educationrequire as educationrequire,
+    com.logo as companyLogo, com.cname as ecompany, i.iName as industry,
+    com.financing as financing,com.csize as csize, u.nickName as publisher,
+    e.createTime as createTime
+    from collection as c
+    left join employment as e on c.cpid = e.id
+    left join positiontypeset as pt on e.etypeid = pt.id
+    left join city on e.ecityid = city.id
+    left join company as com on e.ecompanyId = com.id
+    left join `user` as u on e.epublisher = u.id
+    left join industryset as i on com.industryId = i.id
+    where c.cpid is not null and c.cuserid = #{userId}
+    order by e.id asc
+  </select>
+
+  <select id="getCompanyList" resultType="com.zzj.recruitment.vo.CompanyListVo" parameterType="int">
+    select e.id as id, e.cname as cname, e.logo as logo, e.financing as financing, i.iName as industry,
+    e.csize as csize, city.cityName as ccity, e.representative as representative
+    from collection as c
+    left join company as e on c.ccid = e.id
+    left join industryset as i on e.industryId = i.id
+    left join city on e.ccity = city.id
+    where c.ccid is not null and  c.cuserid = #{userId}
+    order by e.id asc
+  </select>
+
+
 </mapper>

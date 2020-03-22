@@ -20,5 +20,13 @@ public class PropertiesUtil {
 
     private String EncryptionKey;
 
+    private String ftp_server_ip;
+
+    private String ftp_user;
+
+    private String ftp_pass;
+
+    private String ftp_server_http_prefix;
+
 
 }

@@ -6,13 +6,18 @@ import com.zzj.recruitment.common.constant.Const;
 import com.zzj.recruitment.pojo.User;
 import com.zzj.recruitment.service.ICaptchaService;
 import com.zzj.recruitment.service.IUserService;
+import com.zzj.recruitment.util.CookieUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -46,30 +51,41 @@ public class UserController {
      * @param password
      * @param captchaToken：登录验证码的token
      * @param captcha：登录输入的验证码
+     * @param session：记录携带自己Cookie的SessionID
+     * @param httpServletResponse：需要Response来写回cookie
+     *    用Cookie来保存SessionID，那么不管请求发送到哪个服务器，
+     *    可以通过浏览器发送请求携带的Cookie得到SessionID，进而获取到用户信息
      * @return
      */
     @PostMapping("/login.do")
-    public ServerResponse<User> userLogin(String username, String password, String captchaToken, String captcha) {
-        // 根据captchaToken匹配是否当前的UUID，如果是则找到验证码，跟capacha比较，如果匹配，则执行登录
+    public ServerResponse<User> userLogin(String username, String password, String captchaToken, String captcha, HttpSession session, HttpServletResponse httpServletResponse) {
+        // 根据用户的username获得captchaEntity获取token匹配是否当前的UUID，如果是则找到验证码，跟capacha比较，如果匹配，则执行登录
         // 否则返回验证失败，并且重置验证码
-        String redisCaptchaToken = (String) redisTemplate.opsForValue().get(Const.TOKEN_CAPTCHA_ENTITY);
+        CaptchaEntity captchaEntity = (CaptchaEntity) redisTemplate.opsForValue().get(Const.CAPTCHA_ENTITY + username);
+        if (captchaEntity == null) {
+            return ServerResponse.createResponseByErrorMsg("请获取验证码！");
+        }
+        String redisCaptchaToken = captchaEntity.getToken();
+        // 如果token符合
         if (StringUtils.equals(redisCaptchaToken, captchaToken)) {
+            // 获取验证码的实际内容
             String redisCaptcha = (String) redisTemplate.opsForValue().get(captchaToken);
             if (redisCaptcha != null && StringUtils.equals(redisCaptcha, captcha)) {
                 ServerResponse<User> response = userService.userlogin(username, password);
                 if (response.isSuccess()) {
                     User user = response.getData();
-                    // 如果登录成功，将用户信息存储到redis中，并且删掉验证码信息
-                    redisTemplate.opsForValue().set(Const.LOGINED_USER, user, Const.RedisCacheExtime.REDIS_SESSION_EXTIME, TimeUnit.SECONDS);
+                    // 如果登录成功，将SessionID保存到cookie中，将用户信息存储到redis中，key为SessionID，并且删掉验证码信息
+                    CookieUtil.writeLoginToken(httpServletResponse, session.getId());
+                    redisTemplate.opsForValue().set(session.getId(), user, Const.RedisCacheExtime.REDIS_SESSION_EXTIME, TimeUnit.SECONDS);
                 }
                 // 如果密码错误，删掉原验证码信息，需要重新获取验证码
-                captchaService.deleteToken(captchaToken);
+                captchaService.deleteToken(redisCaptchaToken, username);
                 return response;
             }
         }
         // 如果验证失败，重新获取验证码（先删除redis中的验证码，然后重新调用captcha接口
-        if (captchaToken != null) {
-            captchaService.deleteToken(captchaToken);
+        if (redisCaptchaToken != null) {
+            captchaService.deleteToken(redisCaptchaToken, username);
         } else {
             return ServerResponse.createResponseByErrorMsg("登录失败，请先获取验证码！");
         }
@@ -80,11 +96,12 @@ public class UserController {
     /**
      * 注册用户接口
      * @param user
+     * @param role: 角色 1---求职者，4---企业账号
      * @return
      */
-    @PostMapping("/register.do")
-    public ServerResponse<String> register(User user) {
-        ServerResponse<String> response = userService.register(user);
+    @PostMapping("/register.do/{role}")
+    public ServerResponse<String> register(User user, @PathVariable Integer role) {
+        ServerResponse<String> response = userService.register(user, role);
         return response;
     }
 
@@ -105,26 +122,35 @@ public class UserController {
      * @return
      */
     @GetMapping("/getUserInfo.do")
-    public ServerResponse<User> getUserInfo() {
-        User user = (User) redisTemplate.opsForValue().get(Const.LOGINED_USER);
-        if (user == null) {
-            return ServerResponse.createResponseByErrorMsg("用户未登录！");
+    public ServerResponse<User> getUserInfo(HttpServletRequest request) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (loginToken != null) {
+            User user = (User) redisTemplate.opsForValue().get(loginToken);
+            if (user != null) {
+                return ServerResponse.createResponseBySuccess("获取成功", user);
+            }
         }
-        return ServerResponse.createResponseBySuccess("获取成功", user);
+        return ServerResponse.createResponseByErrorMsg("用户未登录！");
     }
 
     /**
      * 更新昵称
      */
     @PostMapping("/updateUserInfo.do")
-    public ServerResponse<User> updateUserInfo(User user) {
-        User currentUser = (User) redisTemplate.opsForValue().get(Const.LOGINED_USER);
-        // todo 后期优化为 要验证码当前手机号或邮箱 才能修改手机或邮箱
-        if (currentUser == null) {
-            return ServerResponse.createResponseByErrorMsg("用户未登录！");
+    public ServerResponse<User> updateUserInfo(User user, HttpServletRequest request) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (loginToken != null) {
+            User currentUser = (User) redisTemplate.opsForValue().get(loginToken);
+            // todo 后期优化为 要验证码当前手机号或邮箱 才能修改手机或邮箱
+            if (currentUser != null) {
+                ServerResponse<User> response = userService.updateUserInfo(user, currentUser);
+                if (response.isSuccess()) {
+                    redisTemplate.opsForValue().set(loginToken, currentUser, Const.RedisCacheExtime.REDIS_SESSION_EXTIME, TimeUnit.SECONDS);
+                }
+                return response;
+            }
         }
-        ServerResponse<User> response = userService.updateUserInfo(user, currentUser);
-        return response;
+        return ServerResponse.createResponseByErrorMsg("用户未登录！");
     }
 
     /**
@@ -168,32 +194,43 @@ public class UserController {
 
     /**
      * 登录状态下的重置密码
+     *
      * @param passwordOld
      * @param passwordNew
      * @return
      */
     @PostMapping("/resetPassword.do")
-    public ServerResponse<String> resetPassword(String passwordOld, String passwordNew) {
-        User user = (User) redisTemplate.opsForValue().get(Const.LOGINED_USER);
-        if (user != null) {
-            return userService.resetPassword(user.getUsername(), passwordOld, passwordNew);
+    public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, HttpServletRequest request) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (loginToken != null) {
+            User user = (User) redisTemplate.opsForValue().get(loginToken);
+            if (user != null) {
+                return userService.resetPassword(user.getUsername(), passwordOld, passwordNew);
+            }
         }
         return ServerResponse.createResponseByErrorMsg("您没有权限，请先登录！");
     }
 
     /**
-     * 登出
-     *
+     * @param httpServletRequest：用于获取现有Cookie
+     * @param httpServletResponse：用于返回删除SessionID后的cookie
      * @return
      */
     @PostMapping("/logout.do")
-    public ServerResponse<String> logout() {
-        Boolean deleteResult = redisTemplate.delete(Const.LOGINED_USER);
+    public ServerResponse<String> logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        // 从Cookie中返回用户登录的SessionID
+        // 删除Cookie中的SessionID
+        String loginToken = CookieUtil.readLoginToken(httpServletRequest);
+        CookieUtil.delLoginToken(httpServletRequest, httpServletResponse);
+        // 从缓存中删除SessionID
+        Boolean deleteResult = redisTemplate.delete(loginToken);
         if (deleteResult) {
             return ServerResponse.createResponseBySuccess("注销成功！");
         }
         return ServerResponse.createResponseByErrorMsg("注销失败，未知错误！");
     }
+
+
 
 
 

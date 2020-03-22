@@ -1,8 +1,9 @@
 package com.zzj.recruitment.pojo;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
-public class Campany {
+public class Company {
     private Integer id;
 
     private String logo;
@@ -25,7 +26,7 @@ public class Campany {
 
     private String representative;
 
-    private Integer assets;
+    private BigDecimal assets;
 
     private Date establishtime;
 
@@ -35,7 +36,7 @@ public class Campany {
 
     private Date updatetime;
 
-    public Campany(Integer id, String logo, String cname, Integer productid, String cintroduction, Integer financing, Integer industryid, Integer csize, Integer ccity, String fullname, String representative, Integer assets, Date establishtime, String photo, Date createtime, Date updatetime) {
+    public Company(Integer id, String logo, String cname, Integer productid, String cintroduction, Integer financing, Integer industryid, Integer csize, Integer ccity, String fullname, String representative, BigDecimal assets, Date establishtime, String photo, Date createtime, Date updatetime) {
         this.id = id;
         this.logo = logo;
         this.cname = cname;
@@ -54,7 +55,7 @@ public class Campany {
         this.updatetime = updatetime;
     }
 
-    public Campany() {
+    public Company() {
         super();
     }
 
@@ -146,11 +147,11 @@ public class Campany {
         this.representative = representative == null ? null : representative.trim();
     }
 
-    public Integer getAssets() {
+    public BigDecimal getAssets() {
         return assets;
     }
 
-    public void setAssets(Integer assets) {
+    public void setAssets(BigDecimal assets) {
         this.assets = assets;
     }
 

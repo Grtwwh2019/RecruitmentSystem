@@ -10,7 +10,8 @@ public enum ResponseCode {
     SUCCESS(0, "SUCCESS"),
     ERROR(1, "ERROR"),
     FORCE_LOGIN(10, "FORCE_LOGIN"),
-    UNKNOWN_ERROR(40, "UNKNOWN_ERROR");
+    UNKNOWN_ERROR(40, "UNKNOWN_ERROR"),
+    ILLEGAL_ARGUMENTS(400, "ILLEGAL_ARGUMENTS");
 
     private final int code;
     private final String desc;

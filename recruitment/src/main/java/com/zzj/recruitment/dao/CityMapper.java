@@ -1,6 +1,7 @@
 package com.zzj.recruitment.dao;
 
 import com.zzj.recruitment.pojo.City;
+import org.apache.ibatis.annotations.Param;
 
 public interface CityMapper {
     int deleteByPrimaryKey(String id);
@@ -14,4 +15,5 @@ public interface CityMapper {
     int updateByPrimaryKeySelective(City record);
 
     int updateByPrimaryKey(City record);
+
 }

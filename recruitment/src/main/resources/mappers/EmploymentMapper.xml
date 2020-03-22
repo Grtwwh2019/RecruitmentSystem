@@ -7,7 +7,9 @@
       <arg column="ename" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="etypeid" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="ecityid" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="esalary" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="esalaryFloor" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="esalaryCeilie" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+      <arg column="educationRequire" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="ecompanyId" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="eresponsibility" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="erequirement" jdbcType="VARCHAR" javaType="java.lang.String" />
@@ -19,8 +21,8 @@
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, ename, etypeid, ecityid, esalary, ecompanyId, eresponsibility, erequirement, 
-    epublisher, eupdater, estatus, createTime, updateTime
+    id, ename, etypeid, ecityid, esalaryFloor, esalaryCeilie, educationRequire, ecompanyId, 
+    eresponsibility, erequirement, epublisher, eupdater, estatus, createTime, updateTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -34,15 +36,17 @@
   </delete>
   <insert id="insert" parameterType="com.zzj.recruitment.pojo.Employment" >
     insert into employment (id, ename, etypeid, 
-      ecityid, esalary, ecompanyId, 
-      eresponsibility, erequirement, epublisher, 
-      eupdater, estatus, createTime, 
-      updateTime)
+      ecityid, esalaryFloor, esalaryCeilie, 
+      educationRequire, ecompanyId, eresponsibility, 
+      erequirement, epublisher, eupdater, 
+      estatus, createTime, updateTime
+      )
     values (#{id,jdbcType=INTEGER}, #{ename,jdbcType=VARCHAR}, #{etypeid,jdbcType=INTEGER}, 
-      #{ecityid,jdbcType=INTEGER}, #{esalary,jdbcType=DECIMAL}, #{ecompanyid,jdbcType=INTEGER}, 
-      #{eresponsibility,jdbcType=VARCHAR}, #{erequirement,jdbcType=VARCHAR}, #{epublisher,jdbcType=INTEGER}, 
-      #{eupdater,jdbcType=INTEGER}, #{estatus,jdbcType=INTEGER}, now(),
-      now())
+      #{ecityid,jdbcType=INTEGER}, #{esalaryfloor,jdbcType=DECIMAL}, #{esalaryceilie,jdbcType=DECIMAL}, 
+      #{educationrequire,jdbcType=INTEGER}, #{ecompanyid,jdbcType=INTEGER}, #{eresponsibility,jdbcType=VARCHAR}, 
+      #{erequirement,jdbcType=VARCHAR}, #{epublisher,jdbcType=INTEGER}, #{eupdater,jdbcType=INTEGER}, 
+      #{estatus,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.Employment" >
     insert into employment
@@ -59,8 +63,14 @@
       <if test="ecityid != null" >
         ecityid,
       </if>
-      <if test="esalary != null" >
-        esalary,
+      <if test="esalaryfloor != null" >
+        esalaryFloor,
+      </if>
+      <if test="esalaryceilie != null" >
+        esalaryCeilie,
+      </if>
+      <if test="educationrequire != null" >
+        educationRequire,
       </if>
       <if test="ecompanyid != null" >
         ecompanyId,
@@ -100,8 +110,14 @@
       <if test="ecityid != null" >
         #{ecityid,jdbcType=INTEGER},
       </if>
-      <if test="esalary != null" >
-        #{esalary,jdbcType=DECIMAL},
+      <if test="esalaryfloor != null" >
+        #{esalaryfloor,jdbcType=DECIMAL},
+      </if>
+      <if test="esalaryceilie != null" >
+        #{esalaryceilie,jdbcType=DECIMAL},
+      </if>
+      <if test="educationrequire != null" >
+        #{educationrequire,jdbcType=INTEGER},
       </if>
       <if test="ecompanyid != null" >
         #{ecompanyid,jdbcType=INTEGER},
@@ -121,8 +137,12 @@
       <if test="estatus != null" >
         #{estatus,jdbcType=INTEGER},
       </if>
-        now(),
-        now(),
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.Employment" >
@@ -137,8 +157,14 @@
       <if test="ecityid != null" >
         ecityid = #{ecityid,jdbcType=INTEGER},
       </if>
-      <if test="esalary != null" >
-        esalary = #{esalary,jdbcType=DECIMAL},
+      <if test="esalaryfloor != null" >
+        esalaryFloor = #{esalaryfloor,jdbcType=DECIMAL},
+      </if>
+      <if test="esalaryceilie != null" >
+        esalaryCeilie = #{esalaryceilie,jdbcType=DECIMAL},
+      </if>
+      <if test="educationrequire != null" >
+        educationRequire = #{educationrequire,jdbcType=INTEGER},
       </if>
       <if test="ecompanyid != null" >
         ecompanyId = #{ecompanyid,jdbcType=INTEGER},
@@ -158,7 +184,12 @@
       <if test="estatus != null" >
         estatus = #{estatus,jdbcType=INTEGER},
       </if>
-        updateTime = now(),
+      <if test="createtime != null" >
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        updateTime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -167,14 +198,230 @@
     set ename = #{ename,jdbcType=VARCHAR},
       etypeid = #{etypeid,jdbcType=INTEGER},
       ecityid = #{ecityid,jdbcType=INTEGER},
-      esalary = #{esalary,jdbcType=DECIMAL},
+      esalaryFloor = #{esalaryfloor,jdbcType=DECIMAL},
+      esalaryCeilie = #{esalaryceilie,jdbcType=DECIMAL},
+      educationRequire = #{educationrequire,jdbcType=INTEGER},
       ecompanyId = #{ecompanyid,jdbcType=INTEGER},
       eresponsibility = #{eresponsibility,jdbcType=VARCHAR},
       erequirement = #{erequirement,jdbcType=VARCHAR},
       epublisher = #{epublisher,jdbcType=INTEGER},
       eupdater = #{eupdater,jdbcType=INTEGER},
       estatus = #{estatus,jdbcType=INTEGER},
-      updateTime = now()
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectPositionBySearchVo" parameterType="com.zzj.recruitment.vo.CompanyPositionSearchVo" resultType="com.zzj.recruitment.vo.PosisitonListVo">
+    select e.id as id, e.ename as ename, pt.ptName as etype, c.cityName as ecity,
+    e.esalaryfloor as esalaryfloor, e.esalaryceilie as esalaryceilie, e.educationrequire as educationrequire,
+    com.logo as companyLogo, com.cname as ecompany, i.iName as industry, com.financing as financing,
+    com.csize as csize, u.nickName as publisher, e.createTime as createTime
+    from employment as e
+    left join positiontypeset as pt on e.etypeid = pt.id
+    left join city as c on e.ecityid = c.id
+    left join company as com on e.ecompanyId = com.id
+    left join `user` as u on e.epublisher = u.id
+    left join industryset as i on com.industryId = i.id
+    <where>
+      <if test="industry != null">
+        and i.id = #{industry}
+      </if>
+      <if test="finacing != null">
+        and com.finacing = #{finacing}
+      </if>
+      <if test="csize != null">
+        and com.csize = #{csize}
+      </if>
+      <if test="education != null">
+        and e.educationRequire = #{education}
+      </if>
+      <if test="city != null and city != ''">
+        and e.ecityid = #{city}
+      </if>
+      <if test="ename != null and ename != ''">
+        and e.ename like CONCAT('%',#{ename},'%')
+      </if>
+      <if test="publisherId != null">
+        and e.epublisher = #{publisherId}
+      </if>
+      and e.estatus = 1
+    </where>
+    order by createTime desc
+  </select>
+
+  <select id="selectDetailByPositionId" resultType="com.zzj.recruitment.vo.PositionDetailVo" parameterType="integer">
+    select e.id as id, e.ename as ename, pt.ptName as etype, city.cityName as ecity, e.esalaryfloor as esalaryfloor, e.esalaryceilie as esalaryceilie, e.educationrequire as educationrequire, e.ecompanyId as ecompanyId, com.cname as ecompany, e.eresponsibility as eresponsibility, e.erequirement as erequirement, u.nickName as publisher, e.createTime as createtime, e.estatus as estatus
+    from employment as e
+    left join positiontypeset as pt on e.etypeid = pt.id
+    left join city on e.ecityid = city.id
+    left join company as com on e.ecompanyId = com.id
+    left join `user` as u on e.epublisher = u.id
+    where e.id = #{id}
+  </select>
+
+  <select id="selectPositionBySearchVoUserId" resultType="com.zzj.recruitment.vo.PosisitonListVo">
+    select e.id as id, e.ename as ename, pt.ptName as etype, c.cityName as ecity,
+    e.esalaryfloor as esalaryfloor, e.esalaryceilie as esalaryceilie, e.educationrequire as educationrequire,
+    com.logo as companyLogo, com.cname as ecompany, i.iName as industry, com.financing as financing,
+    com.csize as csize, e.createTime as createTime
+    from employment as e
+    left join positiontypeset as pt on e.etypeid = pt.id
+    left join city as c on e.ecityid = c.id
+    left join company as com on e.ecompanyId = com.id
+    left join industryset as i on com.industryId = i.id
+    <where>
+      <if test="searchVo.industry != null">
+        and i.id = #{searchVo.industry}
+      </if>
+      <if test="searchVo.finacing != null">
+        and com.finacing = #{searchVo.finacing}
+      </if>
+      <if test="searchVo.csize != null">
+        and com.csize = #{searchVo.csize}
+      </if>
+      <if test="searchVo.education != null">
+        and e.educationRequire = #{searchVo.education}
+      </if>
+      <if test="searchVo.city != null and searchVo.city != ''">
+        and e.ecityid = #{searchVo.city}
+      </if>
+      <if test="searchVo.ename != null and searchVo.ename != ''">
+        and e.ename like CONCAT('%',#{searchVo.ename},'%')
+      </if>
+      <if test="searchVo.publisherId != null">
+        and e.epublisher = #{searchVo.publisherId}
+      </if>
+      and e.estatus = 1 and e.epublisher = #{userid}
+    </where>
+    order by createTime desc
+  </select>
+
+  <insert id="insertByEmploymentVo" parameterType="com.zzj.recruitment.vo.AddUpdateEmploymentVo">
+    insert into employment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ename != null" >
+        ename,
+      </if>
+      <if test="etypeid != null" >
+        etypeid,
+      </if>
+      <if test="ecityid != null" >
+        ecityid,
+      </if>
+      <if test="esalaryfloor != null" >
+        esalaryFloor,
+      </if>
+      <if test="esalaryceilie != null" >
+        esalaryCeilie,
+      </if>
+      <if test="educationrequire != null" >
+        educationRequire,
+      </if>
+      <if test="ecompanyid != null" >
+        ecompanyId,
+      </if>
+      <if test="eresponsibility != null" >
+        eresponsibility,
+      </if>
+      <if test="erequirement != null" >
+        erequirement,
+      </if>
+      <if test="epublisher != null" >
+        epublisher,
+      </if>
+      <if test="eupdater != null" >
+        eupdater,
+      </if>
+      <if test="estatus != null" >
+        estatus,
+      </if>
+        createTime,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ename != null" >
+        #{ename,jdbcType=VARCHAR},
+      </if>
+      <if test="etypeid != null" >
+        #{etypeid,jdbcType=INTEGER},
+      </if>
+      <if test="ecityid != null" >
+        #{ecityid,jdbcType=VARCHAR},
+      </if>
+      <if test="esalaryfloor != null" >
+        #{esalaryfloor,jdbcType=DECIMAL},
+      </if>
+      <if test="esalaryceilie != null" >
+        #{esalaryceilie,jdbcType=DECIMAL},
+      </if>
+      <if test="educationrequire != null" >
+        #{educationrequire,jdbcType=INTEGER},
+      </if>
+      <if test="ecompanyid != null" >
+        #{ecompanyid,jdbcType=INTEGER},
+      </if>
+      <if test="eresponsibility != null" >
+        #{eresponsibility,jdbcType=VARCHAR},
+      </if>
+      <if test="erequirement != null" >
+        #{erequirement,jdbcType=VARCHAR},
+      </if>
+      <if test="epublisher != null" >
+        #{epublisher,jdbcType=INTEGER},
+      </if>
+      <if test="eupdater != null" >
+        #{eupdater,jdbcType=INTEGER},
+      </if>
+      <if test="estatus != null" >
+        #{estatus,jdbcType=INTEGER},
+      </if>
+        #{createtime,jdbcType=TIMESTAMP},
+    </trim>
+    <selectKey keyColumn="id" keyProperty="id" resultType="integer" order="AFTER">
+      select last_insert_id()
+    </selectKey>
+  </insert>
+
+  <update id="updateByEmploymentVo" parameterType="com.zzj.recruitment.vo.AddUpdateEmploymentVo">
+    update employment
+    <set >
+      <if test="ename != null" >
+        ename = #{ename,jdbcType=VARCHAR},
+      </if>
+      <if test="etypeid != null" >
+        etypeid = #{etypeid,jdbcType=INTEGER},
+      </if>
+      <if test="ecityid != null" >
+        ecityid = #{ecityid,jdbcType=VARCHAR},
+      </if>
+      <if test="esalaryfloor != null" >
+        esalaryFloor = #{esalaryfloor,jdbcType=DECIMAL},
+      </if>
+      <if test="esalaryceilie != null" >
+        esalaryCeilie = #{esalaryceilie,jdbcType=DECIMAL},
+      </if>
+      <if test="educationrequire != null" >
+        educationRequire = #{educationrequire,jdbcType=INTEGER},
+      </if>
+      <if test="eresponsibility != null" >
+        eresponsibility = #{eresponsibility,jdbcType=VARCHAR},
+      </if>
+      <if test="erequirement != null" >
+        erequirement = #{erequirement,jdbcType=VARCHAR},
+      </if>
+      <if test="eupdater != null" >
+        eupdater = #{eupdater,jdbcType=INTEGER},
+      </if>
+        updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER} and epublisher=#{epublisher}
+  </update>
+
+
+  <select id="selectPublisherByResumeId" parameterType="integer" resultType="integer">
+    select e.epublisher as pid
+    from resumedelivery as rd
+    left join employment as e on rd.employment_id = e.id
+    where rd.resume_id = #{resumeId}
+  </select>
 </mapper>

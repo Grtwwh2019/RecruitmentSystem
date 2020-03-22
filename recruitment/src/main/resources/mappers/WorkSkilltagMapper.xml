@@ -82,4 +82,19 @@
       updateTime = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <delete id="deleteByWid">
+    delete from workskilltag
+    where wId = #{wid}
+  </delete>
+
+  <insert id="batchInsert">
+    insert into workskilltag (wId, sId, createTime)
+    values
+    <foreach collection="skillTags" item="skilltag" separator=",">
+      (
+        #{wid}, #{skilltag}, now()
+      )
+    </foreach>
+  </insert>
 </mapper>

@@ -14,13 +14,14 @@
       <arg column="empNo" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="cardPhoto" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="enterpriseMail" jdbcType="VARCHAR" javaType="java.lang.String" />
+      <arg column="authentication" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
       <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
     id, nickName, telephone, email, userName, passWord, license, companyId, empNo,
-    cardPhoto, enterpriseMail, createTime, updateTime
+    cardPhoto, enterpriseMail,authentication, createTime, updateTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -120,6 +121,10 @@
       now(),
         now(),
     </trim>
+    -- keyColumn：数据库中的列，keyProperty：pojo类中的属性，order：主键值返回的顺序
+    <selectKey keyColumn="id" resultType="integer" keyProperty="id" order="AFTER">
+        select LAST_INSERT_ID()
+    </selectKey>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.User" >
     update user
@@ -186,7 +191,7 @@
       <if test="type != null and type == 'email' ">
         and email = #{value}
       </if>
-      <if test="type != null and type == 'telphone' ">
+      <if test="type != null and type == 'telephone' ">
         and telephone = #{value}
       </if>
       <if test="type != null and type == 'password' ">
@@ -212,7 +217,33 @@
   </select>
 
   <update id="resetPasswordByUsername">
-    update user set passWord = #{passwordNew}
+    update user set passWord = #{passwordNew}, updateTime = now()
     where username = #{username}
+  </update>
+
+
+  <insert id="saveEnterpriseUserInfo" parameterType="com.zzj.recruitment.vo.EnterpriseUserInfoVo">
+    update user
+    set
+    companyId = #{companyId},
+    empNo = #{empNo},
+    cardPhoto = #{cardPhoto},
+    enterpriseMail = #{enterpriseMail},
+    authentication = 4
+    where
+    id  = #{userId}
+  </insert>
+
+  <select id="selectEnterpriseUserById" resultType="com.zzj.recruitment.vo.EnterpriseUserInfoVo" parameterType="integer">
+    select u.id as userId, u.nickName as nickname, u.telephone as telephone,
+    u.companyId as companyId, c.cname as companyName, u.empNo as empNo,
+    u.cardPhoto as cardPhoto, u.enterpriseMail as enterpriseMail
+    from `user` as u
+    left join company as c on u.companyId = c.id
+    where u.id = #{entUserId}
+  </select>
+
+  <update id="updateAuthenticationByUserId">
+    update `user` set authentication = #{authentication} where id = #{entUserId}
   </update>
 </mapper>

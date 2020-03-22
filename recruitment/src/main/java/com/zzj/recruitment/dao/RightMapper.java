@@ -1,7 +1,6 @@
 package com.zzj.recruitment.dao;
 
 import com.zzj.recruitment.pojo.Right;
-import com.zzj.recruitment.vo.RightRolesVo;
 
 import java.util.List;
 

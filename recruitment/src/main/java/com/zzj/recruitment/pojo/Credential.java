@@ -2,26 +2,26 @@ package com.zzj.recruitment.pojo;
 
 import java.util.Date;
 
-public class Cerdential {
+public class Credential {
     private Integer id;
 
-    private String 证书名字;
+    private String cname;
 
-    private Integer 证书父类;
+    private Integer cparent;
 
     private Date createtime;
 
     private Date updatetime;
 
-    public Cerdential(Integer id, String 证书名字, Integer 证书父类, Date createtime, Date updatetime) {
+    public Credential(Integer id, String cname, Integer cparent, Date createtime, Date updatetime) {
         this.id = id;
-        this.证书名字 = 证书名字;
-        this.证书父类 = 证书父类;
+        this.cname = cname;
+        this.cparent = cparent;
         this.createtime = createtime;
         this.updatetime = updatetime;
     }
 
-    public Cerdential() {
+    public Credential() {
         super();
     }
 
@@ -33,20 +33,20 @@ public class Cerdential {
         this.id = id;
     }
 
-    public String get证书名字() {
-        return 证书名字;
+    public String getCname() {
+        return cname;
     }
 
-    public void set证书名字(String 证书名字) {
-        this.证书名字 = 证书名字 == null ? null : 证书名字.trim();
+    public void setCname(String cname) {
+        this.cname = cname == null ? null : cname.trim();
     }
 
-    public Integer get证书父类() {
-        return 证书父类;
+    public Integer getCparent() {
+        return cparent;
     }
 
-    public void set证书父类(Integer 证书父类) {
-        this.证书父类 = 证书父类;
+    public void setCparent(Integer cparent) {
+        this.cparent = cparent;
     }
 
     public Date getCreatetime() {

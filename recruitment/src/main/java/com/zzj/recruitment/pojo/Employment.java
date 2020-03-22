@@ -12,7 +12,11 @@ public class Employment {
 
     private Integer ecityid;
 
-    private BigDecimal esalary;
+    private BigDecimal esalaryfloor;
+
+    private BigDecimal esalaryceilie;
+
+    private Integer educationrequire;
 
     private Integer ecompanyid;
 
@@ -30,12 +34,14 @@ public class Employment {
 
     private Date updatetime;
 
-    public Employment(Integer id, String ename, Integer etypeid, Integer ecityid, BigDecimal esalary, Integer ecompanyid, String eresponsibility, String erequirement, Integer epublisher, Integer eupdater, Integer estatus, Date createtime, Date updatetime) {
+    public Employment(Integer id, String ename, Integer etypeid, Integer ecityid, BigDecimal esalaryfloor, BigDecimal esalaryceilie, Integer educationrequire, Integer ecompanyid, String eresponsibility, String erequirement, Integer epublisher, Integer eupdater, Integer estatus, Date createtime, Date updatetime) {
         this.id = id;
         this.ename = ename;
         this.etypeid = etypeid;
         this.ecityid = ecityid;
-        this.esalary = esalary;
+        this.esalaryfloor = esalaryfloor;
+        this.esalaryceilie = esalaryceilie;
+        this.educationrequire = educationrequire;
         this.ecompanyid = ecompanyid;
         this.eresponsibility = eresponsibility;
         this.erequirement = erequirement;
@@ -82,12 +88,28 @@ public class Employment {
         this.ecityid = ecityid;
     }
 
-    public BigDecimal getEsalary() {
-        return esalary;
+    public BigDecimal getEsalaryfloor() {
+        return esalaryfloor;
     }
 
-    public void setEsalary(BigDecimal esalary) {
-        this.esalary = esalary;
+    public void setEsalaryfloor(BigDecimal esalaryfloor) {
+        this.esalaryfloor = esalaryfloor;
+    }
+
+    public BigDecimal getEsalaryceilie() {
+        return esalaryceilie;
+    }
+
+    public void setEsalaryceilie(BigDecimal esalaryceilie) {
+        this.esalaryceilie = esalaryceilie;
+    }
+
+    public Integer getEducationrequire() {
+        return educationrequire;
+    }
+
+    public void setEducationrequire(Integer educationrequire) {
+        this.educationrequire = educationrequire;
     }
 
     public Integer getEcompanyid() {

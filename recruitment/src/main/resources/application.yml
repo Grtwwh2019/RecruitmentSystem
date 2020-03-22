@@ -15,8 +15,19 @@ mybatis:
   property:
     order: BEFORE
 
+# pagehelper configs
+pagehelper:
+helperDialect: mysql
+offsetAsPageNum: true
+rowBoundsWithCount: true
+reasonable: false
+
 custom:
   EncryptionKey: zzjzzj
+  ftp_server_ip: 127.0.0.1
+  ftp_user: grtwwh
+  ftp_pass: grtwwh
+  ftp_server_http_prefix: http://attachment.grtwwh.com:8080/
   ignores:
     post:
       - "/user/login.do"

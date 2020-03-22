@@ -1,225 +1,212 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zzj.recruitment.dao.ResumeMapper" >
-  <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.Resume" >
-    <constructor >
-      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="headerMask" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="realName" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="gender" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="birthday" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-      <arg column="currentStatus" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="advantage" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="socialPage" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="otherAttachment" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="resumeAttachment" jdbcType="VARCHAR" javaType="java.lang.String" />
-      <arg column="positionId" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="lowSalary" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
-      <arg column="highSalary" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
-      <arg column="industryIid" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="cityId" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="qcId" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-      <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+<mapper namespace="com.zzj.recruitment.dao.ResumeMapper">
+  <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.Resume">
+    <constructor>
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+      <arg column="ruserId" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+      <arg column="headerMask" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="realName" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="gender" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+      <arg column="birthday" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+      <arg column="currentStatus" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+      <arg column="advantage" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="socialPage" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="otherAttachment" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="resumeAttachment" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="expectPositionId" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+      <arg column="lowSalary" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+      <arg column="highSalary" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+      <arg column="cityId" jdbcType="VARCHAR" javaType="java.lang.String"/>
+      <arg column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+      <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
     </constructor>
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, headerMask, realName, gender, birthday, currentStatus, advantage, socialPage, 
-    otherAttachment, resumeAttachment, positionId, lowSalary, highSalary, industryIid, 
-    cityId, qcId, createTime, updateTime
+  <sql id="Base_Column_List">
+    id, ruserId, headerMask, realName, gender, birthday, currentStatus, advantage, socialPage,
+    otherAttachment, resumeAttachment, expectPositionId, lowSalary, highSalary,
+    cityId, createTime, updateTime
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select
+    <include refid="Base_Column_List"/>
     from resume
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from resume
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.zzj.recruitment.pojo.Resume" >
-    insert into resume (id, headerMask, realName, 
-      gender, birthday, currentStatus, 
-      advantage, socialPage, otherAttachment, 
-      resumeAttachment, positionId, lowSalary, 
-      highSalary, industryIid, cityId, 
-      qcId, createTime, updateTime
-      )
-    values (#{id,jdbcType=INTEGER}, #{headermask,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
-      #{gender,jdbcType=INTEGER}, #{birthday,jdbcType=TIMESTAMP}, #{currentstatus,jdbcType=INTEGER}, 
-      #{advantage,jdbcType=VARCHAR}, #{socialpage,jdbcType=VARCHAR}, #{otherattachment,jdbcType=VARCHAR}, 
-      #{resumeattachment,jdbcType=VARCHAR}, #{positionid,jdbcType=INTEGER}, #{lowsalary,jdbcType=DECIMAL}, 
-      #{highsalary,jdbcType=DECIMAL}, #{industryiid,jdbcType=INTEGER}, #{cityid,jdbcType=INTEGER}, 
-      #{qcid,jdbcType=INTEGER}, now(), now()
-      )
+  <insert id="insert" parameterType="com.zzj.recruitment.pojo.Resume">
+    insert into resume (id, ruserId, headerMask,
+      realName, gender, birthday,
+      currentStatus, advantage, socialPage,
+      otherAttachment, resumeAttachment, expectPositionId,
+      lowSalary, highSalary,
+      cityId, createTime,
+      updateTime)
+    values (#{id,jdbcType=INTEGER}, #{ruserid,jdbcType=INTEGER}, #{headermask,jdbcType=VARCHAR},
+      #{realname,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, #{birthday,jdbcType=TIMESTAMP},
+      #{currentstatus,jdbcType=INTEGER}, #{advantage,jdbcType=VARCHAR}, #{socialpage,jdbcType=VARCHAR},
+      #{otherattachment,jdbcType=VARCHAR}, #{resumeattachment,jdbcType=VARCHAR}, #{expectpositionid,jdbcType=INTEGER},
+      #{lowsalary,jdbcType=DECIMAL}, #{highsalary,jdbcType=DECIMAL},
+      #{cityid,jdbcType=VARCHAR}, #{qcid,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP},
+      #{updatetime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.Resume" >
+  <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.Resume">
     insert into resume
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="headermask != null" >
+      <if test="ruserid != null">
+        ruserId,
+      </if>
+      <if test="headermask != null">
         headerMask,
       </if>
-      <if test="realname != null" >
+      <if test="realname != null">
         realName,
       </if>
-      <if test="gender != null" >
+      <if test="gender != null">
         gender,
       </if>
-      <if test="birthday != null" >
+      <if test="birthday != null">
         birthday,
       </if>
-      <if test="currentstatus != null" >
+      <if test="currentstatus != null">
         currentStatus,
       </if>
-      <if test="advantage != null" >
+      <if test="advantage != null">
         advantage,
       </if>
-      <if test="socialpage != null" >
+      <if test="socialpage != null">
         socialPage,
       </if>
-      <if test="otherattachment != null" >
+      <if test="otherattachment != null">
         otherAttachment,
       </if>
-      <if test="resumeattachment != null" >
+      <if test="resumeattachment != null">
         resumeAttachment,
       </if>
-      <if test="positionid != null" >
-        positionId,
+      <if test="expectpositionid != null">
+        expectPositionId,
       </if>
-      <if test="lowsalary != null" >
+      <if test="lowsalary != null">
         lowSalary,
       </if>
-      <if test="highsalary != null" >
+      <if test="highsalary != null">
         highSalary,
       </if>
-      <if test="industryiid != null" >
-        industryIid,
-      </if>
-      <if test="cityid != null" >
+      <if test="cityid != null">
         cityId,
       </if>
-      <if test="qcid != null" >
-        qcId,
-      </if>
-      <if test="createtime != null" >
-        createTime,
-      </if>
-      <if test="updatetime != null" >
-        updateTime,
-      </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="headermask != null" >
+      <if test="ruserid != null">
+        #{ruserid,jdbcType=INTEGER},
+      </if>
+      <if test="headermask != null">
         #{headermask,jdbcType=VARCHAR},
       </if>
-      <if test="realname != null" >
+      <if test="realname != null">
         #{realname,jdbcType=VARCHAR},
       </if>
-      <if test="gender != null" >
+      <if test="gender != null">
         #{gender,jdbcType=INTEGER},
       </if>
-      <if test="birthday != null" >
+      <if test="birthday != null">
         #{birthday,jdbcType=TIMESTAMP},
       </if>
-      <if test="currentstatus != null" >
+      <if test="currentstatus != null">
         #{currentstatus,jdbcType=INTEGER},
       </if>
-      <if test="advantage != null" >
+      <if test="advantage != null">
         #{advantage,jdbcType=VARCHAR},
       </if>
-      <if test="socialpage != null" >
+      <if test="socialpage != null">
         #{socialpage,jdbcType=VARCHAR},
       </if>
-      <if test="otherattachment != null" >
+      <if test="otherattachment != null">
         #{otherattachment,jdbcType=VARCHAR},
       </if>
-      <if test="resumeattachment != null" >
+      <if test="resumeattachment != null">
         #{resumeattachment,jdbcType=VARCHAR},
       </if>
-      <if test="positionid != null" >
-        #{positionid,jdbcType=INTEGER},
+      <if test="expectpositionid != null">
+        #{expectpositionid,jdbcType=INTEGER},
       </if>
-      <if test="lowsalary != null" >
+      <if test="lowsalary != null">
         #{lowsalary,jdbcType=DECIMAL},
       </if>
-      <if test="highsalary != null" >
+      <if test="highsalary != null">
         #{highsalary,jdbcType=DECIMAL},
       </if>
-      <if test="industryiid != null" >
-        #{industryiid,jdbcType=INTEGER},
+      <if test="industryid != null">
+        #{industryid,jdbcType=INTEGER},
       </if>
-      <if test="cityid != null" >
-        #{cityid,jdbcType=INTEGER},
-      </if>
-      <if test="qcid != null" >
-        #{qcid,jdbcType=INTEGER},
+      <if test="cityid != null">
+        #{cityid,jdbcType=VARCHAR},
       </if>
       now(),
-        now(),
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.Resume" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.Resume">
     update resume
-    <set >
-      <if test="headermask != null" >
+    <set>
+      <if test="ruserid != null">
+        ruserId = #{ruserid,jdbcType=INTEGER},
+      </if>
+      <if test="headermask != null">
         headerMask = #{headermask,jdbcType=VARCHAR},
       </if>
-      <if test="realname != null" >
+      <if test="realname != null">
         realName = #{realname,jdbcType=VARCHAR},
       </if>
-      <if test="gender != null" >
+      <if test="gender != null">
         gender = #{gender,jdbcType=INTEGER},
       </if>
-      <if test="birthday != null" >
+      <if test="birthday != null">
         birthday = #{birthday,jdbcType=TIMESTAMP},
       </if>
-      <if test="currentstatus != null" >
+      <if test="currentstatus != null">
         currentStatus = #{currentstatus,jdbcType=INTEGER},
       </if>
-      <if test="advantage != null" >
+      <if test="advantage != null">
         advantage = #{advantage,jdbcType=VARCHAR},
       </if>
-      <if test="socialpage != null" >
+      <if test="socialpage != null">
         socialPage = #{socialpage,jdbcType=VARCHAR},
       </if>
-      <if test="otherattachment != null" >
+      <if test="otherattachment != null">
         otherAttachment = #{otherattachment,jdbcType=VARCHAR},
       </if>
-      <if test="resumeattachment != null" >
+      <if test="resumeattachment != null">
         resumeAttachment = #{resumeattachment,jdbcType=VARCHAR},
       </if>
-      <if test="positionid != null" >
-        positionId = #{positionid,jdbcType=INTEGER},
+      <if test="expectpositionid != null">
+        expectPositionId = #{expectpositionid,jdbcType=INTEGER},
       </if>
-      <if test="lowsalary != null" >
+      <if test="lowsalary != null">
         lowSalary = #{lowsalary,jdbcType=DECIMAL},
       </if>
-      <if test="highsalary != null" >
+      <if test="highsalary != null">
         highSalary = #{highsalary,jdbcType=DECIMAL},
       </if>
-      <if test="industryiid != null" >
-        industryIid = #{industryiid,jdbcType=INTEGER},
+      <if test="cityid != null">
+        cityId = #{cityid,jdbcType=VARCHAR},
       </if>
-      <if test="cityid != null" >
-        cityId = #{cityid,jdbcType=INTEGER},
-      </if>
-      <if test="qcid != null" >
-        qcId = #{qcid,jdbcType=INTEGER},
-      </if>
-        updateTime = now(),
+      updateTime = now(),
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.Resume" >
+  <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.Resume">
     update resume
-    set headerMask = #{headermask,jdbcType=VARCHAR},
+    set ruserId = #{ruserid,jdbcType=INTEGER},
+      headerMask = #{headermask,jdbcType=VARCHAR},
       realName = #{realname,jdbcType=VARCHAR},
       gender = #{gender,jdbcType=INTEGER},
       birthday = #{birthday,jdbcType=TIMESTAMP},
@@ -228,13 +215,564 @@
       socialPage = #{socialpage,jdbcType=VARCHAR},
       otherAttachment = #{otherattachment,jdbcType=VARCHAR},
       resumeAttachment = #{resumeattachment,jdbcType=VARCHAR},
-      positionId = #{positionid,jdbcType=INTEGER},
+      expectPositionId = #{expectpositionid,jdbcType=INTEGER},
       lowSalary = #{lowsalary,jdbcType=DECIMAL},
       highSalary = #{highsalary,jdbcType=DECIMAL},
-      industryIid = #{industryiid,jdbcType=INTEGER},
-      cityId = #{cityid,jdbcType=INTEGER},
-      qcId = #{qcid,jdbcType=INTEGER},
-      updateTime = now()
+      cityId = #{cityid,jdbcType=VARCHAR},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      updateTime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectBaseInfoByUserId" resultType="com.zzj.recruitment.vo.ResumeBaseInfoVo" parameterType="integer">
+    select r.id as id, r.headerMask as headermask, r.realName as realname, r.gender as gender,
+    r.birthday as birthday, r.currentStatus as currentstatus, r.advantage as advantage,
+    r.socialPage as socialpage, r.otherAttachment as otherattachment,
+    r.resumeAttachment as resumeattachment, r.expectPositionId as expectpositionId,
+    pt.ptName as expectposition, r.lowSalary as lowsalary, r.highSalary as highsalary,
+    city.cityName as city
+    from Resume as r
+    left join positiontypeset as pt on r.expectpositionId = pt.id
+    left join city on r.cityId = city.id
+    where r.ruserId = #{userId}
+  </select>
+
+  <select id="selectWorkExpByResumeId" resultType="com.zzj.recruitment.vo.ResumeWorkExpListVo" parameterType="integer">
+    select w.id as id, w.cname as cname, w.industryId as industryId, i.iName as industryName,
+    w.department as department, w.workContent as workcontent, w.position as position,
+    w.wPositionTypeId as positionId, w.startDate as startdate, w.endDate as enddate
+    from workexperience as w
+    left join industryset as i on w.industryId = i.id
+    where w.resuId = #{resumeId}
+  </select>
+
+  <select id="selectSkillTagByWid" resultType="string" parameterType="integer">
+    select pt.ptName as skillTag
+    from workskilltag as wt
+    left join positiontypeset as pt on wt.sId = pt.id
+    where wt.wId = #{wid}
+  </select>
+
+  <select id="selectEducationExpByResumeId" resultType="com.zzj.recruitment.vo.ResumeEducationExpListVo"
+          parameterType="integer">
+    select e.id as id, e.schoolId as schoolId, s.`name` as schoolName,
+    e.schoolType as schoolType, e.degree as degree, e.major as major,
+    e.startDate as startdate, e.endDate as enddate, e.schoolExper as schoolexp
+    from education as e
+    left join school as s on e.schoolId = s.id
+    where e.resumeId = #{resumeId}
+  </select>
+
+  <select id="selectProjectExpByResumeId" resultType="com.zzj.recruitment.vo.ResumeProjectExpListVo"
+          parameterType="integer">
+    select p.id as id, p.`name` as projectName, p.role as role, p.url as url,
+    p.startTime as starttime, p.endTIme as endtime, p.description as description
+    from projectexperience as p
+    where p.resuId = #{resumeId}
+  </select>
+
+  <select id="selectCertificationByResumeId" resultType="com.zzj.recruitment.vo.ResumeCertificationListVo"
+          parameterType="integer">
+    select c.cname as certificationName
+    from resumecertificate as rc
+    left join credential as c on rc.cid = c.id
+    where rc.rid = #{resumeId}
+  </select>
+
+  <select id="selectIndustriesByResumeId" resultType="hashmap" parameterType="integer">
+    select i.id as `industryId`, i.iName as `industryName`
+    from resumeindustry as ri
+    left join industryset as i on ri.iid = i.id
+    where ri.rid = #{resumeId}
+  </select>
+
+  <select id="selectResumeIdByUserId" parameterType="integer" resultType="integer">
+    select id as resumeId from resume where ruserid = #{userId}
+  </select>
+
+  <update id="updateResumeBaseInfo" parameterType="com.zzj.recruitment.vo.UpdateResumeBaseInfoVo">
+    update resume
+    <set>
+      <if test="headermask != null">
+        headerMask = #{headermask,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null">
+        realName = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="currentstatus != null">
+        currentStatus = #{currentstatus,jdbcType=INTEGER},
+      </if>
+      <if test="advantage != null">
+        advantage = #{advantage,jdbcType=VARCHAR},
+      </if>
+      <if test="socialpage != null">
+        socialPage = #{socialpage,jdbcType=VARCHAR},
+      </if>
+      <if test="otherattachment != null">
+        otherAttachment = #{otherattachment,jdbcType=VARCHAR},
+      </if>
+      <if test="resumeattachment != null">
+        resumeAttachment = #{resumeattachment,jdbcType=VARCHAR},
+      </if>
+      <if test="expectpositionid != null">
+        expectPositionId = #{expectpositionid,jdbcType=INTEGER},
+      </if>
+      <if test="lowsalary != null">
+        lowSalary = #{lowsalary,jdbcType=DECIMAL},
+      </if>
+      <if test="highsalary != null">
+        highSalary = #{highsalary,jdbcType=DECIMAL},
+      </if>
+      <if test="cityid != null">
+        cityId = #{cityid,jdbcType=VARCHAR},
+      </if>
+      updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <insert id="insertReumeBaseInfo" parameterType="com.zzj.recruitment.vo.UpdateResumeBaseInfoVo">
+    insert into resume
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="ruserid != null">
+        ruserId,
+      </if>
+      <if test="headermask != null">
+        headerMask,
+      </if>
+      <if test="realname != null">
+        realName,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="currentstatus != null">
+        currentStatus,
+      </if>
+      <if test="advantage != null">
+        advantage,
+      </if>
+      <if test="socialpage != null">
+        socialPage,
+      </if>
+      <if test="otherattachment != null">
+        otherAttachment,
+      </if>
+      <if test="resumeattachment != null">
+        resumeAttachment,
+      </if>
+      <if test="expectpositionid != null">
+        expectPositionId,
+      </if>
+      <if test="lowsalary != null">
+        lowSalary,
+      </if>
+      <if test="highsalary != null">
+        highSalary,
+      </if>
+      <if test="cityid != null">
+        cityId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="ruserid != null">
+        #{ruserid,jdbcType=INTEGER},
+      </if>
+      <if test="headermask != null">
+        #{headermask,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null">
+        #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="currentstatus != null">
+        #{currentstatus,jdbcType=INTEGER},
+      </if>
+      <if test="advantage != null">
+        #{advantage,jdbcType=VARCHAR},
+      </if>
+      <if test="socialpage != null">
+        #{socialpage,jdbcType=VARCHAR},
+      </if>
+      <if test="otherattachment != null">
+        #{otherattachment,jdbcType=VARCHAR},
+      </if>
+      <if test="resumeattachment != null">
+        #{resumeattachment,jdbcType=VARCHAR},
+      </if>
+      <if test="expectpositionid != null">
+        #{expectpositionid,jdbcType=INTEGER},
+      </if>
+      <if test="lowsalary != null">
+        #{lowsalary,jdbcType=DECIMAL},
+      </if>
+      <if test="highsalary != null">
+        #{highsalary,jdbcType=DECIMAL},
+      </if>
+      <if test="industryid != null">
+        #{industryid,jdbcType=INTEGER},
+      </if>
+      <if test="cityid != null">
+        #{cityid,jdbcType=VARCHAR},
+      </if>
+      now(),
+    </trim>
+  </insert>
+
+  <delete id="deleteResumeIndustryByRid" parameterType="integer">
+    delete from resumeindustry where rid = #{resumeId}
+  </delete>
+
+  <insert id="insertResumeIndusty">
+    insert into resumeindustry (rid, iid, createTime) values (#{resumeId}, #{industryId}, now())
+  </insert>
+
+  <select id="selectUriByUserId" resultType="string">
+    select
+    <trim suffixOverrides=",">
+      <if test="type == 'resume' ">
+        resumeAttachment,
+      </if>
+      <if test="type == 'other'">
+        otherAttachment,
+      </if>
+    </trim>
+    from resume where ruserId = #{userId}
+  </select>
+
+  <update id="updateResumeAttachmentByUserId">
+    update resume
+    <set>
+      <if test="type == 'resume'">
+        resumeAttachment = '',
+      </if>
+      <if test="type == 'other'">
+        otherAttachment = '',
+      </if>
+    </set>
+    where ruserId = #{userId}
+  </update>
+
+  <update id="updateResumeWorkExpById">
+    update workexperience
+    <set >
+      <if test="cname != null" >
+        cName = #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="industryId != null" >
+        industryId = #{industryId,jdbcType=INTEGER},
+      </if>
+      <if test="department != null" >
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="workcontent != null" >
+        workContent = #{workcontent,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        `position` = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="positionId != null" >
+        wPositionTypeId = #{positionId,jdbcType=INTEGER},
+      </if>
+      <if test="startdate != null" >
+        startDate = #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        endDate = #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER} and resuId = #{resuid,jdbcType=INTEGER}
+  </update>
+
+  <insert id="insertResumeWorkExp" parameterType="com.zzj.recruitment.vo.ResumeWorkExpListVo">
+    insert into workexperience
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="resuid != null" >
+        resuId,
+      </if>
+      <if test="cname != null" >
+        cName,
+      </if>
+      <if test="industryId != null" >
+        industryId,
+      </if>
+      <if test="department != null" >
+        department,
+      </if>
+      <if test="workcontent != null" >
+        workContent,
+      </if>
+      <if test="position != null" >
+        `position`,
+      </if>
+      <if test="positionId != null" >
+        wPositionTypeId,
+      </if>
+      <if test="startdate != null" >
+        startDate,
+      </if>
+      <if test="enddate != null" >
+        endDate,
+      </if>
+        createTime,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="resuid != null" >
+        #{resuid,jdbcType=INTEGER},
+      </if>
+      <if test="cname != null" >
+        #{cname,jdbcType=VARCHAR},
+      </if>
+      <if test="industryId != null" >
+        #{industryId,jdbcType=INTEGER},
+      </if>
+      <if test="department != null" >
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="workcontent != null" >
+        #{workcontent,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="positionId != null" >
+        #{positionId,jdbcType=INTEGER},
+      </if>
+      <if test="startdate != null" >
+        #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      now(),
+    </trim>
+    <selectKey keyColumn="id" keyProperty="id" resultType="integer" order="AFTER">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+
+
+  <update id="updateResumeProjectExpById">
+    update projectexperience
+    <set >
+      <if test="projectName != null" >
+        `name` = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null" >
+        role = #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null" >
+        startTime = #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        endTIme = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER} and resuId = #{resuid}
+  </update>
+
+  <insert id="insertResumeProjectExp" parameterType="com.zzj.recruitment.vo.ResumeProjectExpListVo">
+    insert into projectexperience
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="resuid != null" >
+        resuId,
+      </if>
+      <if test="projectName != null" >
+        `name`,
+      </if>
+      <if test="role != null" >
+        role,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="starttime != null" >
+        startTime,
+      </if>
+      <if test="endtime != null" >
+        endTIme,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+        createTime,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="resuid != null" >
+        #{resuid,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null" >
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null" >
+        #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null" >
+        #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      now(),
+    </trim>
+    <selectKey keyColumn="id" keyProperty="id" resultType="integer" order="AFTER">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+
+
+  <update id="updateResumeEducationExpById">
+    update education
+    <set >
+      <if test="schoolId != null" >
+        schoolId = #{schoolId,jdbcType=INTEGER},
+      </if>
+      <if test="schoolType != null" >
+        schoolType = #{schoolType,jdbcType=INTEGER},
+      </if>
+      <if test="degree != null" >
+        degree = #{degree,jdbcType=INTEGER},
+      </if>
+      <if test="major != null" >
+        major = #{major,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        startDate = #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        endDate = #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="schoolexp != null" >
+        schoolExper = #{schoolexp,jdbcType=VARCHAR},
+      </if>
+      updateTime = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER} and resumeId = #{resuid}
+  </update>
+
+  <insert id="insertResumeEducationExp" parameterType="com.zzj.recruitment.vo.ResumeEducationExpListVo">
+    insert into education
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="resuid != null" >
+        resumeId,
+      </if>
+      <if test="schoolId != null" >
+        schoolId,
+      </if>
+      <if test="schoolType != null" >
+        schoolType,
+      </if>
+      <if test="degree != null" >
+        degree,
+      </if>
+      <if test="major != null" >
+        major,
+      </if>
+      <if test="startdate != null" >
+        startDate,
+      </if>
+      <if test="enddate != null" >
+        endDate,
+      </if>
+      <if test="schoolexp != null" >
+        schoolExper,
+      </if>
+        createTime,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="resuid != null" >
+        #{resuid,jdbcType=INTEGER},
+      </if>
+      <if test="schoolId != null" >
+        #{schoolId,jdbcType=INTEGER},
+      </if>
+      <if test="schoolType != null" >
+        #{schoolType,jdbcType=INTEGER},
+      </if>
+      <if test="degree != null" >
+        #{degree,jdbcType=INTEGER},
+      </if>
+      <if test="major != null" >
+        #{major,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="schoolexp != null" >
+        #{schoolexp,jdbcType=VARCHAR},
+      </if>
+      now(),
+    </trim>
+    <selectKey keyColumn="id" keyProperty="id" resultType="integer" order="AFTER">
+      select last_insert_id()
+    </selectKey>
+  </insert>
+
+  <select id="selectDeliveryResumeByUserId" resultType="com.zzj.recruitment.vo.ResumeBaseInfoVo" parameterType="integer">
+    select r.id as id, r.realname as realname, u.telephone as telephone, u.email as email, r.gender as gender,
+    r.birthday as birthday, max(e.degree) as education, rd.employment_id as employmentId, em.ename as employmentName,
+    rd.createTime as deliveryTime
+    from resumedelivery as rd
+    left join resume as r on rd.resume_id = r.id
+    left join `user` as u on r.ruserId = u.id
+    left join education as e on r.id = e.resumeId
+    left join employment as em on rd.employment_id = em.id
+    <where>
+      em.epublisher = #{userid}
+      <if test="searchVo.employmentId != null">
+        and rd.employment_id = #{searchVo.employmentId}
+      </if>
+      <if test="searchVo.jobberRealName != null and searchVo.jobberRealName != '' ">
+        and r.realname = #{searchVo.jobberRealName}
+      </if>
+      <if test="searchVo.gender != null">
+        and r.gender = #{searchVo.gender}
+      </if>
+      <if test="searchVo.education != null">
+        and e.degree >= #{searchVo.education}
+      </if>
+      <if test="searchVo.createTImeFrom != null and searchVo.createTImeFrom != '' ">
+        and rd.createTime <![CDATA[>=]]> #{searchVo.createTImeFrom}
+      </if>
+      <if test="searchVo.createTImeTo != null and searchVo.createTImeTo != '' ">
+        and rd.createTime <![CDATA[<=]]> #{searchVo.createTImeTo}
+      </if>
+    </where>
+    group by id
+    order by rd.createTime
+  </select>
 </mapper>

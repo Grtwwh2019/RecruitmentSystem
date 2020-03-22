@@ -82,4 +82,19 @@
       updateTime = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <delete id="deleteByResumeId" parameterType="integer">
+    delete from resumecertificate
+    where rid = #{resumeId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="batchInsertByRidCid">
+    insert into resumecertificate (rid, cid, createTime)
+    values
+    <foreach collection="list" item="cid" separator=",">
+      (
+        #{resumeId}, #{cid}, now()
+      )
+    </foreach>
+  </insert>
 </mapper>

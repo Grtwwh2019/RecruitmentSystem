@@ -1,6 +1,9 @@
 package com.zzj.recruitment.dao;
 
 import com.zzj.recruitment.pojo.WorkSkilltag;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface WorkSkilltagMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +17,8 @@ public interface WorkSkilltagMapper {
     int updateByPrimaryKeySelective(WorkSkilltag record);
 
     int updateByPrimaryKey(WorkSkilltag record);
+
+    Integer deleteByWid(Integer wid);
+
+    Integer batchInsert(@Param("skillTags") List<Integer> skillTags, @Param("wid") Integer wid);
 }

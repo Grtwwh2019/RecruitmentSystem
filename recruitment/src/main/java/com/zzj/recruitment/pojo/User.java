@@ -1,6 +1,7 @@
 package com.zzj.recruitment.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,6 +38,8 @@ public class User implements
 
     private String enterprisemail;
 
+    private Integer authentication;
+
     private Date createtime;
 
     private Date updatetime;
@@ -44,7 +47,7 @@ public class User implements
     List<Role> roles;
 
 
-    public User(Integer id, String nickname, String telephone, String email, Integer role, String username, String password, String license, Integer companyid, Integer empno, String cardphoto, String enterprisemail, Date createtime, Date updatetime) {
+    public User(Integer id, String nickname, String telephone, String email, String username, String password, String license, Integer companyid, Integer empno, String cardphoto, String enterprisemail,Integer authentication, Date createtime, Date updatetime) {
         this.id = id;
         this.nickname = nickname;
         this.telephone = telephone;
@@ -56,12 +59,21 @@ public class User implements
         this.empno = empno;
         this.cardphoto = cardphoto;
         this.enterprisemail = enterprisemail;
+        this.authentication = authentication;
         this.createtime = createtime;
         this.updatetime = updatetime;
     }
 
     public User() {
         super();
+    }
+
+    public Integer getAuthentication() {
+        return authentication;
+    }
+
+    public void setAuthentication(Integer authentication) {
+        this.authentication = authentication;
     }
 
     public Integer getId() {

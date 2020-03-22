@@ -39,4 +39,5 @@ public class RigthServiceImpl implements IRigthService {
         }
         return list;
     }
+
 }

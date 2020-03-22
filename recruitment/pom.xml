@@ -23,7 +23,9 @@
 		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 		<!--springframework的版本-->
 		<org.springframework.version>4.0.3.RELEASE</org.springframework.version>
-		<org.mybatis.version>3.4.1</org.mybatis.version>
+		<org.mybatis.version>3.5.4</org.mybatis.version>
+		<mybatis-spring-boot.version>2.1.1</mybatis-spring-boot.version>
+		<springboot-pagehelper.version>1.2.13</springboot-pagehelper.version>
 		<org.mybatis.spring.version>1.3.0</org.mybatis.spring.version>
 	</properties>
 
@@ -44,12 +46,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>2.1.1</version>
-		</dependency>
-
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -77,31 +73,34 @@
 			<scope>test</scope>
 		</dependency>
 
+<!--		mybatis-->
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter</artifactId>
+			<version>${mybatis-spring-boot.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
-			<version>3.5.4</version>
+			<version>${org.mybatis.version}</version>
 		</dependency>
 
 		<!-- mybatis pager -->
 
 		<dependency>
 			<groupId>com.github.pagehelper</groupId>
-			<artifactId>pagehelper</artifactId>
-			<version>4.1.0</version>
+			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<version>${springboot-pagehelper.version}</version>
 		</dependency>
 
+		<!-- tk - mybatis -->
 		<dependency>
-			<groupId>com.github.miemiedev</groupId>
-			<artifactId>mybatis-paginator</artifactId>
-			<version>1.2.17</version>
+			<groupId>tk.mybatis</groupId>
+			<artifactId>mapper</artifactId>
+			<version>4.0.2</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.github.jsqlparser</groupId>
-			<artifactId>jsqlparser</artifactId>
-			<version>0.9.4</version>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -152,6 +151,43 @@
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
 			<version>2.3</version>
+		</dependency>
+
+<!--		参数验证框架-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+
+		<!-- ftpclient依赖 -->
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>3.1</version>
+		</dependency>
+
+		<!-- file upload 文件上传的依赖 -->
+
+		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+
+
+		<!--		google提供的工具包 包括 Lists.newArrayList()等等-->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>20.0</version>
 		</dependency>
 
 <!--		登录验证码的依赖-->
@@ -221,10 +257,10 @@
 		</dependency>-->
 
 		<!-- aop依赖 -->
-		<!--<dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
-		</dependency>-->
+		</dependency>
 
 <!--		druid连接池-->
 		<!--<dependency>

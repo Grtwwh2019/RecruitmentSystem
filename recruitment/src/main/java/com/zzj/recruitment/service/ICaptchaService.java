@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public interface ICaptchaService {
 
-    ServerResponse<CaptchaEntity> createToken() throws IOException;
+    ServerResponse<CaptchaEntity> createToken(String username) throws IOException;
 
-    void deleteToken(String token);
+    void deleteToken(String token, String username);
 }

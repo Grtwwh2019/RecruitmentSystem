@@ -12,7 +12,7 @@ public interface IUserService {
 
     ServerResponse<User> userlogin(String username, String password);
 
-    ServerResponse<String> register(User user);
+    ServerResponse<String> register(User user, Integer role);
 
     ServerResponse<String> checkValid(String value, String type);
 

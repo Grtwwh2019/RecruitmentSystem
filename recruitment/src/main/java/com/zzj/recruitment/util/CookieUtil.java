@@ -17,8 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 public class CookieUtil {
 
 
-    private final static String COOKIE_DOMAIN = ".grtwwh.com";
+    /**
+     * Tomcat 8.5以上要改为grtwwh.com，即一级域名
+     */
+//    private final static String COOKIE_DOMAIN = ".grtwwh.com";
+    private final static String COOKIE_DOMAIN = "grtwwh.com";
     private final static String COOKIE_NAME = "grtwwh_login_token";
+
 
 
     /**

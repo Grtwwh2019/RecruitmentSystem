@@ -70,4 +70,11 @@
       nameZh = #{namezh,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectRolesByUserId" resultType="com.zzj.recruitment.pojo.Role" parameterType="integer">
+    select ur.role_id as id, r.`name` as `name`, r.nameZh as nameZh
+    from user_role as ur
+    left join role as r on ur.role_id = r.id
+    where user_id = #{userId}
+  </select>
 </mapper>

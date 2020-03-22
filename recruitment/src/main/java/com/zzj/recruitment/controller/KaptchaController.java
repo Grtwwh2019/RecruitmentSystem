@@ -6,6 +6,7 @@ import com.zzj.recruitment.service.ICaptchaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
@@ -26,10 +27,10 @@ public class KaptchaController {
     ICaptchaService captchaService;
 
 
-    @GetMapping("/captcha")
-    public ServerResponse<CaptchaEntity> captcha() {
+    @GetMapping("/captcha/{username}")
+    public ServerResponse<CaptchaEntity> captcha(@PathVariable String username) {
         try {
-            ServerResponse<CaptchaEntity> response = captchaService.createToken();
+            ServerResponse<CaptchaEntity> response = captchaService.createToken(username);
             if (response.isSuccess()) {
                 return response;
             }
