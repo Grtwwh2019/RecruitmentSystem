@@ -12,37 +12,34 @@ import java.util.Date;
 /**
  * version 1.0
  * Created by Grtwwh2019
- * since 2020-03-21 14:18:19
+ * since 2020-03-25 22:09:13
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @CheckWorkDateInterval(startdate = "createTImeFrom", enddate = "createTImeTo", message = "开始时间不能大于结束时间！")
-public class CompanyPositionSearchVo {
+public class AnnounceSearchVo {
 
-    private String ename; // 职位名字
+    @Min(value = 1, message = "id参数出错。")
+    private Integer id;
 
-    private String cname; // 公司名字
+    private String title;
 
-    private String city;//工作地点
+    @Min(value = 0, message = "类型参数出错。")
+    private Integer type;
 
-    @Min(value = 0, message = "学历参数出错。")
-    private Integer education; // 学历 (职位搜索)
+    @Min(value = 1, message = "发送者参数出错。")
+    private Integer sender;
 
-    @Min(value = 0, message = "公司规模参数出错。")
-    private Integer csize; // 公司规模
+    @Min(value = 1, message = "接受者参数出错。")
+    private Integer receiver;
 
-    @Min(value = 0, message = "行业参数出错。")
-    private Integer industry; // 行业
-
-    @Min(value = 0, message = "融资阶段参数出错。")
-    private Integer finacing; // 融资阶段
+    @Min(value = 0, message = "状态参数出错。")
+    private Integer status;
 
     @JsonFormat(locale = "zh", pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date createTImeFrom;
 
     @JsonFormat(locale = "zh", pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date createTImeTo;
-
-    private Integer publisherId;
 }

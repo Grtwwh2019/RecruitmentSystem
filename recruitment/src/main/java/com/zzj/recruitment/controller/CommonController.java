@@ -114,7 +114,7 @@ public class CommonController {
     }
 
     /**
-     * 根据type查询数据，0——搜索职位；1——搜索公司
+     * 根据type查询数据列表，0——搜索职位；1——搜索公司
      *
      * @param type
      * @param searchVo

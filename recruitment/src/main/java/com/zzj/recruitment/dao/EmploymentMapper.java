@@ -33,4 +33,11 @@ public interface EmploymentMapper {
     Integer updateByEmploymentVo(AddUpdateEmploymentVo addUpdateEmploymentVo);
 
     Integer selectPublisherByResumeId(Integer resumeId);
+
+    Integer updateStatusById(@Param("positionId") Integer positionId, @Param("status") Integer status);
+
+    PositionDetailVo selectStatusById(Integer positionId);
+
+    Integer selectIfExistById(Integer employmentId);
+
 }

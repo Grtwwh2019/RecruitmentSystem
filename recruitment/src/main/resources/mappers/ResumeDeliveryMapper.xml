@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zzj.recruitment.dao.ResumeDeliveryMapper" >
+  <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.ResumeDelivery" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="resume_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="employment_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+      <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, resume_id, employment_id, createTime, updateTime
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from resumedelivery
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from resumedelivery
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zzj.recruitment.pojo.ResumeDelivery" >
+    insert into resumedelivery (id, resume_id, employment_id, 
+      createTime)
+    values (#{id,jdbcType=INTEGER}, #{resumeId,jdbcType=INTEGER}, #{employmentId,jdbcType=INTEGER}, 
+      now())
+  </insert>
+  <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.ResumeDelivery" >
+    insert into resumedelivery
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="resumeId != null" >
+        resume_id,
+      </if>
+      <if test="employmentId != null" >
+        employment_id,
+      </if>
+        createTime,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="resumeId != null" >
+        #{resumeId,jdbcType=INTEGER},
+      </if>
+      <if test="employmentId != null" >
+        #{employmentId,jdbcType=INTEGER},
+      </if>
+        now(),
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.ResumeDelivery" >
+    update resumedelivery
+    <set >
+      <if test="resumeId != null" >
+        resume_id = #{resumeId,jdbcType=INTEGER},
+      </if>
+      <if test="employmentId != null" >
+        employment_id = #{employmentId,jdbcType=INTEGER},
+      </if>
+      <if test="updatetime != null" >
+        updateTime = now(),
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.ResumeDelivery" >
+    update resumedelivery
+    set resume_id = #{resumeId,jdbcType=INTEGER},
+      employment_id = #{employmentId,jdbcType=INTEGER},
+      updateTime = now()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectDeliveredByResumeIdEmpId" resultType="integer" parameterType="integer">
+    select count(*) from resumedelivery where resume_id = #{resumeId,jdbcType=INTEGER} and employment_id = #{employmentId,jdbcType=INTEGER}
+  </select>
+</mapper>

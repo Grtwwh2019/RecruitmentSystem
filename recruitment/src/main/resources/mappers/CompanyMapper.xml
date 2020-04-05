@@ -11,7 +11,7 @@
       <arg column="financing" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="industryId" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="csize" jdbcType="INTEGER" javaType="java.lang.Integer" />
-      <arg column="ccity" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="ccity" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="fullname" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="representative" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="assets" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
@@ -44,7 +44,7 @@
       updateTime)
     values (#{id,jdbcType=INTEGER}, #{logo,jdbcType=VARCHAR}, #{cname,jdbcType=VARCHAR}, 
       #{productid,jdbcType=INTEGER}, #{cintroduction,jdbcType=VARCHAR}, #{financing,jdbcType=INTEGER}, 
-      #{industryid,jdbcType=INTEGER}, #{csize,jdbcType=INTEGER}, #{ccity,jdbcType=INTEGER}, 
+      #{industryid,jdbcType=INTEGER}, #{csize,jdbcType=INTEGER}, #{ccity,jdbcType=VARCHAR},
       #{fullname,jdbcType=VARCHAR}, #{representative,jdbcType=VARCHAR}, #{assets,jdbcType=DECIMAL}, 
       #{establishtime,jdbcType=TIMESTAMP}, #{photo,jdbcType=VARCHAR}, now(),
       now())
@@ -123,7 +123,7 @@
         #{csize,jdbcType=INTEGER},
       </if>
       <if test="ccity != null" >
-        #{ccity,jdbcType=INTEGER},
+        #{ccity,jdbcType=VARCHAR},
       </if>
       <if test="fullname != null" >
         #{fullname,jdbcType=VARCHAR},
@@ -169,7 +169,7 @@
         csize = #{csize,jdbcType=INTEGER},
       </if>
       <if test="ccity != null" >
-        ccity = #{ccity,jdbcType=INTEGER},
+        ccity = #{ccity,jdbcType=VARCHAR},
       </if>
       <if test="fullname != null" >
         fullname = #{fullname,jdbcType=VARCHAR},
@@ -199,7 +199,7 @@
       financing = #{financing,jdbcType=INTEGER},
       industryId = #{industryid,jdbcType=INTEGER},
       csize = #{csize,jdbcType=INTEGER},
-      ccity = #{ccity,jdbcType=INTEGER},
+      ccity = #{ccity,jdbcType=VARCHAR},
       fullname = #{fullname,jdbcType=VARCHAR},
       representative = #{representative,jdbcType=VARCHAR},
       assets = #{assets,jdbcType=DECIMAL},

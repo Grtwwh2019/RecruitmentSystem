@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -228,6 +231,24 @@ public class UserController {
             return ServerResponse.createResponseBySuccess("注销成功！");
         }
         return ServerResponse.createResponseByErrorMsg("注销失败，未知错误！");
+    }
+
+    /**
+     * 简历投递
+     * @param employmentId
+     * @param request
+     * @return
+     */
+    @PostMapping("/deliver.do/{employmentId}")
+    public ServerResponse<String> resumeDelivery(@PathVariable("employmentId") @Valid() @Min(value = 1,message = "参数出错，必须大于等于1！") @NotNull(message = "参数不能为空！") Integer employmentId, HttpServletRequest request) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (loginToken != null) {
+            User user = (User) redisTemplate.opsForValue().get(loginToken);
+            if (user != null) {
+                return userService.deliverResume(user, employmentId);
+            }
+        }
+        return ServerResponse.createResponseByErrorMsg("您没有权限，请先登录！");
     }
 
 

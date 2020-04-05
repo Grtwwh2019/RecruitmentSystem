@@ -2,6 +2,8 @@ package com.zzj.recruitment.dao;
 
 import com.zzj.recruitment.pojo.Announce;
 import com.zzj.recruitment.vo.AnnounceListVo;
+import com.zzj.recruitment.vo.AnnounceSearchVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,4 +23,7 @@ public interface AnnounceMapper {
     List<AnnounceListVo> getAnnounceList(Integer userId);
 
     AnnounceListVo selectByannounceId(Integer announceId);
+
+    List<AnnounceListVo> selectAnnounceListBySearchVo(@Param("announceSearchVo") AnnounceSearchVo announceSearchVo);
+
 }

@@ -264,12 +264,13 @@
     select e.id as id, e.ename as ename, pt.ptName as etype, c.cityName as ecity,
     e.esalaryfloor as esalaryfloor, e.esalaryceilie as esalaryceilie, e.educationrequire as educationrequire,
     com.logo as companyLogo, com.cname as ecompany, i.iName as industry, com.financing as financing,
-    com.csize as csize, e.createTime as createTime
+    com.csize as csize, u.nickName as publisher, e.createTime as createTime
     from employment as e
     left join positiontypeset as pt on e.etypeid = pt.id
     left join city as c on e.ecityid = c.id
     left join company as com on e.ecompanyId = com.id
     left join industryset as i on com.industryId = i.id
+    left join `user` as u on e.epublisher = u.id
     <where>
       <if test="searchVo.industry != null">
         and i.id = #{searchVo.industry}
@@ -292,7 +293,10 @@
       <if test="searchVo.publisherId != null">
         and e.epublisher = #{searchVo.publisherId}
       </if>
-      and e.estatus = 1 and e.epublisher = #{userid}
+      <if test="userid != null">
+        and e.epublisher = #{userid}
+      </if>
+      and e.estatus = 1 and c.id = e.ecityid
     </where>
     order by createTime desc
   </select>
@@ -423,5 +427,17 @@
     from resumedelivery as rd
     left join employment as e on rd.employment_id = e.id
     where rd.resume_id = #{resumeId}
+  </select>
+
+  <update id="updateStatusById">
+    update employment set estatus = #{status} where id = #{positionId}
+  </update>
+
+  <select id="selectStatusById" resultType="com.zzj.recruitment.vo.PositionDetailVo" parameterType="integer">
+    select estatus from employment where id = #{positionId}
+  </select>
+
+  <select id="selectIfExistById" parameterType="integer" resultType="integer">
+    select count(*) from employment where id = #{employmentId}
   </select>
 </mapper>

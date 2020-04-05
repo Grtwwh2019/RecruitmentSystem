@@ -71,4 +71,12 @@
       role_id = #{roleId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <insert id="insertNewRole">
+    insert into user_role (user_id, role_id, createTime) values (#{entUserId}, #{role}, now())
+  </insert>
+
+  <delete id="deleteByUidRid">
+    delete from user_role where user_id = #{entUserId} and role_id = #{role}
+  </delete>
 </mapper>

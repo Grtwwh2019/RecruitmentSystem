@@ -2,8 +2,8 @@ package com.zzj.recruitment.service.impl;
 
 import com.zzj.recruitment.common.ServerResponse;
 import com.zzj.recruitment.common.constant.Const;
-import com.zzj.recruitment.dao.UserMapper;
-import com.zzj.recruitment.dao.UserRoleMapper;
+import com.zzj.recruitment.dao.*;
+import com.zzj.recruitment.pojo.ResumeDelivery;
 import com.zzj.recruitment.pojo.User;
 import com.zzj.recruitment.pojo.UserRole;
 import com.zzj.recruitment.service.IUserService;
@@ -35,6 +35,15 @@ public class UserServiceImpl implements IUserService
 
     @Autowired
     UserRoleMapper userRoleMapper;
+
+    @Autowired
+    ResumeMapper resumeMapper;
+
+    @Autowired
+    ResumeDeliveryMapper resumeDeliveryMapper;
+
+    @Autowired
+    EmploymentMapper employmentMapper;
 
     @Autowired
     RedisTemplate redisTemplate;
@@ -112,12 +121,16 @@ public class UserServiceImpl implements IUserService
         }
 
         User user = userMapper.selectByUsername(username);
-        // 判断登录密码是否原始加密的密码
-        if (EncryptionUtil.match(password, user.getPassword())) {
-            user.setPassword(null);
-            return ServerResponse.createResponseBySuccess("登录成功！", user);
+        // 先判断其账号的认证情况，是否被禁用
+        if (user.getAuthentication() != Const.authentication.FORBIDED.getCode()) {
+            // 判断登录密码是否原始加密的密码
+            if (EncryptionUtil.match(password, user.getPassword())) {
+                user.setPassword(null);
+                return ServerResponse.createResponseBySuccess("登录成功！", user);
+            }
+            return ServerResponse.createResponseByErrorMsg("登录失败，密码错误！");
         }
-        return ServerResponse.createResponseByErrorMsg("登录失败，密码错误！");
+        return ServerResponse.createResponseByErrorMsg("登录失败，账号已被禁用！");
     }
 
     @Override
@@ -433,4 +446,37 @@ public class UserServiceImpl implements IUserService
         }
     }
 
+
+    /**
+     * 简历投递
+     *
+     * @param user
+     * @param employmentId：职位Id
+     * @return
+     */
+    @Override
+    @Transactional
+    public ServerResponse<String> deliverResume(User user, Integer employmentId) {
+        // 要判断是否存在该职位
+        Integer result = employmentMapper.selectIfExistById(employmentId);
+        if (result <= 0) {
+            return ServerResponse.createResponseByErrorMsg("投递失败，该职位不存在！");
+        }
+        Integer resumeId = resumeMapper.selectResumeIdByUserId(user.getId());
+        if (resumeId > 0) {
+            // 要判断是否已投递
+            result = resumeDeliveryMapper.selectDeliveredByResumeIdEmpId(resumeId, employmentId);
+            if (result > 0) {
+                return ServerResponse.createResponseByErrorMsg("投递失败，已投递！");
+            }
+            ResumeDelivery resumeDelivery = new ResumeDelivery();
+            resumeDelivery.setResumeId(resumeId);
+            resumeDelivery.setEmploymentId(employmentId);
+            result = resumeDeliveryMapper.insertSelective(resumeDelivery);
+            if (result > 0) {
+                return ServerResponse.createResponseBySuccess("投递成功！");
+            }
+        }
+        return ServerResponse.createResponseByErrorMsg("投递失败！");
+    }
 }

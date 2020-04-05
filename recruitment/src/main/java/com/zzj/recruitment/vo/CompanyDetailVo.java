@@ -1,5 +1,7 @@
 package com.zzj.recruitment.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +30,7 @@ public class CompanyDetailVo {
     /**
      * 公司产品Id
      */
-    // todo 以后扩展
+    // todo 以后扩展产品信息
 //    private Integer productid;
 
     private String cintroduction;
@@ -39,7 +41,7 @@ public class CompanyDetailVo {
 
     private Integer csize;
 
-    private Integer ccityId;
+    private String ccityId;
 
     private String ccityName;
 
@@ -49,6 +51,7 @@ public class CompanyDetailVo {
 
     private BigDecimal assets;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd", locale = "zh")
     private Date establishtime;
 
     /**
@@ -56,5 +59,6 @@ public class CompanyDetailVo {
      */
     private String photo;
 
+    @JsonIgnore
     private Date createtime;
 }

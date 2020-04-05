@@ -1,5 +1,9 @@
 package com.zzj.recruitment.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -8,26 +12,37 @@ public class Company {
 
     private String logo;
 
+    @NotBlank(message = "公司名称不能为空")
     private String cname;
 
     private Integer productid;
 
+    @NotBlank(message = "公司简介不能为空")
     private String cintroduction;
 
+    @NotNull(message = "融资阶段不能为空！")
     private Integer financing;
 
+    @NotNull(message = "所属行业不能为空！")
     private Integer industryid;
 
+    @NotNull(message = "公司规模不能为空！")
     private Integer csize;
 
-    private Integer ccity;
+    @NotNull(message = "公司所在城市不能为空！")
+    private String ccity;
 
+    @NotNull(message = "公司全称不能为空")
     private String fullname;
 
+    @NotNull(message = "法人代表不能为空")
     private String representative;
 
+    @NotNull(message = "公司资产不能为空")
     private BigDecimal assets;
 
+    @NotNull(message = "公司成立时间不能为空")
+    @JsonFormat(locale = "zh", pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date establishtime;
 
     private String photo;
@@ -36,7 +51,7 @@ public class Company {
 
     private Date updatetime;
 
-    public Company(Integer id, String logo, String cname, Integer productid, String cintroduction, Integer financing, Integer industryid, Integer csize, Integer ccity, String fullname, String representative, BigDecimal assets, Date establishtime, String photo, Date createtime, Date updatetime) {
+    public Company(Integer id, String logo, String cname, Integer productid, String cintroduction, Integer financing, Integer industryid, Integer csize, String ccity, String fullname, String representative, BigDecimal assets, Date establishtime, String photo, Date createtime, Date updatetime) {
         this.id = id;
         this.logo = logo;
         this.cname = cname;
@@ -123,11 +138,11 @@ public class Company {
         this.csize = csize;
     }
 
-    public Integer getCcity() {
+    public String getCcity() {
         return ccity;
     }
 
-    public void setCcity(Integer ccity) {
+    public void setCcity(String ccity) {
         this.ccity = ccity;
     }
 

@@ -61,12 +61,7 @@
       <if test="status != null" >
         status,
       </if>
-      <if test="createtime != null" >
         createTime,
-      </if>
-      <if test="updatetime != null" >
-        updateTime,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -90,13 +85,11 @@
       <if test="status != null" >
         #{status,jdbcType=INTEGER},
       </if>
-      <if test="createtime != null" >
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null" >
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
+      now(),
     </trim>
+    <selectKey resultType="integer" keyProperty="id" keyColumn="id" order="AFTER">
+      select last_insert_id()
+    </selectKey>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.Announce" >
     update announce
@@ -154,5 +147,36 @@
     a.receiver as receiver, a.`status` as `status`, a.createTime as createTime
     from announce as a left join `user` as u on a.sender = u.id
     where a.id = #{announceId}
+  </select>
+
+  <select id="selectAnnounceListBySearchVo" parameterType="com.zzj.recruitment.vo.AnnounceSearchVo" resultType="com.zzj.recruitment.vo.AnnounceListVo">
+    select a.id as id, a.title as title, a.content as content, a.type as type,
+    u.nickName as receiverName, a.`status` as `status`, a.createTime as createTime
+    from announce as a
+    left join `user` as u on a.receiver = u.id
+    <where>
+      <if test="announceSearchVo.id != null">
+        and id = #{announceSearchVo.id}
+      </if>
+      <if test="announceSearchVo.title != null and announceSearchVo.title != ''">
+        and title = #{announceSearchVo.title}
+      </if>
+      <if test="announceSearchVo.type != null">
+        and `type` = #{announceSearchVo.type}
+      </if>
+      <if test="announceSearchVo.receiver != null">
+        and receiver = #{announceSearchVo.receiver}
+      </if>
+      <if test="announceSearchVo.status != null">
+        and status = #{announceSearchVo.status}
+      </if>
+      <if test="announceSearchVo.createTImeFrom != null and announceSearchVo.createTImeFrom != ''">
+        and createTime <![CDATA[>=]]> #{announceSearchVo.createTImeFrom}
+      </if>
+      <if test="announceSearchVo.createTImeTo != null and announceSearchVo.createTImeTo != ''">
+        and createTime <![CDATA[<=]]> #{announceSearchVo.createTImeTo}
+      </if>
+    </where>
+    order by a.createTime asc
   </select>
 </mapper>

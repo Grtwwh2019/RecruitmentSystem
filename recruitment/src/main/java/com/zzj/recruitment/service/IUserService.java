@@ -25,4 +25,6 @@ public interface IUserService {
     ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken);
 
     ServerResponse<String> resetPassword(String username, String passwordOld, String passwordNew);
+
+    ServerResponse<String> deliverResume(User user, Integer employmentId);
 }

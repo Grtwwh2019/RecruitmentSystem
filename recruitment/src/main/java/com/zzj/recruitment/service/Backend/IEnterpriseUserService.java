@@ -19,6 +19,6 @@ public interface IEnterpriseUserService {
 
     ServerResponse<PageInfo> getUserResumeList(Integer pageNum, ResumeListSearchVo resumeListSearchVo, User user);
 
-    ServerResponse<ResumeInfoVo> getResumeDetailInfo(Integer resumeId, User user);
+    ServerResponse<User> getResumeDetailInfo(Integer resumeId, User user);
 
 }

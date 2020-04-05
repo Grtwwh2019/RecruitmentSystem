@@ -6,6 +6,7 @@ import com.zzj.recruitment.common.constant.Const;
 import com.zzj.recruitment.pojo.Role;
 import com.zzj.recruitment.pojo.User;
 import com.zzj.recruitment.service.Backend.IEnterpriseUserService;
+import com.zzj.recruitment.service.Backend.IResumeService;
 import com.zzj.recruitment.service.IRoleService;
 import com.zzj.recruitment.util.CookieUtil;
 import com.zzj.recruitment.vo.*;
@@ -33,7 +34,11 @@ public class EnterpriseUserController {
     IRoleService roleService;
 
     @Autowired
+    IResumeService resumeService;
+
+    @Autowired
     RedisTemplate redisTemplate;
+
 
 
     /**
@@ -190,7 +195,12 @@ public class EnterpriseUserController {
                 }
                 if (isPermitted) {
                     // 符合权限
-                    return enterpriseUserService.getResumeDetailInfo(resumeId, user);
+                    ServerResponse<User> response = enterpriseUserService.getResumeDetailInfo(resumeId, user);
+                    if (response.isSuccess()) {
+                        ServerResponse<ResumeInfoVo> response1 = resumeService.returnResumeInfo(response.getData());
+                        return response1;
+                    }
+                    return ServerResponse.createResponseByErrorMsg("查询简历详情失败，您没有权限进行操作！");
                 }
                 return ServerResponse.createResponseByErrorMsg("您没有权限进行操作，请先认证！");
             }

@@ -253,18 +253,21 @@ public class UserManageServiceImpl implements IUserManageService {
      */
     @Override
     public ServerResponse<AnnounceListVo> returnAnnounceDetail(Integer announceId, User user) {
-        AnnounceListVo announceListVo = announceMapper.selectByannounceId(announceId);
-        if (announceListVo != null) {
-            // todo 增加对content，即公告内容 的解析逻辑
-            return ServerResponse.createResponseBySuccess("获取公告详情成功！", announceListVo);
+        // 先尝试从缓存中查找，如果没有，则从数据库查找，并加入缓存
+        AnnounceListVo announceDetail = (AnnounceListVo) redisTemplate.opsForValue().get(Const.ANNOUNCE_DETAIL + announceId);
+        if (announceDetail == null) {
+            if (announceId > 0) {
+                announceDetail = announceMapper.selectByannounceId(announceId);
+                if (announceDetail != null) {
+                    // todo 增加对content，即公告内容 的解析逻辑
+                    redisTemplate.opsForValue().set(Const.ANNOUNCE_DETAIL + announceId, announceDetail, Const.RedisCacheExtime.REDIS_EXTIME_DAY, TimeUnit.SECONDS);
+                    return ServerResponse.createResponseBySuccess("获取公告详情成功！", announceDetail);
+                }
+            }
+        } else if (announceDetail != null) {
+            return ServerResponse.createResponseBySuccess("获取公告详情成功！", announceDetail);
         }
-//        Long listSize = redisTemplate.opsForList().size(Const.ANNOUNCELIST + user.getUsername());
-        // 如果缓存中没有，则在数据库找
-//        if (listSize == null || listSize <= 0) {
-//        }
-        // 否则，直接从缓存中返回
-//        redisTemplate.opsForList()
-        return ServerResponse.createResponseByErrorMsg("获取公告详情失败，该用户不存在相关公告！");
+        return ServerResponse.createResponseByErrorMsg("获取公告详情失败！");
     }
 
 

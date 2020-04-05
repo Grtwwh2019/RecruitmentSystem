@@ -191,16 +191,16 @@ public class EnterpriseUserServiceImpl implements IEnterpriseUserService {
      */
     @Override
     @Transactional
-    public ServerResponse<ResumeInfoVo> getResumeDetailInfo(Integer resumeId, User user) {
+    public ServerResponse<User> getResumeDetailInfo(Integer resumeId, User user) {
         // 需要判断该简历Id是否属于该user，也就是说该简历Id投递的职位是否为该用户发布的
         Integer publisher = employmentMapper.selectPublisherByResumeId(resumeId);
         // 如果属于，才能获取
         if (publisher != null && publisher.equals(user.getId())) {
             Resume employerResume = resumeMapper.selectByPrimaryKey(resumeId);
             User employer = userMapper.selectByPrimaryKey(employerResume.getRuserid());
-            ServerResponse<ResumeInfoVo> response = resumeService.returnResumeInfo(employer);
-            if (response.isSuccess()) {
-                return response;
+
+            if (employer != null) {
+                return ServerResponse.createResponseBySuccess(employer);
             }
         }
         return ServerResponse.createResponseByErrorMsg("获取简历详情失败！");

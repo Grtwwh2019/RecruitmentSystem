@@ -1,6 +1,7 @@
 package com.zzj.recruitment.dao;
 
 import com.zzj.recruitment.pojo.UserRole;
+import org.apache.ibatis.annotations.Param;
 
 public interface UserRoleMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +15,8 @@ public interface UserRoleMapper {
     int updateByPrimaryKeySelective(UserRole record);
 
     int updateByPrimaryKey(UserRole record);
+
+    Integer insertNewRole(@Param("entUserId") Integer entUserId, @Param("role") int role);
+
+    Integer deleteByUidRid(@Param("entUserId")Integer entUserId, @Param("role")int role);
 }

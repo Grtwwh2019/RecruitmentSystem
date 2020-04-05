@@ -1,5 +1,7 @@
 package com.zzj.recruitment.common.constant;
 
+import java.security.IdentityScope;
+
 /**
  * version 1.0
  * Created by Grtwwh2019
@@ -7,6 +9,10 @@ package com.zzj.recruitment.common.constant;
  */
 public class Const {
 
+    /**
+     * 缓存中被禁用的用户原来的认证情况
+     */
+    public static final String FORBID_USER_ORG_AUTH = "forbid_user_org_auth_";
 
     /**
      * 缓存公司详情 key
@@ -22,10 +28,16 @@ public class Const {
      */
     public static final String RESUME_INFO = "resumeinfo_";
 
+
+    /**
+     * 公告详细信息缓存 key
+     */
+    public static final String ANNOUNCE_DETAIL = "announce_detail_";
+
     /**
      * 公告列表缓存 key
      */
-    public static final String ANNOUNCELIST = "announcelist_";
+    public static final String ANNOUNCE_LIST = "announcelist_";
 
     /**
      * 招聘信息的状态
@@ -35,15 +47,15 @@ public class Const {
         FORBIDDEN(0, "FORBIDDEN"),
         NORMAL(1, "NORMAL");
 
-        Integer status;
+        int status;
         String desc;
 
-        employmentStatus(Integer status, String desc) {
+        employmentStatus(int status, String desc) {
             this.status = status;
             this.desc = desc;
         }
 
-        public Integer getStatus() {
+        public int getStatus() {
             return status;
         }
 
@@ -100,6 +112,36 @@ public class Const {
     public static final String EMAIL = "email";
     public static final String TELEPHONE = "telephone";
     public static final String PASSWORD = "password";
+
+
+    /**
+     * 用户认证情况
+     * 是否已认证，1---是，2---否，3---拒绝 4---企业用户待认证 ,5---企业账号待认证（求职者注册默认为2，企业账号注册默认为5）
+     */
+    public enum authentication{
+        FORBIDED(0, "forbided"),
+        PASS(1, "pass"),
+        NORMAL(2, "normal"),
+        DENY(3, "deny"),
+        TO_BE_ENTUSER(4, "to_be_entuser"),
+        TO_BE_ENTACCOUNT(5, "to_be_entaccount");
+
+        private int code;
+        private String desc;
+
+        authentication(int code, String desc) {
+            this.code = code;
+            this.desc = desc;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+    }
 
     /**
      * 角色信息，可扩展
