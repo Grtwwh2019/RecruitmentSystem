@@ -1,18 +1,36 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="layout">
+    <Layout>
+      <TheHeader />
+      <Content>
+        <router-view name="content"></router-view>
+      </Content>
+      <TheFooter />
+    </Layout>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import TheHeader from "@/components/commons/TheHeader.vue";
+import TheFooter from "@/components/commons/TheFooter.vue";
 
 export default {
-  name: 'Home',
+  name: "home",
   components: {
-    HelloWorld
+    TheHeader,
+    TheFooter
   }
-}
+};
 </script>
+
+
+<style lang="less" scoped>
+.layout {
+  border: 1px solid #d7dde4;
+  background: #f5f7f9;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+}
+</style>
