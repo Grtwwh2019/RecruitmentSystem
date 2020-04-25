@@ -14,4 +14,19 @@ public interface ICommonService {
     ServerResponse<PageInfo> returnListByType(Integer type, CompanyPositionSearchVo searchVo, Integer pageNum);
 
     ServerResponse getDetail(Integer type, Integer id);
+
+    ServerResponse getCompanyListByCompanyName(String companyName);
+
+    ServerResponse getSchoolListBySchoolName(String schoolName);
+
+    ServerResponse getAllIndustry();
+
+    ServerResponse getAllPositionType();
+
+    ServerResponse getSkillTagsByPositionId(Integer pid);
+
+    ServerResponse getAllCertification();
+
+    ServerResponse getAllCity();
+
 }

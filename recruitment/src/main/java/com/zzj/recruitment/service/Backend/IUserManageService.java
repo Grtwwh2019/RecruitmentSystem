@@ -19,9 +19,11 @@ public interface IUserManageService {
 
     ServerResponse<PageInfo> returnCollectionList(Integer type, User user, Integer pageNum, Integer pageSize);
 
-    ServerResponse<PageInfo> returnAnnounceList(User user, Integer pageNum);
+    ServerResponse<PageInfo> returnAnnounceList(User user, Integer pageNum, Integer readed);
 
     ServerResponse<AnnounceListVo> returnAnnounceDetail(Integer announceId, User user);
 
     ServerResponse applyEnterpriseUser(EnterpriseUserInfoVo enterpriseUserInfoVo, User user);
+
+    ServerResponse returnResumeDeliverList(Integer pageNum, User user);
 }

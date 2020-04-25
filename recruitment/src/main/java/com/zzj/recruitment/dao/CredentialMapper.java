@@ -1,6 +1,9 @@
 package com.zzj.recruitment.dao;
 
 import com.zzj.recruitment.pojo.Credential;
+import com.zzj.recruitment.vo.IndustryOrPositionSetListVo;
+
+import java.util.List;
 
 public interface CredentialMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +17,7 @@ public interface CredentialMapper {
     int updateByPrimaryKeySelective(Credential record);
 
     int updateByPrimaryKey(Credential record);
+
+    List<IndustryOrPositionSetListVo> getAllCertification();
+
 }

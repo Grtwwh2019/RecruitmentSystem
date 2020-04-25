@@ -112,10 +112,16 @@ public class ResumeBaseInfoVo {
      */
     private String industryDesc;
 
+
     /**
      * 期望城市
      */
     private String city;
+
+    /**
+     * 期望城市Id
+     */
+    private String cityid;
 
 
 //    企业用户功能新增
@@ -124,6 +130,11 @@ public class ResumeBaseInfoVo {
      * 学历
      */
     private Integer education;
+
+    /**
+     * 招聘岗位id
+     */
+    private Integer employmentId;
 
     /**
      * 招聘岗位名称

@@ -65,12 +65,12 @@ public class EnterpriseUserServiceImpl implements IEnterpriseUserService {
     public ServerResponse<PageInfo> getEmploymentListByUserId(Integer pageNum, CompanyPositionSearchVo employmentSearchVo, User user) {
         PageHelper.startPage(pageNum, 10);
         // todo 暂时没有其他查找条件，所以这里设为null
-        employmentSearchVo.setCity(null);
-        employmentSearchVo.setCname(null);
-        employmentSearchVo.setCity(null);
-        employmentSearchVo.setCsize(null);
-        employmentSearchVo.setEducation(null);
-        employmentSearchVo.setFinacing(null);
+//        employmentSearchVo.setCity(null);
+//        employmentSearchVo.setCname(null);
+//        employmentSearchVo.setCity(null);
+//        employmentSearchVo.setCsize(null);
+//        employmentSearchVo.setEducation(null);
+//        employmentSearchVo.setFinacing(null);
         List<PosisitonListVo> employmentList = employmentMapper.selectPositionBySearchVoUserId(employmentSearchVo, user.getId());
         PageInfo pageResult = new PageInfo(employmentList);
         return ServerResponse.createResponseBySuccess("获取招聘信息列表成功！", pageResult);
@@ -141,6 +141,9 @@ public class EnterpriseUserServiceImpl implements IEnterpriseUserService {
         employmentDetail.setPublisher(user.getNickname());
         employmentDetail.setCreatetime(addUpdateEmploymentVo.getCreatetime());
         employmentDetail.setEstatus(addUpdateEmploymentVo.getEstatus());
+        employmentDetail.setEcityid(addUpdateEmploymentVo.getEcityid());
+        employmentDetail.setEtypeid(addUpdateEmploymentVo.getEtypeid());
+        employmentDetail.setEducationrequire(addUpdateEmploymentVo.getEducationrequire());
         return employmentDetail;
     }
 
@@ -187,13 +190,14 @@ public class EnterpriseUserServiceImpl implements IEnterpriseUserService {
      * 查看投递人的简历的详情信息
      *
      * @param "resumeid": 2033, 根据简历Id找到用户id，根据用户id找到用户信息，根据用户信息，生成详细简历
+     * @param employmentId
      * @return
      */
     @Override
     @Transactional
-    public ServerResponse<User> getResumeDetailInfo(Integer resumeId, User user) {
+    public ServerResponse<User> getResumeDetailInfo(Integer resumeId, Integer employmentId, User user) {
         // 需要判断该简历Id是否属于该user，也就是说该简历Id投递的职位是否为该用户发布的
-        Integer publisher = employmentMapper.selectPublisherByResumeId(resumeId);
+        Integer publisher = employmentMapper.selectPublisherByResumeId(resumeId, employmentId);
         // 如果属于，才能获取
         if (publisher != null && publisher.equals(user.getId())) {
             Resume employerResume = resumeMapper.selectByPrimaryKey(resumeId);

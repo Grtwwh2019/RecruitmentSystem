@@ -45,10 +45,14 @@ public class FileServiceImpl implements IFileService {
         try {
             file.transferTo(targetFile);
             // 将`targetFile上传到FTP服务器
-            ftpUtil.uploadFile(remotePath,Lists.newArrayList(targetFile));
-            // 已经上传到ftp服务器
-            // 上传完以后将upload下的文件删除 ---> upload 是属于Tomcat服务器的
-            targetFile.delete();
+            boolean result = ftpUtil.uploadFile(remotePath, Lists.newArrayList(targetFile));
+            if (result) {
+                // 已经上传到ftp服务器
+                // 上传完以后将upload下的文件删除 ---> upload 是属于Tomcat服务器的
+                targetFile.delete();
+            } else {
+                return null;
+            }
         } catch (IOException e) {
             logger.error("上传文件异常！", e);
             e.printStackTrace();

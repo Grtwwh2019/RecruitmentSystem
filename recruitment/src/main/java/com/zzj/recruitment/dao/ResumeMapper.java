@@ -24,7 +24,7 @@ public interface ResumeMapper {
 
     List<ResumeWorkExpListVo> selectWorkExpByResumeId(Integer resumeId);
 
-    List<String> selectSkillTagByWid(Integer wid);
+    List<Map<String,Object>> selectSkillTagByWid(Integer wid);
 
     List<ResumeEducationExpListVo> selectEducationExpByResumeId(Integer resumeId);
 

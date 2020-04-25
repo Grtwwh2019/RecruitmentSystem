@@ -4,6 +4,7 @@ import com.zzj.recruitment.pojo.Company;
 import com.zzj.recruitment.vo.CompanyDetailVo;
 import com.zzj.recruitment.vo.CompanyListVo;
 import com.zzj.recruitment.vo.CompanyPositionSearchVo;
+import com.zzj.recruitment.vo.SchoolListVo;
 
 import java.util.List;
 
@@ -23,4 +24,8 @@ public interface CompanyMapper {
     List<CompanyListVo> selectCompanyBySearchVo(CompanyPositionSearchVo searchVo);
 
     CompanyDetailVo selectDetailByCompanyId(Integer id);
+
+    List<CompanyListVo> getCompanyListByCompanyName(String companyName);
+
+    List<SchoolListVo> getSchoolListBySchoolName(String schoolName);
 }

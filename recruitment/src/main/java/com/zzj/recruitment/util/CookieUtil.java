@@ -60,6 +60,7 @@ public class CookieUtil {
     public static void writeLoginToken(HttpServletResponse response,String token){
         Cookie ck = new Cookie(COOKIE_NAME,token);
         ck.setDomain(COOKIE_DOMAIN);
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         ck.setPath("/");//代表设置在根目录
         ck.setHttpOnly(true);
         //单位是秒。

@@ -56,9 +56,6 @@
   <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.Resume">
     insert into resume
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="ruserid != null">
         ruserId,
       </if>
@@ -101,11 +98,9 @@
       <if test="cityid != null">
         cityId,
       </if>
+      createTime,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="ruserid != null">
         #{ruserid,jdbcType=INTEGER},
       </if>
@@ -145,15 +140,13 @@
       <if test="highsalary != null">
         #{highsalary,jdbcType=DECIMAL},
       </if>
-      <if test="industryid != null">
-        #{industryid,jdbcType=INTEGER},
-      </if>
       <if test="cityid != null">
         #{cityid,jdbcType=VARCHAR},
       </if>
       now(),
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.Resume">
     update resume
     <set>
@@ -230,7 +223,7 @@
     r.socialPage as socialpage, r.otherAttachment as otherattachment,
     r.resumeAttachment as resumeattachment, r.expectPositionId as expectpositionId,
     pt.ptName as expectposition, r.lowSalary as lowsalary, r.highSalary as highsalary,
-    city.cityName as city
+    city.cityName as city, r.cityId as cityid
     from Resume as r
     left join positiontypeset as pt on r.expectpositionId = pt.id
     left join city on r.cityId = city.id
@@ -238,16 +231,15 @@
   </select>
 
   <select id="selectWorkExpByResumeId" resultType="com.zzj.recruitment.vo.ResumeWorkExpListVo" parameterType="integer">
-    select w.id as id, w.cname as cname, w.industryId as industryId, i.iName as industryName,
-    w.department as department, w.workContent as workcontent, w.position as position,
-    w.wPositionTypeId as positionId, w.startDate as startdate, w.endDate as enddate
+    select w.id as id, w.cname as cname, w.industryId as industryId, i.iName as industryName, w.department as department, w.workContent as workcontent, w.position as position, w.wPositionTypeId as positionId, pt.ptName as positionTypeZh, w.startDate as startdate, w.endDate as enddate
     from workexperience as w
     left join industryset as i on w.industryId = i.id
+    left join positiontypeset as pt on pt.id = w.wPositionTypeId
     where w.resuId = #{resumeId}
   </select>
 
-  <select id="selectSkillTagByWid" resultType="string" parameterType="integer">
-    select pt.ptName as skillTag
+  <select id="selectSkillTagByWid" resultType="map" parameterType="integer">
+    select pt.id as id, pt.ptName as skillTag
     from workskilltag as wt
     left join positiontypeset as pt on wt.sId = pt.id
     where wt.wId = #{wid}
@@ -273,7 +265,7 @@
 
   <select id="selectCertificationByResumeId" resultType="com.zzj.recruitment.vo.ResumeCertificationListVo"
           parameterType="integer">
-    select c.cname as certificationName
+    select c.id, c.cname as certificationName
     from resumecertificate as rc
     left join credential as c on rc.cid = c.id
     where rc.rid = #{resumeId}
@@ -293,13 +285,13 @@
   <update id="updateResumeBaseInfo" parameterType="com.zzj.recruitment.vo.UpdateResumeBaseInfoVo">
     update resume
     <set>
-      <if test="headermask != null">
+      <if test="headermask != null and headermask != ''">
         headerMask = #{headermask,jdbcType=VARCHAR},
       </if>
-      <if test="realname != null">
+      <if test="realname != null and realname != '' ">
         realName = #{realname,jdbcType=VARCHAR},
       </if>
-      <if test="gender != null">
+      <if test="gender != null ">
         gender = #{gender,jdbcType=INTEGER},
       </if>
       <if test="birthday != null">
@@ -312,8 +304,8 @@
         advantage = #{advantage,jdbcType=VARCHAR},
       </if>
       <if test="socialpage != null">
-        socialPage = #{socialpage,jdbcType=VARCHAR},
       </if>
+      socialPage = #{socialpage,jdbcType=VARCHAR},
       <if test="otherattachment != null">
         otherAttachment = #{otherattachment,jdbcType=VARCHAR},
       </if>
@@ -329,7 +321,7 @@
       <if test="highsalary != null">
         highSalary = #{highsalary,jdbcType=DECIMAL},
       </if>
-      <if test="cityid != null">
+      <if test="cityid != null and cityid != ''">
         cityId = #{cityid,jdbcType=VARCHAR},
       </if>
       updateTime = now(),
@@ -343,10 +335,10 @@
       <if test="ruserid != null">
         ruserId,
       </if>
-      <if test="headermask != null">
+      <if test="headermask != null and headermask != ''">
         headerMask,
       </if>
-      <if test="realname != null">
+      <if test="realname != null and realname != ''">
         realName,
       </if>
       <if test="gender != null">
@@ -361,10 +353,10 @@
       <if test="advantage != null">
         advantage,
       </if>
-      <if test="socialpage != null">
+      <if test="socialpage != null ">
         socialPage,
       </if>
-      <if test="otherattachment != null">
+      <if test="otherattachment != null ">
         otherAttachment,
       </if>
       <if test="resumeattachment != null">
@@ -379,21 +371,18 @@
       <if test="highsalary != null">
         highSalary,
       </if>
-      <if test="cityid != null">
+      <if test="cityid != null and cityid != ''">
         cityId,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="ruserid != null">
         #{ruserid,jdbcType=INTEGER},
       </if>
-      <if test="headermask != null">
+      <if test="headermask != null and headermask != ''">
         #{headermask,jdbcType=VARCHAR},
       </if>
-      <if test="realname != null">
+      <if test="realname != null and realname != ''">
         #{realname,jdbcType=VARCHAR},
       </if>
       <if test="gender != null">
@@ -429,7 +418,7 @@
       <if test="industryid != null">
         #{industryid,jdbcType=INTEGER},
       </if>
-      <if test="cityid != null">
+      <if test="cityid != null and cityid != ''">
         #{cityid,jdbcType=VARCHAR},
       </if>
       now(),
@@ -743,7 +732,7 @@
   </insert>
 
   <select id="selectDeliveryResumeByUserId" resultType="com.zzj.recruitment.vo.ResumeBaseInfoVo" parameterType="integer">
-    select r.id as id, r.realname as realname, u.telephone as telephone, u.email as email, r.gender as gender,
+    select rd.resume_id as id, r.realname as realname, u.telephone as telephone, u.email as email, r.gender as gender,
     r.birthday as birthday, max(e.degree) as education, rd.employment_id as employmentId, em.ename as employmentName,
     rd.createTime as deliveryTime
     from resumedelivery as rd
@@ -757,7 +746,7 @@
         and rd.employment_id = #{searchVo.employmentId}
       </if>
       <if test="searchVo.jobberRealName != null and searchVo.jobberRealName != '' ">
-        and r.realname = #{searchVo.jobberRealName}
+        and upper(r.realname) like upper(CONCAT('%', #{searchVo.jobberRealName}, '%'))
       </if>
       <if test="searchVo.gender != null">
         and r.gender = #{searchVo.gender}
@@ -773,6 +762,6 @@
       </if>
     </where>
     group by id
-    order by rd.createTime
+    order by rd.createTime desc
   </select>
 </mapper>

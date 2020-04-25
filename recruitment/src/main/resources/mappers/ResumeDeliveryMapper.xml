@@ -82,4 +82,16 @@
   <select id="selectDeliveredByResumeIdEmpId" resultType="integer" parameterType="integer">
     select count(*) from resumedelivery where resume_id = #{resumeId,jdbcType=INTEGER} and employment_id = #{employmentId,jdbcType=INTEGER}
   </select>
+
+  <select id="selectResumeDeliverListByResumeId" resultType="com.zzj.recruitment.vo.PosisitonListVo">
+    select e.id as id, e.ename as ename, pt.ptName as etype, c.cityName as ecity, e.esalaryfloor as esalaryfloor, e.esalaryceilie as esalaryceilie, e.educationrequire as educationrequire, com.logo as companyLogo, com.cname as ecompany, i.iName as industry, com.financing as financing,com.csize as csize, u.nickName as publisher, e.createTime as createTime
+    from resumedelivery as rd
+    left join employment as e on rd.employment_id = e.id
+    left join positiontypeset as pt on e.etypeid = pt.id
+    left join city as c on e.ecityid = c.id
+    left join company as com on e.ecompanyId = com.id
+    left join `user` as u on e.epublisher = u.id
+    left join industryset as i on com.industryId = i.id
+    where resume_id = #{resumeId}
+  </select>
 </mapper>

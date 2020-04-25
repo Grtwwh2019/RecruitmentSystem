@@ -23,7 +23,7 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
 
-    int checkRepetition(@Param("value") String value, @Param("type") String type);
+    Integer checkRepetition(@Param("value") String value, @Param("type") String type);
 
     User selectByUsername(String username);
 

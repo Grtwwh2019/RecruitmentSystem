@@ -25,7 +25,7 @@ import java.util.Map;
  * Created by Grtwwh2019
  * since 2020-03-19 21:11:23
  */
-@RestController()
+@RestController
 @RequestMapping("/common")
 public class CommonController {
 
@@ -48,23 +48,27 @@ public class CommonController {
      * @return
      */
     @PostMapping("/upload.do")
-    public ServerResponse upload(@RequestParam(value = "uploadFile", required = false) MultipartFile file, @RequestParam(value = "type") String type, HttpServletRequest request) {
-        String loginToken = CookieUtil.readLoginToken(request);
-        if (loginToken != null) {
-            User user = (User) redisTemplate.opsForValue().get(loginToken);
-            if (user != null) {
-                // 文件上传
-                String path = request.getSession().getServletContext().getRealPath("upload");
-                String targetFileName = fileService.upload(file, path, type);
-                // 拼接url,前端拿到url就可以直接使用了
-                String url = propertiesUtil.getFtp_server_http_prefix() + targetFileName;
-                Map fileMap = Maps.newHashMap();
-                fileMap.put("uri", targetFileName);
-                fileMap.put("url", url);
-                return ServerResponse.createResponseBySuccess("上传成功！",fileMap);
-            }
+    public ServerResponse upload(@RequestParam(value = "uploadFile", required = false) MultipartFile file,
+                                 @RequestParam(value = "type") String type, HttpServletRequest request) {
+        // 文件上传
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        String targetFileName = fileService.upload(file, path, type);
+        if (targetFileName == null) {
+            return ServerResponse.createResponseByErrorMsg("上传失败！");
         }
-        return ServerResponse.createResponseByErrorMsg("您未登录，请先登录!");
+        // 拼接url,前端拿到url就可以直接使用了
+        String url = propertiesUtil.getFtp_server_http_prefix() + targetFileName;
+        Map fileMap = Maps.newHashMap();
+        fileMap.put("uri", targetFileName);
+        fileMap.put("url", url);
+        return ServerResponse.createResponseBySuccess("上传成功！",fileMap);
+    }
+
+
+    @PostMapping("/deleteFile.do")
+    public ServerResponse deleteFile(String fileName, String remotePath) {
+        fileService.delete(fileName, remotePath);
+        return ServerResponse.createResponseBySuccessMsg("删除成功！");
     }
 
 
@@ -120,11 +124,11 @@ public class CommonController {
      * @param searchVo
      * @return
      */
-    @GetMapping({"/searchList.do/{type}/{pageNum}", "/searchList.do/{type}"})
+    @PostMapping({"/searchList.do/{type}/{pageNum}", "/searchList.do/{type}"})
     public ServerResponse<PageInfo> searchList(@PathVariable("type") Integer type, @PathVariable(value = "pageNum", required = false) Integer pageNum, @Validated @RequestBody CompanyPositionSearchVo searchVo) {
-        if (pageNum == null) {
-            pageNum = 1;
-        }
+//        if (pageNum == null) {
+//            pageNum = 1;
+//        }
         return commonService.returnListByType(type, searchVo, pageNum);
     }
 
@@ -137,5 +141,78 @@ public class CommonController {
     public ServerResponse getDetail(@PathVariable("type") Integer type, @PathVariable("id") Integer id) {
         return commonService.getDetail(type, id);
     }
+
+
+    /**
+     *
+     * @param companyName
+     * @return
+     */
+    @GetMapping({"/getCompanyListByCname.do/{companyName}"})
+    public ServerResponse getCompanyListByCompanyName(
+            @PathVariable(value = "companyName") String companyName) {
+        return commonService.getCompanyListByCompanyName(companyName);
+    }
+
+    /**
+     *
+     * @param schoolName
+     * @return
+     */
+    @GetMapping({"/getSchoolListBySname.do/{schoolName}"})
+    public ServerResponse getSchoolListBySchoolName(
+            @PathVariable(value = "schoolName") String schoolName) {
+        return commonService.getSchoolListBySchoolName(schoolName);
+    }
+
+
+    /**
+     * 得到所有行业类型
+     * @return
+     */
+    @GetMapping("/getAllIndustry.do")
+    public ServerResponse getAllIndustry() {
+        return commonService.getAllIndustry();
+    }
+
+    /**
+     * 得到所有职位类型
+     * @return
+     */
+    @GetMapping("/getAllPositionType.do")
+    public ServerResponse getAllPositionType() {
+        return commonService.getAllPositionType();
+    }
+
+    /**
+     * 根据PositionId获得技能标签
+     * @return
+     */
+    @GetMapping("/getSkillTagsByParentId.do/{pid}")
+    public ServerResponse getSkillTagsByParentId(@PathVariable("pid") Integer pid) {
+        return commonService.getSkillTagsByPositionId(pid);
+    }
+
+    /**
+     * 得到所有资格证书
+     * @return
+     */
+    @GetMapping("/getAllCertification.do")
+    public ServerResponse getAllCertification() {
+        return commonService.getAllCertification();
+    }
+
+
+    /**
+     * 得到所有城市
+     * @return
+     */
+    @GetMapping("/getAllCity.do")
+    public ServerResponse getAllCity() {
+        return commonService.getAllCity();
+    }
+
+
+
 
 }

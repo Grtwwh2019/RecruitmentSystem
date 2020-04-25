@@ -96,6 +96,25 @@ public class ResumeController {
 
 
     /**
+     * 删除工作经历
+     * @param workExpId
+     * @param request
+     * @return
+     */
+    @PostMapping("/deleteResumeWorkExpInfo.do/{workExpId}")
+    public ServerResponse deleteResumeWorkExpInfo(@PathVariable("workExpId") Integer workExpId, HttpServletRequest request) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (loginToken != null) {
+            User user = (User) redisTemplate.opsForValue().get(loginToken);
+            if (user != null) {
+                return resumeService.deleteResumeWorkExpInfo(workExpId, user);
+            }
+        }
+        return ServerResponse.createResponseByErrorMsg("您未登录，请先登录!");
+    }
+
+
+    /**
      * 添加/更新简历项目经历信息
      * projectExpId存在则更新，否则新增
      * @param projectExpId
@@ -110,6 +129,24 @@ public class ResumeController {
             User user = (User) redisTemplate.opsForValue().get(loginToken);
             if (user != null) {
                 return resumeService.updateResumeProjectExpInfo(projectExpId, projectExpVo, user);
+            }
+        }
+        return ServerResponse.createResponseByErrorMsg("您未登录，请先登录!");
+    }
+
+    /**
+     * 删除项目经历
+     * @param projectExpId
+     * @param request
+     * @return
+     */
+    @PostMapping("/deleteResumeProjecExpInfo.do/{projectExpId}")
+    public ServerResponse deleteResumeProjecExpInfo(@PathVariable("projectExpId") Integer projectExpId, HttpServletRequest request) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (loginToken != null) {
+            User user = (User) redisTemplate.opsForValue().get(loginToken);
+            if (user != null) {
+                return resumeService.deleteResumeProjecExpInfo(projectExpId, user);
             }
         }
         return ServerResponse.createResponseByErrorMsg("您未登录，请先登录!");
@@ -160,7 +197,7 @@ public class ResumeController {
      * 删除附件
      *
      * @param request
-     * @param type : 简历附件， 其他附件
+     * @param type : 简历附件(resume)， 其他附件(other)
      * @return
      */
     @PostMapping("/deleteAttachment.do")

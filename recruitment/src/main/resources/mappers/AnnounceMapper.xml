@@ -112,12 +112,7 @@
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
       </if>
-      <if test="createtime != null" >
-        createTime = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null" >
-        updateTime = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
+        updateTime = now(),
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -138,8 +133,8 @@
     select a.id as id, a.title as title, a.content as content, a.type as type, u.nickName as sender,
     a.receiver as receiver, a.`status` as `status`, a.createTime as createTime
     from announce as a left join `user` as u on a.sender = u.id
-    where receiver = #{userId}
-    order by a.createTime asc
+    where receiver = #{userId} and a.`status` = #{readed}
+    order by a.createTime desc
   </select>
 
   <select id="selectByannounceId" parameterType="integer" resultType="com.zzj.recruitment.vo.AnnounceListVo">

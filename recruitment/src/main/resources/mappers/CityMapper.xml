@@ -92,4 +92,19 @@
       namePath = #{namepath,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <resultMap id="cityListResultMap" type="com.zzj.recruitment.vo.IndustryOrPositionSetListVo" >
+    <id property="value" column="id"></id>
+    <result property="label" column="cname"></result>
+    <collection property="children" ofType="com.zzj.recruitment.vo.IndustryOrPositionSetListVo">
+      <id property="value" column="id2"></id>
+      <result property="label" column="cname2"></result>
+    </collection>
+  </resultMap>
+
+  <select id="getAllCity" resultMap="cityListResultMap">
+    select c.id as id, c.cityName as cname, c2.id as id2, c2.cityName as cname2
+    from city as c inner join city as c2 on c.id = c2.parentID
+    where c.`level` BETWEEN 1 AND 2 and c2.`level` BETWEEN 1 AND 2
+  </select>
 </mapper>

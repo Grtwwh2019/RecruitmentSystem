@@ -10,6 +10,19 @@
       <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
   </resultMap>
+
+  <resultMap id="PositionTypeSetResultMap" type="com.zzj.recruitment.vo.IndustryOrPositionSetListVo">
+    <id property="value" column="id"></id>
+    <result property="label" column="pname"></result>
+    <collection property="children" ofType="com.zzj.recruitment.vo.IndustryOrPositionSetListVo">
+      <id property="value" column="id2"></id>
+      <result property="label" column="pname2"></result>
+      <collection property="children" ofType="com.zzj.recruitment.vo.IndustryOrPositionSetListVo">
+        <id property="value" column="id3"></id>
+        <result property="label" column="pname3"></result>
+      </collection>
+    </collection>
+  </resultMap>
   <sql id="Base_Column_List" >
     id, ptName, pParentId, createTime, updateTime
   </sql>
@@ -82,4 +95,12 @@
       updateTime = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getAllPositionType" resultMap="PositionTypeSetResultMap">
+    select p1.id as id, p1.ptName as pname, p2.id as id2, p2.ptName as pname2, p3.id as id3, p3.ptName as pname3 from positiontypeset as p1 inner join positiontypeset as p2 on p1.id = p2.pParentId inner join positiontypeset as p3 on p2.id = p3.pParentId
+  </select>
+
+  <select id="getSkillTagsByPositionId" resultType="com.zzj.recruitment.vo.IndustryOrPositionSetListVo" parameterType="integer">
+    select id as `value`, ptName as label from positiontypeset where pParentId = (select pParentId from positiontypeset where id = #{pid})
+  </select>
 </mapper>

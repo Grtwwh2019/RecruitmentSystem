@@ -177,4 +177,8 @@
       updateTime = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectCountByWidRid" resultType="integer">
+    select count(1) from workexperience where id = #{workExpId} and resuId = #{resumeId}
+  </select>
 </mapper>

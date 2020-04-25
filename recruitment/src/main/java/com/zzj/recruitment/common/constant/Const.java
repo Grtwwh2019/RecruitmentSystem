@@ -10,6 +10,34 @@ import java.security.IdentityScope;
 public class Const {
 
     /**
+     * 缓存中所有资格证书
+     */
+    public static final String CITY_SET = "city_set";
+
+    /**
+     * 缓存中所有资格证书
+     */
+    public static final String CERTIFICATION_SET = "certification_set";
+
+    /**
+     * 缓存中所有职位类型
+     */
+    public static final String POSITIONTYPE_SET = "positiontype_set";
+
+    /**
+     * 缓存中所有行业类型
+     */
+    public static final String INDUSTRY_SET = "industry_set";
+
+    /**
+     * ftp的文件夹：img，attachment
+     */
+    public interface ftp_folder {
+        String IMG = "img";
+        String ATTACHMENT = "attachment";
+    }
+
+    /**
      * 缓存中被禁用的用户原来的认证情况
      */
     public static final String FORBID_USER_ORG_AUTH = "forbid_user_org_auth_";

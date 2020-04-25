@@ -20,6 +20,12 @@ import java.util.Date;
 @CheckWorkDateInterval(startdate = "createTImeFrom", enddate = "createTImeTo", message = "开始时间不能大于结束时间！")
 public class CompanyPositionSearchVo {
 
+    @Min(value = 0, message = "职位Id参数出错。")
+    private Integer employmentId; // 职位Id (职位搜索)
+
+    @Min(value = 0, message = "公司Id参数出错。")
+    private Integer companyId; // 公司Id (职位搜索)
+
     private String ename; // 职位名字
 
     private String cname; // 公司名字
@@ -28,6 +34,9 @@ public class CompanyPositionSearchVo {
 
     @Min(value = 0, message = "学历参数出错。")
     private Integer education; // 学历 (职位搜索)
+
+    @Min(value = 0, message = "公司id参数出错。")
+    private Integer ecompanyId; // 公司id (职位搜索)
 
     @Min(value = 0, message = "公司规模参数出错。")
     private Integer csize; // 公司规模
@@ -38,6 +47,9 @@ public class CompanyPositionSearchVo {
     @Min(value = 0, message = "融资阶段参数出错。")
     private Integer finacing; // 融资阶段
 
+    @Min(value = 0, message = "职位类型参数出错。")
+    private Integer etypeid; // 职位类型
+
     @JsonFormat(locale = "zh", pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date createTImeFrom;
 
@@ -45,4 +57,9 @@ public class CompanyPositionSearchVo {
     private Date createTImeTo;
 
     private Integer publisherId;
+
+    /**
+     * 状态（0——封禁，1——正常）
+     */
+    private Integer estatus;
 }

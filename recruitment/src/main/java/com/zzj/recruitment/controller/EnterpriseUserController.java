@@ -48,7 +48,7 @@ public class EnterpriseUserController {
      * @param request
      * @return
      */
-    @GetMapping("/getEmploymentList.do/{pageNum}")
+    @PostMapping("/getEmploymentList.do/{pageNum}")
     public ServerResponse<PageInfo> getEmploymentList(
             @PathVariable(value = "pageNum", required = false) Integer pageNum,
             @Validated @RequestBody CompanyPositionSearchVo employmentSearchVo,
@@ -145,7 +145,7 @@ public class EnterpriseUserController {
      * @param request
      * @return
      */
-    @GetMapping("/getUserResumeList.do/{pageNum}")
+    @PostMapping("/getUserResumeList.do/{pageNum}")
     public ServerResponse<PageInfo> getUserResumeList(
             @PathVariable(value = "pageNum", required = false) Integer pageNum,
             @Validated @RequestBody ResumeListSearchVo resumeListSearchVo,
@@ -179,8 +179,8 @@ public class EnterpriseUserController {
      * @param "resumeid": 2033, 根据简历Id找到用户id，根据用户id找到用户信息，根据用户信息，生成详细简历
      * @return
      */
-    @GetMapping("/getResumeDetailInfo.do/{resumeId}")
-    public ServerResponse<ResumeInfoVo> getResumeDetailInfo(@PathVariable("resumeId") Integer resumeId, HttpServletRequest request) {
+    @GetMapping("/getResumeDetailInfo.do/{resumeId}/{employmentId}")
+    public ServerResponse<ResumeInfoVo> getResumeDetailInfo(@PathVariable("resumeId") Integer resumeId, @PathVariable("employmentId") Integer employmentId, HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         boolean isPermitted = false;
         if (loginToken != null) {
@@ -195,7 +195,7 @@ public class EnterpriseUserController {
                 }
                 if (isPermitted) {
                     // 符合权限
-                    ServerResponse<User> response = enterpriseUserService.getResumeDetailInfo(resumeId, user);
+                    ServerResponse<User> response = enterpriseUserService.getResumeDetailInfo(resumeId, employmentId, user);
                     if (response.isSuccess()) {
                         ServerResponse<ResumeInfoVo> response1 = resumeService.returnResumeInfo(response.getData());
                         return response1;

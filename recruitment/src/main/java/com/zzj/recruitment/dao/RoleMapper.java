@@ -18,4 +18,6 @@ public interface RoleMapper {
     int updateByPrimaryKey(Role record);
 
     List<Role> selectRolesByUserId(Integer userId);
+
+    Integer selectMaxRoleIdByUserId(Integer userId);
 }

@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.zzj.recruitment.pojo.User" >
     <constructor >
       <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="headerMask" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="nickName" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="telephone" jdbcType="VARCHAR" javaType="java.lang.String" />
       <arg column="email" jdbcType="VARCHAR" javaType="java.lang.String" />
@@ -20,7 +21,7 @@
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, nickName, telephone, email, userName, passWord, license, companyId, empNo,
+    id, headerMask, nickName, telephone, email, userName, passWord, license, companyId, empNo,
     cardPhoto, enterpriseMail,authentication, createTime, updateTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -34,7 +35,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.zzj.recruitment.pojo.User" >
-    insert into user (id, nickName, telephone, 
+    insert into user (id, headerMask, nickName, telephone,
       email, userName,
       passWord, license, companyId, 
       empNo, cardPhoto, enterpriseMail, 
@@ -48,8 +49,8 @@
   <insert id="insertSelective" parameterType="com.zzj.recruitment.pojo.User" >
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
+      <if test="headerMask != null" >
+        headerMask,
       </if>
       <if test="nickname != null" >
         nickName,
@@ -81,12 +82,15 @@
       <if test="enterprisemail != null" >
         enterpriseMail,
       </if>
+      <if test="authentication != null" >
+        authentication,
+      </if>
         createTime,
         updateTime,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+      <if test="headerMask != null" >
+        #{headerMask,jdbcType=VARCHAR},
       </if>
       <if test="nickname != null" >
         #{nickname,jdbcType=VARCHAR},
@@ -118,6 +122,9 @@
       <if test="enterprisemail != null" >
         #{enterprisemail,jdbcType=VARCHAR},
       </if>
+      <if test="authentication != null" >
+        #{authentication,jdbcType=INTEGER},
+      </if>
       now(),
         now(),
     </trim>
@@ -129,6 +136,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.zzj.recruitment.pojo.User" >
     update user
     <set >
+      <if test="headerMask != null" >
+        headerMask = #{headerMask,jdbcType=VARCHAR},
+      </if>
       <if test="nickname != null" >
         nickName = #{nickname,jdbcType=VARCHAR},
       </if>
@@ -165,7 +175,9 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.zzj.recruitment.pojo.User" >
     update user
-    set nickName = #{nickname,jdbcType=VARCHAR},
+    set
+      headerMask = #{headerMask,jdbcType=VARCHAR},
+      nickName = #{nickname,jdbcType=VARCHAR},
       telephone = #{telephone,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       userName = #{username,jdbcType=VARCHAR},
@@ -179,11 +191,11 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="checkRepetition" parameterType="com.zzj.recruitment.pojo.User" resultType="int">
-    select count(1) from `user`
+  <select id="checkRepetition" parameterType="com.zzj.recruitment.pojo.User" resultType="integer">
+    select id from `user`
     <where>
       <if test="type != null and type == 'nickName' ">
-      and nickName like concat('%', #{value}, '%')
+        and nickName = #{value}
       </if>
       <if test="type != null and type == 'userName' ">
         and userName = #{value}
@@ -217,7 +229,7 @@
   </select>
 
   <update id="resetPasswordByUsername">
-    update user set passWord = #{passwordNew}, updateTime = now()
+    update user set passWord = #{passwordNew}
     where username = #{username}
   </update>
 
@@ -229,7 +241,8 @@
     empNo = #{empNo},
     cardPhoto = #{cardPhoto},
     enterpriseMail = #{enterpriseMail},
-    authentication = 4
+    authentication = 4,
+    updateTime = now()
     where
     id  = #{userId}
   </insert>
@@ -247,11 +260,11 @@
     select u.id as userId, u.nickName as nickname, u.telephone as telephone, u.empNo as empNo, u.authentication as authentication
     from `user` as u
     where u.companyId = #{companyid} and u.id <![CDATA[<>]]> #{userid}
-    order by u.authentication asc
+    order by u.updateTime desc
   </select>
 
   <update id="updateAuthenticationByUserId">
-    update `user` set authentication = #{authentication}, updateTime = now() where id = #{entUserId}
+    update `user` set authentication = #{authentication} where id = #{entUserId}
   </update>
 
   <select id="selectEnterpriseAccount" resultType="com.zzj.recruitment.vo.EnterpriseAccountListVo">

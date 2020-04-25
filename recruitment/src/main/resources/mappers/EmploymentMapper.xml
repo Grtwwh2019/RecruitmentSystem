@@ -224,11 +224,17 @@
     left join `user` as u on e.epublisher = u.id
     left join industryset as i on com.industryId = i.id
     <where>
+      <if test="employmentId != null">
+        and e.id = #{employmentId}
+      </if>
+      <if test="companyId != null">
+        and com.id = #{companyId}
+      </if>
       <if test="industry != null">
         and i.id = #{industry}
       </if>
       <if test="finacing != null">
-        and com.finacing = #{finacing}
+        and com.financing = #{finacing}
       </if>
       <if test="csize != null">
         and com.csize = #{csize}
@@ -240,10 +246,22 @@
         and e.ecityid = #{city}
       </if>
       <if test="ename != null and ename != ''">
-        and e.ename like CONCAT('%',#{ename},'%')
+        and upper(e.ename) like upper(CONCAT('%',#{ename},'%'))
       </if>
       <if test="publisherId != null">
         and e.epublisher = #{publisherId}
+      </if>
+      <if test="ecompanyId != null">
+        and e.ecompanyId = #{ecompanyId}
+      </if>
+      <if test="etypeid != null">
+        and e.etypeid = #{etypeid}
+      </if>
+      <if test="createTImeFrom != null">
+        and e.createTime <![CDATA[>=]]> #{createTImeFrom}
+      </if>
+      <if test="createTImeTo != null">
+        and e.createTime <![CDATA[<=]]> #{createTImeTo}
       </if>
       and e.estatus = 1
     </where>
@@ -251,7 +269,8 @@
   </select>
 
   <select id="selectDetailByPositionId" resultType="com.zzj.recruitment.vo.PositionDetailVo" parameterType="integer">
-    select e.id as id, e.ename as ename, pt.ptName as etype, city.cityName as ecity, e.esalaryfloor as esalaryfloor, e.esalaryceilie as esalaryceilie, e.educationrequire as educationrequire, e.ecompanyId as ecompanyId, com.cname as ecompany, e.eresponsibility as eresponsibility, e.erequirement as erequirement, u.nickName as publisher, e.createTime as createtime, e.estatus as estatus
+    select e.id as id, e.ename as ename, pt.ptName as etype, e.etypeid as etypeid, city.cityName as ecity, e.ecityid as ecityid,
+    e.esalaryfloor as esalaryfloor, e.esalaryceilie as esalaryceilie, e.educationrequire as educationrequire, e.ecompanyId as ecompanyId, com.cname as ecompany, com.logo as companyLogo, e.eresponsibility as eresponsibility, e.erequirement as erequirement, u.nickName as publisher, e.createTime as createtime, e.estatus as estatus
     from employment as e
     left join positiontypeset as pt on e.etypeid = pt.id
     left join city on e.ecityid = city.id
@@ -264,7 +283,7 @@
     select e.id as id, e.ename as ename, pt.ptName as etype, c.cityName as ecity,
     e.esalaryfloor as esalaryfloor, e.esalaryceilie as esalaryceilie, e.educationrequire as educationrequire,
     com.logo as companyLogo, com.cname as ecompany, i.iName as industry, com.financing as financing,
-    com.csize as csize, u.nickName as publisher, e.createTime as createTime
+    com.csize as csize, u.nickName as publisher, e.estatus as estatus, e.createTime as createTime
     from employment as e
     left join positiontypeset as pt on e.etypeid = pt.id
     left join city as c on e.ecityid = c.id
@@ -287,16 +306,18 @@
       <if test="searchVo.city != null and searchVo.city != ''">
         and e.ecityid = #{searchVo.city}
       </if>
-      <if test="searchVo.ename != null and searchVo.ename != ''">
+      <if test="searchVo.ename != null">
         and e.ename like CONCAT('%',#{searchVo.ename},'%')
       </if>
       <if test="searchVo.publisherId != null">
         and e.epublisher = #{searchVo.publisherId}
       </if>
+      <if test="searchVo.estatus != null">
+        and e.estatus = #{searchVo.estatus}
+      </if>
       <if test="userid != null">
         and e.epublisher = #{userid}
       </if>
-      and e.estatus = 1 and c.id = e.ecityid
     </where>
     order by createTime desc
   </select>
@@ -379,7 +400,7 @@
       <if test="estatus != null" >
         #{estatus,jdbcType=INTEGER},
       </if>
-        #{createtime,jdbcType=TIMESTAMP},
+        now()
     </trim>
     <selectKey keyColumn="id" keyProperty="id" resultType="integer" order="AFTER">
       select last_insert_id()
@@ -422,11 +443,11 @@
   </update>
 
 
-  <select id="selectPublisherByResumeId" parameterType="integer" resultType="integer">
+  <select id="selectPublisherByResumeId" resultType="integer">
     select e.epublisher as pid
-    from resumedelivery as rd
-    left join employment as e on rd.employment_id = e.id
-    where rd.resume_id = #{resumeId}
+    from employment as e
+    left join resumedelivery as rd on e.id = rd.employment_id
+    where rd.resume_id = #{resumeId} and rd.employment_id = #{employmentId}
   </select>
 
   <update id="updateStatusById">

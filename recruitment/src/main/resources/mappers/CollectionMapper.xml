@@ -145,7 +145,20 @@
     left join `user` as u on e.epublisher = u.id
     left join industryset as i on com.industryId = i.id
     where c.cpid is not null and c.cuserid = #{userId}
-    order by e.id asc
+    order by c.createTime desc
+  </select>
+
+  <select id="selectUserCollectionStatus" resultType="integer">
+    select count(1) from collection as c
+    <where>
+      <if test="type == 0">
+        and cpid = #{collectionId}
+      </if>
+      <if test="type == 1">
+        and ccid = #{collectionId}
+      </if>
+    </where>
+    and cuserid = #{userId}
   </select>
 
   <select id="getCompanyList" resultType="com.zzj.recruitment.vo.CompanyListVo" parameterType="int">

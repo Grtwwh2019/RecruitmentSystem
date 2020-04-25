@@ -18,6 +18,8 @@ public class User implements
         Serializable {
     private Integer id;
 
+    private String headerMask;
+
     private String nickname;
 
     private String telephone;
@@ -47,8 +49,9 @@ public class User implements
     List<Role> roles;
 
 
-    public User(Integer id, String nickname, String telephone, String email, String username, String password, String license, Integer companyid, Integer empno, String cardphoto, String enterprisemail,Integer authentication, Date createtime, Date updatetime) {
+    public User(Integer id, String headerMask, String nickname, String telephone, String email, String username, String password, String license, Integer companyid, Integer empno, String cardphoto, String enterprisemail,Integer authentication, Date createtime, Date updatetime) {
         this.id = id;
+        this.headerMask = headerMask;
         this.nickname = nickname;
         this.telephone = telephone;
         this.email = email;
@@ -66,6 +69,14 @@ public class User implements
 
     public User() {
         super();
+    }
+
+    public String getHeaderMask() {
+        return headerMask;
+    }
+
+    public void setHeaderMask(String headerMask) {
+        this.headerMask = headerMask;
     }
 
     public Integer getAuthentication() {

@@ -39,4 +39,6 @@ public interface CollectionMapper {
     List<PosisitonListVo> getPosisitonList(Integer userId);
 
     List<CompanyListVo> getCompanyList(Integer userId);
+
+    Integer selectUserCollectionStatus(@Param("type") Integer type, @Param("collectionId") Integer collectionId, @Param("userId") Integer userId);
 }

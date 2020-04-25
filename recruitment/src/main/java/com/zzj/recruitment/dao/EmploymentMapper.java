@@ -32,7 +32,7 @@ public interface EmploymentMapper {
 
     Integer updateByEmploymentVo(AddUpdateEmploymentVo addUpdateEmploymentVo);
 
-    Integer selectPublisherByResumeId(Integer resumeId);
+    Integer selectPublisherByResumeId(@Param("resumeId") Integer resumeId, @Param("employmentId") Integer employmentId);
 
     Integer updateStatusById(@Param("positionId") Integer positionId, @Param("status") Integer status);
 

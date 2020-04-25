@@ -44,6 +44,7 @@ public class EnterpriseAccountServiceImpl implements IEnterpriseAccountService {
     @Override
     public ServerResponse getApplyEntUserList(Integer pageNum, User user) {
         PageHelper.startPage(pageNum, 10);
+        // user.getCompanyid()：一个企业账号实际上就是一家公司
         List<EnterpriseUserInfoVo> enterpriseUserInfoList = userMapper.selectEnterpriseUserList(user.getCompanyid(), user.getId());
         PageInfo pageInfo = new PageInfo(enterpriseUserInfoList);
         if (pageInfo != null) {
@@ -64,7 +65,7 @@ public class EnterpriseAccountServiceImpl implements IEnterpriseAccountService {
         // 得到申请用户的信息，确保该用户是该企业账号所属的用户
         EnterpriseUserInfoVo entUser = userMapper.selectEnterpriseUserById(entUserId, user.getCompanyid());
         if (entUser != null) {
-            String url = propertiesUtil.getFtp_server_http_prefix() + entUser.getCardPhoto();
+            String url = propertiesUtil.getFtp_server_http_prefix() + "img/" + entUser.getCardPhoto();
             entUser.setCardPhoto(url);
             return ServerResponse.createResponseBySuccess("获取企业用户认证信息成功！", entUser);
         }
@@ -90,17 +91,17 @@ public class EnterpriseAccountServiceImpl implements IEnterpriseAccountService {
             if (result > 0) {
                 result = userRoleMapper.insertNewRole(entUserId, Const.Role.ROLE_enterUser.getCode());
             }
-            resultstr = "用户ID："+ entUserId + "，已通过认证！";
+            resultstr = "用户ID："+ entUserId + "，通过认证！";
         } else if (approve == 2) {
             // 拒绝认证时，如果是已经存在角色，则要删除对应角色
             result = userMapper.updateAuthenticationByUserId(entUserId, Const.authentication.DENY.getCode());
             if (result > 0) {
                 userRoleMapper.deleteByUidRid(entUserId, Const.Role.ROLE_enterUser.getCode());
             }
-            resultstr = "用户："+ entUserId + "，认证已拒绝！";
+            resultstr = "用户："+ entUserId + "，拒绝认证！";
         }
         if (result > 0) {
-            return ServerResponse.createResponseBySuccess(resultstr);
+            return ServerResponse.createResponseBySuccessMsg(resultstr);
         }
         return ServerResponse.createResponseByErrorMsg("审批失败，未知错误，请联系管理员！");
     }

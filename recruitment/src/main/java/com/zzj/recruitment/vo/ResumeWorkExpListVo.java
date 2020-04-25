@@ -61,9 +61,14 @@ public class ResumeWorkExpListVo {
     private Integer positionId;
 
     /**
+     * 职位类型名字
+     */
+    private String positionTypeZh;
+
+    /**
      * 技能标签
      */
-    private List<String> skillTags;
+    List<Map<String,Object>> skillTags;
 
     /**
      * 开始日期

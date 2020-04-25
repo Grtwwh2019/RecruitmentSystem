@@ -3,11 +3,14 @@ package com.zzj.recruitment.service.impl;
 import com.zzj.recruitment.common.ServerResponse;
 import com.zzj.recruitment.common.constant.Const;
 import com.zzj.recruitment.dao.*;
+import com.zzj.recruitment.pojo.Resume;
 import com.zzj.recruitment.pojo.ResumeDelivery;
 import com.zzj.recruitment.pojo.User;
 import com.zzj.recruitment.pojo.UserRole;
 import com.zzj.recruitment.service.IUserService;
 import com.zzj.recruitment.util.EncryptionUtil;
+import com.zzj.recruitment.util.PropertiesUtil;
+import com.zzj.recruitment.vo.CollectionVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -46,7 +50,15 @@ public class UserServiceImpl implements IUserService
     EmploymentMapper employmentMapper;
 
     @Autowired
+    CollectionMapper collectionMapper;
+
+    @Autowired
     RedisTemplate redisTemplate;
+
+
+    @Autowired
+    PropertiesUtil propertiesUtil;
+
 
 /*
     *//**
@@ -94,19 +106,25 @@ public class UserServiceImpl implements IUserService
         // 2.将密码加密后存储
         String EncryPassword = EncryptionUtil.encrypt(user.getPassword());
         user.setPassword(EncryPassword);
-        Integer newUserId = userMapper.insertSelective(user);
-        if (newUserId != null) {
+        Integer result = userMapper.insertSelective(user);
+        if (result > 0) {
             if (role != null) {
                 if (role == 4) { // 企业账号
                     // todo 校验营业执照，公司ID，不能为空，格式要正确
+
                 }
                 UserRole userRole = new UserRole();
                 userRole.setRoleId(role);
-                userRole.setUserId(newUserId);
-                int result = userRoleMapper.insertSelective(userRole);
+                userRole.setUserId(user.getId());
+                result = userRoleMapper.insertSelective(userRole);
                 if (result > 0) {
                     // todo 只要创建了用户就自动新建一个在线简历
-                    return ServerResponse.createResponseBySuccessMsg("注册成功！");
+                    Resume resume = new Resume();
+                    resume.setRuserid(user.getId());
+                    result = resumeMapper.insertSelective(resume);
+                    if (result > 0) {
+                        return ServerResponse.createResponseBySuccessMsg("注册成功！");
+                    }
                 }
             }
         }
@@ -117,7 +135,7 @@ public class UserServiceImpl implements IUserService
     public ServerResponse<User> userlogin(String username, String password) {
         ServerResponse<String> response = this.checkValid(username, Const.USER_NAME);
         if (response.isSuccess()) {
-            return ServerResponse.createResponseByErrorMsg("用户不存在");
+            return ServerResponse.createResponseByErrorMsg("用户不存在！");
         }
 
         User user = userMapper.selectByUsername(username);
@@ -126,6 +144,9 @@ public class UserServiceImpl implements IUserService
             // 判断登录密码是否原始加密的密码
             if (EncryptionUtil.match(password, user.getPassword())) {
                 user.setPassword(null);
+                // 头像
+                user.setHeaderMask(propertiesUtil.getFtp_server_http_prefix() +
+                        Const.ftp_folder.IMG + "/" + user.getHeaderMask());
                 return ServerResponse.createResponseBySuccess("登录成功！", user);
             }
             return ServerResponse.createResponseByErrorMsg("登录失败，密码错误！");
@@ -135,13 +156,17 @@ public class UserServiceImpl implements IUserService
 
     @Override
     public ServerResponse<User> updateUserInfo(User user, User currentUser) {
-        int result = userMapper.checkRepetition(user.getEmail(), Const.EMAIL);
-        if (result > 0) {
+        Integer result = userMapper.checkRepetition(user.getEmail(), Const.EMAIL);
+        if (result != null && result > 0 && !result.equals(currentUser.getId())) {
             return ServerResponse.createResponseByErrorMsg("更新失败，邮箱已存在");
         }
         result = userMapper.checkRepetition(user.getTelephone(), Const.TELEPHONE);
-        if (result > 0) {
+        if (result != null && result > 0 && !result.equals(currentUser.getId())) {
             return ServerResponse.createResponseByErrorMsg("更新失败，手机已存在");
+        }
+        result = userMapper.checkRepetition(user.getNickname(), Const.NICK_NAME);
+        if (result != null && result > 0 && !result.equals(currentUser.getId())) {
+            return ServerResponse.createResponseByErrorMsg("更新失败，昵称已存在");
         }
         currentUser.setNickname(user.getNickname() != null ? user.getNickname() : currentUser.getNickname());
         currentUser.setEmail(user.getEmail() != null ? user.getEmail() : currentUser.getEmail());
@@ -150,7 +175,9 @@ public class UserServiceImpl implements IUserService
         updateUser.setId(currentUser.getId());
         result = userMapper.updateByPrimaryKeySelective(updateUser);
         if (result > 0) {
-            return ServerResponse.createResponseBySuccess("更新成功！", updateUser);
+            // 头像
+            currentUser.setHeaderMask(propertiesUtil.getFtp_server_http_prefix() + Const.ftp_folder.IMG + "/" + user.getHeaderMask());
+            return ServerResponse.createResponseBySuccess("更新成功！", currentUser);
         }
         return ServerResponse.createResponseByErrorMsg("更新失败，未知错误！");
     }
@@ -167,6 +194,9 @@ public class UserServiceImpl implements IUserService
     public ServerResponse<String> selectVerifyType(String username, String type) {
         User user = userMapper.selectByUsername(username);
         String result = null;
+        if (user == null) {
+            return ServerResponse.createResponseByErrorMsg("不存在该用户！");
+        }
         switch (type.trim()) {
             case Const.TELEPHONE:
                 // todo 获取手机号，发送验证码的逻辑
@@ -208,10 +238,10 @@ public class UserServiceImpl implements IUserService
         }
         if (result) {
             String forget_token = UUID.randomUUID().toString();
-            redisTemplate.opsForValue().set(Const.FORGET_TOKEN_PREFIX + username, forget_token, 60 * 5, TimeUnit.SECONDS);
+            redisTemplate.opsForValue().set(Const.FORGET_TOKEN_PREFIX + username,
+                    forget_token, 60 * 5, TimeUnit.SECONDS);
             return ServerResponse.createResponseBySuccess("验证成功！", forget_token);
         }
-
         return ServerResponse.createResponseByErrorMsg("验证失败，请重新验证！");
     }
 
@@ -226,8 +256,10 @@ public class UserServiceImpl implements IUserService
      */
     @Override
     @Transactional
-    public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
-        if (StringUtils.equals(forgetToken, (String) (redisTemplate.opsForValue().get(Const.FORGET_TOKEN_PREFIX + username)))) {
+    public ServerResponse<String> forgetResetPassword(String username, String passwordNew,
+                                                      String forgetToken) {
+        if (StringUtils.equals(forgetToken, (String) (redisTemplate.opsForValue()
+                .get(Const.FORGET_TOKEN_PREFIX + username)))) {
             redisTemplate.delete(Const.FORGET_TOKEN_PREFIX + username);
             // 重置密码，要将密码加密
             String encryptPassword = EncryptionUtil.encrypt(passwordNew);
@@ -276,6 +308,8 @@ public class UserServiceImpl implements IUserService
         String typec = type.trim();
         if (StringUtils.isNotBlank(typec)) {
             //todo 优化 ——> 减少重复的代码
+            Integer integer = userMapper.checkRepetition(value, type);
+            integer = integer == null ? 0 : integer;
             switch (typec) {
                 case Const.NICK_NAME:
                     // 昵称
@@ -283,7 +317,7 @@ public class UserServiceImpl implements IUserService
                         return ServerResponse.createResponseByErrorMsg("校验失败，昵称为空或长度超出0-12范围。");
                     } else if (this.hasBlank(value)){
                         return ServerResponse.createResponseByErrorMsg("校验失败，昵称不能包含空格。");
-                    } else if (userMapper.checkRepetition(value, type) > 0) {
+                    } else if (integer > 0) {
                         return ServerResponse.createResponseByErrorMsg("校验失败，已存在相同的昵称。");
                     }
                     break;
@@ -293,7 +327,7 @@ public class UserServiceImpl implements IUserService
                         return ServerResponse.createResponseByErrorMsg("校验失败，用户名为空或长度超出0-12范围。");
                     } else if (this.hasBlank(value)){
                         return ServerResponse.createResponseByErrorMsg("校验失败，用户名不能包含空格。");
-                    } else if (userMapper.checkRepetition(value, type) > 0) {
+                    } else if (integer > 0) {
                         return ServerResponse.createResponseByErrorMsg("校验失败，已存在相同的用户名。");
                     }
                     break;
@@ -301,7 +335,7 @@ public class UserServiceImpl implements IUserService
                     // 邮箱符合邮箱格式，不能为空，长度不能超过32，不能重复
                     if (StringUtils.isBlank(value) || value.trim().length() <= 0 || value.trim().length() > 32) {
                         return ServerResponse.createResponseByErrorMsg("校验失败，邮箱为空或长度超出0-32范围。");
-                    } else if (userMapper.checkRepetition(value, type) > 0) {
+                    } else if (integer > 0) {
                         return ServerResponse.createResponseByErrorMsg("校验失败，已存在相同邮箱。");
                     } else if (!this.checkEmail(value.trim())) {
                         return ServerResponse.createResponseByErrorMsg("校验失败，邮箱不符合格式！");
@@ -311,7 +345,7 @@ public class UserServiceImpl implements IUserService
                     // 手机号不能超过11位，不能为空，不能重复
                     if (!this.checkTelPhone(value) || StringUtils.isBlank(value)) {
                         return ServerResponse.createResponseByErrorMsg("手机号为空或格式不正确。");
-                    } else if (userMapper.checkRepetition(value, type) > 0) {
+                    } else if (integer > 0) {
                         return ServerResponse.createResponseByErrorMsg("校验失败，已存在相同手机号。");
                     }
                     break;
@@ -474,9 +508,25 @@ public class UserServiceImpl implements IUserService
             resumeDelivery.setEmploymentId(employmentId);
             result = resumeDeliveryMapper.insertSelective(resumeDelivery);
             if (result > 0) {
-                return ServerResponse.createResponseBySuccess("投递成功！");
+                return ServerResponse.createResponseBySuccessMsg("投递成功！");
             }
         }
         return ServerResponse.createResponseByErrorMsg("投递失败！");
+    }
+
+    @Override
+    public ServerResponse getUserCollectionStatus(Integer type, Integer collectionId, User user) {
+        Integer result = collectionMapper.selectUserCollectionStatus(type, collectionId, user.getId());
+        if (result >= 0) {
+            CollectionVo collectionVo = new CollectionVo();
+            collectionVo.setShowStts(result);
+            return ServerResponse.createResponseBySuccess("查询收藏职位状态成功！", collectionVo);
+        }
+//        if (type == 0) {
+//            // 职位
+//        } else if (type == 1) {
+//            // 公司
+//        }
+        return ServerResponse.createResponseByErrorMsg("查询失败！");
     }
 }

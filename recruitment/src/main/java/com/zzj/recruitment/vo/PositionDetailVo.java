@@ -32,9 +32,19 @@ public class PositionDetailVo {
     private String etype;
 
     /**
+     * 职位类型Id--->positionTypeSet
+     */
+    private Integer etypeid;
+
+    /**
      * 工作城市
      */
     private String ecity;
+
+    /**
+     * 工作城市id
+     */
+    private String ecityid;
 
     /**
      * 最低薪资
@@ -60,6 +70,11 @@ public class PositionDetailVo {
      * 公司名称
      */
     private String ecompany;
+
+    /**
+     * 公司Logo
+     */
+    private String companyLogo;
 
     /**
      * 职位职责

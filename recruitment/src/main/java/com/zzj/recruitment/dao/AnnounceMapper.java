@@ -20,7 +20,7 @@ public interface AnnounceMapper {
 
     int updateByPrimaryKey(Announce record);
 
-    List<AnnounceListVo> getAnnounceList(Integer userId);
+    List<AnnounceListVo> getAnnounceList(@Param("userId") Integer userId, @Param("readed") Integer readed);
 
     AnnounceListVo selectByannounceId(Integer announceId);
 

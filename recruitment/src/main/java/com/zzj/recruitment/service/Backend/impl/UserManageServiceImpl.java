@@ -4,9 +4,8 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzj.recruitment.common.ServerResponse;
 import com.zzj.recruitment.common.constant.Const;
-import com.zzj.recruitment.dao.AnnounceMapper;
-import com.zzj.recruitment.dao.CollectionMapper;
-import com.zzj.recruitment.dao.UserMapper;
+import com.zzj.recruitment.dao.*;
+import com.zzj.recruitment.pojo.Announce;
 import com.zzj.recruitment.pojo.User;
 import com.zzj.recruitment.service.Backend.IUserManageService;
 import com.zzj.recruitment.vo.*;
@@ -42,6 +41,12 @@ public class UserManageServiceImpl implements IUserManageService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    ResumeDeliveryMapper resumeDeliveryMapper;
+
+    @Autowired
+    ResumeMapper resumeMapper;
 
 
     /**
@@ -221,13 +226,16 @@ public class UserManageServiceImpl implements IUserManageService {
      * 所以适合一些需要获取最新数据的场景，比如新闻类应用的 “最近新闻”。
      * 在头部插入数据，性能会很高
      * @param user
+     * @param readed
      * @return
      */
     @Override
-    public ServerResponse<PageInfo> returnAnnounceList(User user, Integer pageNum) {
-        // 分页，默认一页15条
-        PageHelper.startPage(pageNum, 15);
-        List<AnnounceListVo> announceList = announceMapper.getAnnounceList(user.getId());
+    public ServerResponse<PageInfo> returnAnnounceList(User user, Integer pageNum, Integer readed) {
+        if (pageNum != null) {
+            // 分页，默认一页15条
+            PageHelper.startPage(pageNum, 15);
+        }
+        List<AnnounceListVo> announceList = announceMapper.getAnnounceList(user.getId(), readed);
         if (announceList.size() >= 0) {
             // lpush 命令：将一个或多个值插入到列表头部。如果 key 不存在，则创建list，然后再插入数据操作。
             // blpop 命令：redis的list是链表结构所以BLPOP命令正是取出列表的第一个元素，如果list当中没有没有元素，会一直等待到超时，或者发现有数据为止。
@@ -259,9 +267,19 @@ public class UserManageServiceImpl implements IUserManageService {
             if (announceId > 0) {
                 announceDetail = announceMapper.selectByannounceId(announceId);
                 if (announceDetail != null) {
-                    // todo 增加对content，即公告内容 的解析逻辑
-                    redisTemplate.opsForValue().set(Const.ANNOUNCE_DETAIL + announceId, announceDetail, Const.RedisCacheExtime.REDIS_EXTIME_DAY, TimeUnit.SECONDS);
-                    return ServerResponse.createResponseBySuccess("获取公告详情成功！", announceDetail);
+                    int result = 1;
+                    if (announceDetail.getStatus() == 1) {
+                        announceDetail.setStatus(0);
+                        Announce announce = new Announce();
+                        announce.setId(announceId);
+                        announce.setStatus(announceDetail.getStatus());
+                        result = announceMapper.updateByPrimaryKeySelective(announce);
+                    }
+                    if (result > 0) {
+                        // todo 增加对content，即公告内容 的解析逻辑
+                        redisTemplate.opsForValue().set(Const.ANNOUNCE_DETAIL + announceId, announceDetail, Const.RedisCacheExtime.REDIS_EXTIME_DAY, TimeUnit.SECONDS);
+                        return ServerResponse.createResponseBySuccess("获取公告详情成功！", announceDetail);
+                    }
                 }
             }
         } else if (announceDetail != null) {
@@ -284,13 +302,35 @@ public class UserManageServiceImpl implements IUserManageService {
     public ServerResponse applyEnterpriseUser(EnterpriseUserInfoVo enterpriseUserInfoVo, User user) {
         // 直接保存
         enterpriseUserInfoVo.setUserId(user.getId());
-        enterpriseUserInfoVo.setNickname(user.getNickname());
-        enterpriseUserInfoVo.setTelephone(user.getTelephone());
+//        enterpriseUserInfoVo.setNickname(user.getNickname());
+//        enterpriseUserInfoVo.setTelephone(user.getTelephone());
         Integer result = userMapper.saveEnterpriseUserInfo(enterpriseUserInfoVo);
         if (result > 0) {
-            return ServerResponse.createResponseBySuccessMsg("提交申请成功！");
+            user.setCompanyid(enterpriseUserInfoVo.getCompanyId());
+            user.setEnterprisemail(enterpriseUserInfoVo.getEnterpriseMail());
+            user.setEmpno(enterpriseUserInfoVo.getEmpNo());
+            user.setCardphoto(enterpriseUserInfoVo.getCardPhoto());
+            user.setAuthentication(4);
+            // 更新缓存
+            return ServerResponse.createResponseBySuccess("提交申请成功！", user);
         }
         return ServerResponse.createResponseByErrorMsg("提交申请失败！");
+    }
+
+    @Override
+    public ServerResponse returnResumeDeliverList(Integer pageNum, User user) {
+        Integer resumeId = resumeMapper.selectResumeIdByUserId(user.getId());
+        if (resumeId != null && resumeId > 0) {
+            if (pageNum != null) {
+                // 分页，默认一页15条
+                PageHelper.startPage(pageNum, 10);
+            }
+            List<PosisitonListVo> posisitonListVos = resumeDeliveryMapper.selectResumeDeliverListByResumeId(resumeId);
+            PageInfo pageInfo = new PageInfo(posisitonListVos);
+            return ServerResponse.createResponseBySuccess("获取投递箱列表成功！", pageInfo);
+        }
+        return ServerResponse.createResponseByErrorMsg("获取投递箱列表失败");
+
     }
 }
 

@@ -210,15 +210,16 @@
   </update>
 
   <select id="selectCompanyBySearchVo" parameterType="com.zzj.recruitment.vo.CompanyPositionSearchVo" resultType="com.zzj.recruitment.vo.CompanyListVo">
-    select com.id as id, com.logo as logo, com.cname as cname, com.financing as financing, i.iName as industry
+    select com.id as id, com.logo as logo, com.cname as cname, com.financing as financing, i.iName as industry, c.cityName as ccity, com.csize as csize, com.representative as representative
     from company as com
     left join industryset as i on com.industryId = i.id
+    left join city as c on com.ccity = c.id
     <where>
       <if test="industry != null">
-        and i.id = #{industry}
+        and com.industryId = #{industry}
       </if>
       <if test="finacing != null">
-        and com.finacing = #{finacing}
+        and com.financing = #{finacing}
       </if>
       <if test="csize != null">
         and com.csize = #{csize}
@@ -227,7 +228,7 @@
         and com.ccity = #{city}
       </if>
       <if test="cname != null and cname != ''">
-        and com.cname like CONCAT('%',#{cname},'%')
+        and upper(com.cname) like upper(CONCAT('%',#{cname},'%'))
       </if>
     </where>
     order by financing desc
@@ -239,5 +240,13 @@
     left join city on c.ccity = city.id
     left join industryset as i on c.industryId = i.id
     where c.id = #{id}
+  </select>
+
+  <select id="getCompanyListByCompanyName" resultType="com.zzj.recruitment.vo.CompanyListVo" parameterType="string">
+    select id, cname from company where cname like CONCAT('%',#{companyName},'%') order by id
+  </select>
+
+  <select id="getSchoolListBySchoolName" resultType="com.zzj.recruitment.vo.SchoolListVo" parameterType="string">
+    select id, `name` as schoolName from school where `name` like CONCAT('%', #{schoolName},'%') order by id
   </select>
 </mapper>

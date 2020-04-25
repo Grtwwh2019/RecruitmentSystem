@@ -5,12 +5,13 @@ import com.zzj.recruitment.common.ServerResponse;
 import com.zzj.recruitment.common.constant.Const;
 import com.zzj.recruitment.dao.*;
 import com.zzj.recruitment.pojo.Industryset;
-import com.zzj.recruitment.pojo.ResumeCertificate;
+import com.zzj.recruitment.pojo.PositionTypeSet;
 import com.zzj.recruitment.pojo.User;
 import com.zzj.recruitment.service.Backend.IResumeService;
 import com.zzj.recruitment.service.IFileService;
 import com.zzj.recruitment.vo.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,13 @@ public class ResumeServiceImpl implements IResumeService {
     CredentialMapper credentialMapper;
 
     @Autowired
+    workExpMapper workExpMapper;
+
+    @Autowired
+    projectExpMapper projectExpMapper;
+
+
+    @Autowired
     RedisTemplate redisTemplate;
 
     @Autowired
@@ -68,7 +76,8 @@ public class ResumeServiceImpl implements IResumeService {
     @Override
     @Transactional
     public ServerResponse<ResumeInfoVo> returnResumeInfo(User user) {
-        ResumeInfoVo resumeInfoVo = (ResumeInfoVo) redisTemplate.opsForValue().get(Const.RESUME_INFO + user.getId());
+        ResumeInfoVo resumeInfoVo = (ResumeInfoVo) redisTemplate.opsForValue()
+                .get(Const.RESUME_INFO + user.getId());
         if (resumeInfoVo != null) {
             redisTemplate.expire(Const.RESUME_INFO + user.getId(), 60 * 60, TimeUnit.SECONDS);
             return ServerResponse.createResponseBySuccess("获取简历信息成功!", resumeInfoVo);
@@ -107,7 +116,7 @@ public class ResumeServiceImpl implements IResumeService {
         if (workExpListVos.size() != 0) {
             // 根据工作经历Id查找到技能标签
             for (ResumeWorkExpListVo workExpListVo : workExpListVos) {
-                List<String> skillTags = resumeMapper.selectSkillTagByWid(workExpListVo.getId());
+                List<Map<String,Object>> skillTags = resumeMapper.selectSkillTagByWid(workExpListVo.getId());
                 if (skillTags == null) {
                     return ServerResponse.createResponseByErrorMsg("获取简历信息失败，请联系管理员！");
                 }
@@ -129,11 +138,8 @@ public class ResumeServiceImpl implements IResumeService {
         if (certificationListVos == null) {
             return ServerResponse.createResponseByErrorMsg("获取简历信息失败，请联系管理员！");
         }
-        resumeInfoVo = new ResumeInfoVo(baseInfo,
-                workExpListVos,
-                projectExpListVos,
-                educationExpListVos,
-                certificationListVos);
+        resumeInfoVo = new ResumeInfoVo(baseInfo, workExpListVos, projectExpListVos
+                , educationExpListVos, certificationListVos);
         redisTemplate.opsForValue().set(Const.RESUME_INFO+user.getId(), resumeInfoVo, 60*30, TimeUnit.SECONDS);
         return ServerResponse.createResponseBySuccess("获取简历信息成功!", resumeInfoVo);
     }
@@ -172,15 +178,41 @@ public class ResumeServiceImpl implements IResumeService {
         }
         // 根据简历Id修改简历
         if (flag) {
+            this.assembleResumeBaseInfo(resume);
+            // 获取简历基本信息
+            ResumeBaseInfoVo baseInfo = resumeMapper.selectBaseInfoByUserId(user.getId());
+            if (baseInfo == null) {
+                return ServerResponse.createResponseByErrorMsg("获取简历信息失败，请联系管理员！");
+            }
+            baseInfo.setTelephone(user.getTelephone());
+            baseInfo.setEmail(user.getEmail());
+            // 简历的id
+            resumeId = baseInfo.getId();
+            // 根据简历Id找到期望的行业
+            List<Map<String, Object>> industries = resumeMapper.selectIndustriesByResumeId(resumeId);
+            if (industries == null) {
+                return ServerResponse.createResponseByErrorMsg("获取简历信息失败，请联系管理员！");
+            }
+            baseInfo.setIndustries(industries);
+            // 需要判断期望的行业数量是否为0
+            if (industries.size() != 0) {
+                StringBuffer industryDesc = new StringBuffer();
+                for (Map<String, Object> industry : industries) {
+                    industryDesc.append(industry.get("industryName") + "·");
+                }
+                int index = industryDesc.lastIndexOf("·");
+                industryDesc.delete(index, index + 1);
+                baseInfo.setIndustryDesc(new String(industryDesc));
+            }
             // 如果插入/修改成功，更新缓存中的数据
             ResumeInfoVo resumeInfoVo = (ResumeInfoVo) redisTemplate.opsForValue().get(Const.RESUME_INFO + user.getId());
-            ResumeBaseInfoVo baseInfoVo = this.assembleResumeBaseInfo(resume);
-            baseInfoVo.setTelephone(user.getTelephone());
-            baseInfoVo.setEmail(user.getEmail());
-            resumeInfoVo.setResumeBaseInfoVo(baseInfoVo);
+//            ResumeBaseInfoVo baseInfoVo = this.assembleResumeBaseInfo(resume, baseInfo);
+//            baseInfoVo.setTelephone(user.getTelephone());
+//            baseInfoVo.setEmail(user.getEmail());
+            resumeInfoVo.setResumeBaseInfoVo(baseInfo);
             // 更新缓存中的数据
             redisTemplate.opsForValue().set(Const.RESUME_INFO + user.getId(), resumeInfoVo, 60 * 30, TimeUnit.SECONDS);
-            return ServerResponse.createResponseBySuccess("修改基本信息成功！", baseInfoVo);
+            return ServerResponse.createResponseBySuccess("修改基本信息成功！", baseInfo);
         }
         return ServerResponse.createResponseByErrorMsg("修改失败！");
     }
@@ -188,6 +220,7 @@ public class ResumeServiceImpl implements IResumeService {
     /**
      * 生成简历基本信息
      * 构造 List<Map<String, Object>> industries; 并且更新resume industry关系表
+     *
      * @param updateResumeBaseInfoVo
      * @return
      */
@@ -231,26 +264,30 @@ public class ResumeServiceImpl implements IResumeService {
         List<Map<String, Object>> industries = new ArrayList<>();
         StringBuffer industryDesc = new StringBuffer();
         //  遍历新industry数据
-        for (Integer industryId : updateResumeBaseInfoVo.getIndustryid()) {
-            //  获取新industry实体数据
-            Industryset industrySet = industrysetMapper.selectByPrimaryKey(industryId);
-            //  插入数据库
-            result = resumeMapper.insertResumeIndusty(resumeId, industrySet.getId());
-            if (result > 0) {
-                log.info("插入简历Id：" + resumeId + "数据库，用户：" + updateResumeBaseInfoVo.getRealname() + "成功!");
+        if (updateResumeBaseInfoVo.getIndustryid() != null && updateResumeBaseInfoVo.getIndustryid().size() > 0) {
+            for (Integer industryId : updateResumeBaseInfoVo.getIndustryid()) {
+                //  获取新industry实体数据
+                Industryset industrySet = industrysetMapper.selectByPrimaryKey(industryId);
+                //  插入数据库
+                result = resumeMapper.insertResumeIndusty(resumeId, industrySet.getId());
+                if (result > 0) {
+                    log.info("插入简历Id：" + resumeId + "数据库，用户：" + updateResumeBaseInfoVo.getRealname() + "成功!");
+                }
+                industryDesc.append(industrySet.getIname() + "·");
+                Map<String, Object> map = new HashMap<>();
+                map.put("industryId", industrySet.getId());
+                map.put("industryName", industrySet.getIname());
+                industries.add(map);
             }
-            industryDesc.append(industrySet.getIname() + "·");
-            Map<String, Object> map = new HashMap<>();
-            map.put("industryId", industrySet.getId());
-            map.put("industryName", industrySet.getIname());
-            industries.add(map);
+            int index = industryDesc.lastIndexOf("·");
+            industryDesc.delete(index, index + 1);
+            baseInfoVo.setIndustries(industries);
+            baseInfoVo.setIndustryDesc(new String(industryDesc));
         }
-        int index = industryDesc.lastIndexOf("·");
-        industryDesc.delete(index, index + 1);
-        baseInfoVo.setIndustries(industries);
-        baseInfoVo.setIndustryDesc(new String(industryDesc));
-        String cityName = cityMapper.selectByPrimaryKey(updateResumeBaseInfoVo.getCityid()).getCityname();
-        baseInfoVo.setCity(cityName);
+        if (updateResumeBaseInfoVo.getCityid() != null && updateResumeBaseInfoVo.getCityid() != "") {
+            String cityName = cityMapper.selectByPrimaryKey(updateResumeBaseInfoVo.getCityid()).getCityname();
+            baseInfoVo.setCity(cityName);
+        }
         return baseInfoVo;
     }
 
@@ -264,11 +301,14 @@ public class ResumeServiceImpl implements IResumeService {
      */
     @Override
     @Transactional
-    public ServerResponse<ResumeWorkExpListVo> updateResumeWorkExpInfo(Integer workExpId, UpdateResumeWorkExpVo updateResumeWorkExpVo, User user) {
+    public ServerResponse<ResumeWorkExpListVo> updateResumeWorkExpInfo(Integer workExpId,
+                                                                       UpdateResumeWorkExpVo updateResumeWorkExpVo,
+                                                                       User user) {
         boolean flag = false;
         Integer result = null;
         ResumeWorkExpListVo resumeWorkExpListVo = null;
-        ResumeInfoVo resumeInfoVo = (ResumeInfoVo) redisTemplate.opsForValue().get(Const.RESUME_INFO + user.getId());
+        ResumeInfoVo resumeInfoVo = (ResumeInfoVo) redisTemplate.opsForValue()
+                .get(Const.RESUME_INFO + user.getId());
         List<ResumeWorkExpListVo> workExpListVos = resumeInfoVo.getWorkExpListVos();
 
         // 工作经历所属简历Id
@@ -306,10 +346,39 @@ public class ResumeServiceImpl implements IResumeService {
             resumeWorkExpListVo = this.assembleResumeWorkExpInfo(updateResumeWorkExpVo);
             workExpListVos.add(resumeWorkExpListVo);
             resumeInfoVo.setWorkExpListVos(workExpListVos);
-            redisTemplate.opsForValue().set(Const.RESUME_INFO + user.getId(), resumeInfoVo, 60 * 30, TimeUnit.SECONDS);
-            return ServerResponse.createResponseBySuccess("更新工作经历成功！", resumeWorkExpListVo);
+            redisTemplate.opsForValue().set(Const.RESUME_INFO + user.getId(),
+                    resumeInfoVo, 60 * 30, TimeUnit.SECONDS);
+            return ServerResponse.createResponseBySuccess("更新工作经历成功！",
+                    resumeWorkExpListVo);
         }
         return ServerResponse.createResponseByErrorMsg("更新工作经历失败，请联系管理员！");
+    }
+
+    @Override
+    public ServerResponse deleteResumeWorkExpInfo(Integer workExpId, User user) {
+        // 根据用户Id查找对应的简历Id
+        Integer resumeId = resumeMapper.selectResumeIdByUserId(user.getId());
+        Integer result = workExpMapper.selectCountByWidRid(workExpId, resumeId);
+        if (result > 0) {
+            int i = workExpMapper.deleteByPrimaryKey(workExpId);
+            if (i > 0) {
+                // 更新缓存
+                ResumeInfoVo resumeInfoVo = (ResumeInfoVo) redisTemplate.opsForValue()
+                        .get(Const.RESUME_INFO + user.getId());
+                List<ResumeWorkExpListVo> workExpListVos = resumeInfoVo.getWorkExpListVos();
+                Iterator<ResumeWorkExpListVo> iterator = workExpListVos.iterator();
+                while (iterator.hasNext()) {
+                    ResumeWorkExpListVo next = iterator.next();
+                    if (next.getId().equals(workExpId)) {
+                        iterator.remove();
+                    }
+                }
+                resumeInfoVo.setWorkExpListVos(workExpListVos);
+                redisTemplate.opsForValue().set(Const.RESUME_INFO + user.getId(), resumeInfoVo, Const.RedisCacheExtime.REDIS_SESSION_EXTIME, TimeUnit.SECONDS);
+                return ServerResponse.createResponseBySuccess("删除成功！");
+            }
+        }
+        return ServerResponse.createResponseByErrorMsg("删除失败，请联系管理员");
     }
 
     /**
@@ -324,6 +393,7 @@ public class ResumeServiceImpl implements IResumeService {
         resumeWorkExpListVo.setCname(updateResumeWorkExpVo.getCname());
         resumeWorkExpListVo.setIndustryId(updateResumeWorkExpVo.getIndustryId());
         resumeWorkExpListVo.setIndustryName(industrysetMapper.selectByPrimaryKey(updateResumeWorkExpVo.getIndustryId()).getIname());
+        resumeWorkExpListVo.setDepartment(updateResumeWorkExpVo.getDepartment());
         resumeWorkExpListVo.setWorkcontent(updateResumeWorkExpVo.getWorkcontent());
         resumeWorkExpListVo.setPosition(updateResumeWorkExpVo.getPosition());
         resumeWorkExpListVo.setPositionId(updateResumeWorkExpVo.getPositionId());
@@ -332,13 +402,19 @@ public class ResumeServiceImpl implements IResumeService {
         workSkilltagMapper.deleteByWid(updateResumeWorkExpVo.getId());
         // 将新的技能标签插入数据库，并转换成文字
         List<Integer> skillTags = updateResumeWorkExpVo.getSkillTags();
-        workSkilltagMapper.batchInsert(skillTags, updateResumeWorkExpVo.getId());
-        List<String> skillTagsStr = Lists.newArrayList();
-        for (Integer skillTag : skillTags) {
-            skillTagsStr.add(positionTypeSetMapper.selectByPrimaryKey(skillTag).getPtname());
+        if (skillTags.size() > 0) {
+            workSkilltagMapper.batchInsert(skillTags, updateResumeWorkExpVo.getId());
+            List<Map<String,Object>> skillTagsStr = Lists.newArrayList();
+            for (Integer skillTag : skillTags) {
+                PositionTypeSet pt = positionTypeSetMapper.selectByPrimaryKey(skillTag);
+                Map<String,Object> map = new HashMap<>();
+                map.put("id", pt.getId());
+                map.put("skillTag", pt.getPtname());
+                skillTagsStr.add(map);
+            }
+            // 放进新的工作经历中
+            resumeWorkExpListVo.setSkillTags(skillTagsStr);
         }
-        // 放进新的工作经历中
-        resumeWorkExpListVo.setSkillTags(skillTagsStr);
         resumeWorkExpListVo.setStartdate(updateResumeWorkExpVo.getStartdate());
         resumeWorkExpListVo.setEnddate(updateResumeWorkExpVo.getEnddate());
         return resumeWorkExpListVo;
@@ -403,6 +479,33 @@ public class ResumeServiceImpl implements IResumeService {
         return ServerResponse.createResponseByErrorMsg("更新项目经历失败，请联系管理员！");
     }
 
+    @Override
+    public ServerResponse deleteResumeProjecExpInfo(Integer projectExpId, User user) {
+        // 根据用户Id查找对应的简历Id
+        Integer resumeId = resumeMapper.selectResumeIdByUserId(user.getId());
+        Integer result = projectExpMapper.selectCountByPidRid(projectExpId, resumeId);
+        if (result > 0) {
+            int i = projectExpMapper.deleteByPrimaryKey(projectExpId);
+            if (i > 0) {
+                // 更新缓存
+                ResumeInfoVo resumeInfoVo = (ResumeInfoVo) redisTemplate.opsForValue()
+                        .get(Const.RESUME_INFO + user.getId());
+                List<ResumeProjectExpListVo> projectExpListVo = resumeInfoVo.getProjectExpListVos();
+                Iterator<ResumeProjectExpListVo> iterator = projectExpListVo.iterator();
+                while (iterator.hasNext()) {
+                    ResumeProjectExpListVo next = iterator.next();
+                    if (next.getId().equals(projectExpId)) {
+                        iterator.remove();
+                    }
+                }
+                resumeInfoVo.setProjectExpListVos(projectExpListVo);
+                redisTemplate.opsForValue().set(Const.RESUME_INFO + user.getId(), resumeInfoVo, Const.RedisCacheExtime.REDIS_SESSION_EXTIME, TimeUnit.SECONDS);
+                return ServerResponse.createResponseBySuccess("删除成功！");
+            }
+        }
+        return ServerResponse.createResponseByErrorMsg("删除失败，请联系管理员");
+    }
+
     /**
      * 生成项目经历信息
      * @param updateResumeProjectExpVo
@@ -436,13 +539,13 @@ public class ResumeServiceImpl implements IResumeService {
         ResumeInfoVo resumeInfoVo = (ResumeInfoVo) redisTemplate.opsForValue().get(Const.RESUME_INFO + user.getId());
         List<ResumeEducationExpListVo> educationExpListVos = resumeInfoVo.getEducationExpListVos();
 
-        // 项目经历所属简历Id
+        // 教育经历所属简历Id
         Integer resumeId = resumeMapper.selectResumeIdByUserId(user.getId());
         updateEducationExpVo.setResuid(resumeId);
 
         if (educationExpId != null) {
-            // 更新项目经历
-            // 设置项目经历id
+            // 更新教育经历
+            // 设置教育经历id
             updateEducationExpVo.setId(educationExpId);
             // 更新数据库
             result = resumeMapper.updateResumeEducationExpById(updateEducationExpVo);
@@ -511,24 +614,26 @@ public class ResumeServiceImpl implements IResumeService {
         Integer resumeId = resumeMapper.selectResumeIdByUserId(user.getId());
         // 删除该简历的所有证书
         Integer result = resumeCertificateMapper.deleteByResumeId(resumeId);
-        if (result > 0) {
-            // 插入新的证书Id
-            result = resumeCertificateMapper.batchInsertByRidCid(resumeId, certificationIdList);
-            if (result > 0) {
-                List<ResumeCertificationListVo> list = Lists.newArrayList();
-                // 遍历新证书，生成输出的结果
-                for (Integer cid : certificationIdList) {
-                    ResumeCertificationListVo certificationListVo = new ResumeCertificationListVo();
-                    String cname = credentialMapper.selectByPrimaryKey(cid).getCname();
-                    certificationListVo.setCertificationName(cname);
-                    list.add(certificationListVo);
+        if (result >= 0) {
+            List<ResumeCertificationListVo> list = Lists.newArrayList();
+            if (certificationIdList.size() > 0) {
+                // 插入新的证书Id
+                result = resumeCertificateMapper.batchInsertByRidCid(resumeId, certificationIdList);
+                if (result > 0) {
+                    // 遍历新证书，生成输出的结果
+                    for (Integer cid : certificationIdList) {
+                        ResumeCertificationListVo certificationListVo = new ResumeCertificationListVo();
+                        String cname = credentialMapper.selectByPrimaryKey(cid).getCname();
+                        certificationListVo.setCertificationName(cname);
+                        list.add(certificationListVo);
+                    }
                 }
-                // 更新缓存
-                ResumeInfoVo resumeInfoVo = (ResumeInfoVo) redisTemplate.opsForValue().get(Const.RESUME_INFO + user.getId());
-                resumeInfoVo.setCertificationListVos(list);
-                redisTemplate.opsForValue().set(Const.RESUME_INFO + user.getId(), resumeInfoVo, 60 * 60, TimeUnit.SECONDS);
-                return ServerResponse.createResponseBySuccess("更新资格证书成功！", list);
             }
+            // 更新缓存
+            ResumeInfoVo resumeInfoVo = (ResumeInfoVo) redisTemplate.opsForValue().get(Const.RESUME_INFO + user.getId());
+            resumeInfoVo.setCertificationListVos(list);
+            redisTemplate.opsForValue().set(Const.RESUME_INFO + user.getId(), resumeInfoVo, 60 * 60, TimeUnit.SECONDS);
+            return ServerResponse.createResponseBySuccess("更新资格证书成功！", list);
         }
         return ServerResponse.createResponseByErrorMsg("更新资格证书失败！");
     }
@@ -545,6 +650,17 @@ public class ResumeServiceImpl implements IResumeService {
         String deletedUri = resumeMapper.selectUriByUserId(type, user.getId());
         Integer result = resumeMapper.updateResumeAttachmentByUserId(user.getId(), type);
         if (result > 0) {
+            ResumeInfoVo resumeInfoVo = (ResumeInfoVo) redisTemplate.opsForValue().get(Const.RESUME_INFO + user.getId());
+            if (resumeInfoVo != null) {
+                ResumeBaseInfoVo baseInfoVo = resumeInfoVo.getResumeBaseInfoVo();
+                if (StringUtils.equals(type, "resume")) {
+                    baseInfoVo.setResumeattachment(null);
+                } else if (StringUtils.equals(type, "other")) {
+                    baseInfoVo.setOtherattachment(null);
+                }
+                resumeInfoVo.setResumeBaseInfoVo(baseInfoVo);
+                redisTemplate.opsForValue().set(Const.RESUME_INFO + user.getId(), resumeInfoVo, Const.RedisCacheExtime.REDIS_SESSION_EXTIME, TimeUnit.SECONDS);
+            }
             return ServerResponse.createResponseBySuccess("删除成功！", deletedUri);
         }
         return ServerResponse.createResponseByErrorMsg("删除失败！");

@@ -141,4 +141,8 @@
       updateTime = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectCountByPidRid" resultType="integer">
+    select count(1) from projectexperience where id = #{projectExpId} and resuId = #{resumeId}
+  </select>
 </mapper>

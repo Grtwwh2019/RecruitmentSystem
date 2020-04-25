@@ -41,4 +41,21 @@ public class RoleServiceImpl implements IRoleService {
         }
         return null;
     }
+
+    /**
+     * 获取该用户的最高的角色
+     * @param userId
+     * @return
+     */
+    @Override
+    public Role gethighestRole(Integer userId) {
+        Integer roleId = roleMapper.selectMaxRoleIdByUserId(userId);
+        if (roleId > 0) {
+            Role role = roleMapper.selectByPrimaryKey(roleId);
+            if (role.getId() > 0) {
+                return role;
+            }
+        }
+        return null;
+    }
 }

@@ -27,4 +27,6 @@ public interface IUserService {
     ServerResponse<String> resetPassword(String username, String passwordOld, String passwordNew);
 
     ServerResponse<String> deliverResume(User user, Integer employmentId);
+
+    ServerResponse getUserCollectionStatus(Integer type, Integer collectionId, User user);
 }

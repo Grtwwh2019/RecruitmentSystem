@@ -1,6 +1,7 @@
 package com.zzj.recruitment.dao;
 
 import com.zzj.recruitment.pojo.workExp;
+import org.apache.ibatis.annotations.Param;
 
 public interface workExpMapper {
     int deleteByPrimaryKey(Integer id);
@@ -14,4 +15,6 @@ public interface workExpMapper {
     int updateByPrimaryKeySelective(workExp record);
 
     int updateByPrimaryKey(workExp record);
+
+    Integer selectCountByWidRid(@Param("workExpId") Integer workExpId, @Param("resumeId") Integer resumeId);
 }

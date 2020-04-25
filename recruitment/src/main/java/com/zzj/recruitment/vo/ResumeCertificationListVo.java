@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ResumeCertificationListVo {
 
+    private Integer id;
+
     /**
      * 证书名称
      */

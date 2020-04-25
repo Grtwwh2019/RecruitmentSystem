@@ -10,6 +10,16 @@
       <arg column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
     </constructor>
   </resultMap>
+
+  <resultMap id="industryListResultMap" type="com.zzj.recruitment.vo.IndustryOrPositionSetListVo" >
+    <id property="value" column="id"></id>
+    <result property="label" column="iname"></result>
+    <collection property="children" ofType="com.zzj.recruitment.vo.IndustryOrPositionSetListVo">
+      <id property="value" column="id2"></id>
+      <result property="label" column="iname2"></result>
+    </collection>
+  </resultMap>
+
   <sql id="Base_Column_List" >
     id, iName, iParentId, createTime, updateTime
   </sql>
@@ -82,4 +92,8 @@
       updateTime = now()
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getAllIndustry" resultMap="industryListResultMap">
+    select i1.id as id, i1.iName as iname, i2.id as id2, i2.iName as iname2 from industryset as i1 inner join industryset as i2 on i1.id = i2.iParentId
+  </select>
 </mapper>

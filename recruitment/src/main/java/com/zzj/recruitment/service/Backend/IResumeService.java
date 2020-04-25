@@ -26,4 +26,8 @@ public interface IResumeService {
     ServerResponse<ResumeEducationExpListVo> updateResumeEducationExpInfo(Integer educationExpId, UpdateResumeEducationExpVo educationExpVo, User user);
 
     ServerResponse<List<ResumeCertificationListVo>> updateResumeCertificationInfo(List<Integer> certificationIdList, User user);
+
+    ServerResponse deleteResumeWorkExpInfo(Integer workExpId, User user);
+
+    ServerResponse deleteResumeProjecExpInfo(Integer projectExpId, User user);
 }

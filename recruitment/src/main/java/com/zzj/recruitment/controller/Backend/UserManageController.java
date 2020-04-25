@@ -2,6 +2,7 @@ package com.zzj.recruitment.controller.Backend;
 
 import com.github.pagehelper.PageInfo;
 import com.zzj.recruitment.common.ServerResponse;
+import com.zzj.recruitment.common.constant.Const;
 import com.zzj.recruitment.pojo.User;
 import com.zzj.recruitment.service.Backend.IUserManageService;
 import com.zzj.recruitment.util.CookieUtil;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.concurrent.TimeUnit;
 
 /**
  * version 1.0
@@ -109,17 +111,17 @@ public class UserManageController {
      * getAnnounceList
      * @return
      */
-    @GetMapping(value = {"/getAnnounceList.do/{pageNum}", "/getAnnounceList.do"})
-    public ServerResponse<PageInfo> getAnnounceList(@PathVariable(value = "pageNum", required = false) Integer pageNum, HttpServletRequest request){
+    @GetMapping(value = {"/getAnnounceList.do/{pageNum}/{readed}", "/getAnnounceList.do"})
+    public ServerResponse<PageInfo> getAnnounceList(@PathVariable(value = "pageNum", required = false) Integer pageNum, @PathVariable(value = "readed") Integer readed,HttpServletRequest request){
         // todo 以后改为json存储具体内容
-        if (pageNum == null) {
-            pageNum = 1;
-        }
+//        if (pageNum == null) {
+//            pageNum = 1;
+//        }
         String loginToken = CookieUtil.readLoginToken(request);
         if (loginToken != null) {
             User user = (User) redisTemplate.opsForValue().get(loginToken);
             if (user != null) {
-                ServerResponse response = userManageService.returnAnnounceList(user, pageNum);
+                ServerResponse response = userManageService.returnAnnounceList(user, pageNum, readed);
                 return response;
             }
         }
@@ -156,13 +158,37 @@ public class UserManageController {
      * @return
      */
     @PostMapping("/applyEnterpriseUser.do")
-    public ServerResponse applyEnterpriseUser(@Validated @RequestBody EnterpriseUserInfoVo enterpriseUserInfoVo, HttpServletRequest request) {
+    public ServerResponse applyEnterpriseUser(
+            @Validated @RequestBody EnterpriseUserInfoVo enterpriseUserInfoVo,
+            HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (loginToken != null) {
             User user = (User) redisTemplate.opsForValue().get(loginToken);
             if (user != null) {
                 // 点击上传工牌以后，得到返回的工牌uri--->cardPhoto，然后带着这四个参数申请认证
-                return userManageService.applyEnterpriseUser(enterpriseUserInfoVo, user);
+                ServerResponse response = userManageService.applyEnterpriseUser(enterpriseUserInfoVo, user);
+                if (response.isSuccess()) {
+                    redisTemplate.opsForValue().set(loginToken, response.getData(),
+                            Const.RedisCacheExtime.REDIS_SESSION_EXTIME, TimeUnit.SECONDS);
+                }
+                return response;
+            }
+        }
+        return ServerResponse.createResponseByErrorMsg("您未登录，请先登录");
+    }
+
+    /**
+     * 得到投递箱列表
+     * @param request
+     * @return
+     */
+    @GetMapping("/getResumeDeliverList.do/{pageNum}")
+    public ServerResponse getResumeDeliverList(@PathVariable(value = "pageNum") Integer pageNum, HttpServletRequest request) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (loginToken != null) {
+            User user = (User) redisTemplate.opsForValue().get(loginToken);
+            if (user != null) {
+                return userManageService.returnResumeDeliverList(pageNum, user);
             }
         }
         return ServerResponse.createResponseByErrorMsg("您未登录，请先登录");

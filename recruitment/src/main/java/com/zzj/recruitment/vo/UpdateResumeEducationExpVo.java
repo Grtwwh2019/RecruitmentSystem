@@ -34,7 +34,6 @@ public class UpdateResumeEducationExpVo {
     /**
      * 学校类型，0---全日制，1---非全日制
      */
-    @NotNull(message = "学校类型不能为空")
     private Integer schoolType;
 
     /**
