@@ -111,13 +111,13 @@ public class CommonServiceImpl implements ICommonService {
     @Override
     public ServerResponse getCompanyListByCompanyName(String companyName) {
         List<CompanyListVo> companyList = companyMapper.getCompanyListByCompanyName(companyName);
-        return ServerResponse.createResponseBySuccess("查询公司列表成功！", companyList);
+        return ServerResponse.createResponseBySuccess(companyList);
     }
 
     @Override
     public ServerResponse getSchoolListBySchoolName(String schoolName) {
         List<SchoolListVo> companyList = companyMapper.getSchoolListBySchoolName(schoolName);
-        return ServerResponse.createResponseBySuccess("查询公司列表成功！", companyList);
+        return ServerResponse.createResponseBySuccess( companyList);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class CommonServiceImpl implements ICommonService {
         } else {
             log.info("从缓存获取行业类型！");
         }
-        return ServerResponse.createResponseBySuccess("查询行业类型成功！", industrysetList);
+        return ServerResponse.createResponseBySuccess(industrysetList);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class CommonServiceImpl implements ICommonService {
         } else {
             log.info("从缓存获取职位类型！");
         }
-        return ServerResponse.createResponseBySuccess("查询职位类型成功！", positionSetList);
+        return ServerResponse.createResponseBySuccess( positionSetList);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class CommonServiceImpl implements ICommonService {
         // todo 添加到缓存中
 //        Integer parentId = positionTypeSetMapper.selectParentIdByPid(pid);
         List<IndustryOrPositionSetListVo> skillTags = positionTypeSetMapper.getSkillTagsByPositionId(pid);
-        return ServerResponse.createResponseBySuccess("查询技能标签成功！", skillTags);
+        return ServerResponse.createResponseBySuccess( skillTags);
     }
 
     @Override
@@ -170,7 +170,7 @@ public class CommonServiceImpl implements ICommonService {
         } else {
             log.info("从缓存获取资格证书！");
         }
-        return ServerResponse.createResponseBySuccess("查询资格证书成功！", certificationList);
+        return ServerResponse.createResponseBySuccess(certificationList);
     }
 
     @Override
@@ -185,6 +185,6 @@ public class CommonServiceImpl implements ICommonService {
         } else {
             log.info("从缓存获取城市！");
         }
-        return ServerResponse.createResponseBySuccess("查询城市成功！", cityList);
+        return ServerResponse.createResponseBySuccess(cityList);
     }
 }

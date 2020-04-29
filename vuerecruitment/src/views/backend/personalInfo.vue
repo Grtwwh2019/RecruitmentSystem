@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :key="componentKey">
     <div class="view_personalInfo" v-if="!editable">
       <el-button class="edit_acatar el-icon-edit" @click="editable = true" type="text">编辑</el-button>
       <img fit="fill" :src="userInfo.imageUrl" :size="80" class="avatar"></img>
@@ -80,7 +80,10 @@
           remotePath: this.uploadParam.type
         }
         if (params.fileName != null && params.fileName != '' && params.fileName.length != 0) {
-          let _result = await deleteFile(params)
+          let result = await deleteFile(params)
+          // if (result && result.status == 0) {
+          //   this.userInfo.imageUri = null
+          // }
         }
         this.$refs.personalInfoForm.resetFields()
         this.editable = false
@@ -97,13 +100,17 @@
       this.editable = false
       // 获取用户信息
       await this.getUserInfo()
-      if (this.userInfo.imageUri == null || this.userInfo.imageUri == '') {
+      if (this.userInfo.imageUri == 'null' || this.userInfo.imageUri == null || this.userInfo.imageUri == '') {
         this.userInfo.imageUrl = 'http://attachment.grtwwh.com:8080/img/yazi.jpeg'
+      } 
+      else {
+        this.userInfo.imageUrl = "http://attachment.grtwwh.com:8080/img/" + this.userInfo.imageUri
       }
       this.personalInfoForm.nickname = this.userInfo.nickname
     },
     data() {
       return {
+        componentKey: 1,
         isChanged: false,
         loading: false,
         personalInfoForm: {
@@ -160,6 +167,12 @@
         }
         if (params.fileName != null && params.fileName != '' && params.fileName.length != 0) {
           let _result = await deleteFile(params)
+          if (_result && _result.status == 0) {
+            // this.userInfo.imageUri = null
+            ++ this.componentKey
+            this.userInfo.imageUrl = 'http://attachment.grtwwh.com:8080/img/yazi.jpeg'
+            // console.log(this.componentKey)
+          }
         }
         this.$refs.personalInfoForm.resetFields()
         this.editable = false
@@ -209,7 +222,7 @@
           this.userInfo.nickname = baseInfo.data.nickname
           this.userInfo.telephone = baseInfo.data.telephone
           this.userInfo.email = baseInfo.data.email
-          this.userInfo.imageUrl = baseInfo.data.headerMask
+          // this.userInfo.imageUrl = baseInfo.data.headerMask
           let url = baseInfo.data.headerMask.split("/")
           this.userInfo.imageUri = url[(url.length) - 1]
         }

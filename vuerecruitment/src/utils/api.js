@@ -6,8 +6,8 @@ axios.defaults.withCredentials = true
 axios.interceptors.response.use(success => {
   if (success.status && success.status == 200 && success.data.status == 1) {
     let msgstr = String(success.data.msg)
-    console.log(msgstr)
-    if (msgstr.indexOf("登录")) {
+    // console.log(msgstr)
+    if (msgstr.indexOf("登录") >= 1) {
       Message.error({message: success.data.msg})
       router.push("/login")
       // return

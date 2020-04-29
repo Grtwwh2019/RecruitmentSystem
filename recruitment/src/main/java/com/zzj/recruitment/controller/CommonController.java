@@ -67,8 +67,11 @@ public class CommonController {
 
     @PostMapping("/deleteFile.do")
     public ServerResponse deleteFile(String fileName, String remotePath) {
-        fileService.delete(fileName, remotePath);
-        return ServerResponse.createResponseBySuccessMsg("删除成功！");
+        Boolean result = fileService.delete(fileName, remotePath);
+        if (result) {
+            return ServerResponse.createResponseBySuccess("删除成功！");
+        }
+        return ServerResponse.createResponseByError();
     }
 
 
@@ -166,6 +169,7 @@ public class CommonController {
     }
 
 
+
     /**
      * 得到所有行业类型
      * @return
@@ -211,6 +215,9 @@ public class CommonController {
     public ServerResponse getAllCity() {
         return commonService.getAllCity();
     }
+
+
+
 
 
 

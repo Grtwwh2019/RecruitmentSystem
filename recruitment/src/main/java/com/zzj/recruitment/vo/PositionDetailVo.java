@@ -87,6 +87,11 @@ public class PositionDetailVo {
     private String erequirement;
 
     /**
+     * 发布人Id
+     */
+    private Integer publisherId;
+
+    /**
      * 发布人
      */
     private String publisher;

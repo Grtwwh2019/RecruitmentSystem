@@ -1,5 +1,9 @@
 <template>
-  <div class="jobSeekerDelivert-Resume">
+  <div class="jobSeekerDelivert-Resume"
+    v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
     <div class="title" style="margin:0 auto;width: 928px;">
       <div class="title_box" style="padding-top:30px;color:rgb(0, 179, 138);font-size:26px;">
         求职者简历投递情况
@@ -176,6 +180,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       resumeDetailInfo: {},
       age: "",
       degree: {},
@@ -245,6 +250,7 @@ export default {
       this.getUserResumeList(1)
     },
     async getUserResumeList(pageNum) {
+      this.loading = true
       let param = {
         pageNum: pageNum,
         searchVo: this.searchVo
@@ -256,6 +262,7 @@ export default {
       }else{
         this.$message.warning(resp.msg ? resp.msg : "未知错误，请联系管理员")
       }
+      this.loading = false
     },
     handleCurrentChange(currentPage){
       // console.log(this.searchVo)

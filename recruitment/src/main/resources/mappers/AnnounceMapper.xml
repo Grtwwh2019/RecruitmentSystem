@@ -154,7 +154,7 @@
         and id = #{announceSearchVo.id}
       </if>
       <if test="announceSearchVo.title != null and announceSearchVo.title != ''">
-        and title = #{announceSearchVo.title}
+        and upper(title) like upper(concat('%',#{announceSearchVo.title},'%'))
       </if>
       <if test="announceSearchVo.type != null">
         and `type` = #{announceSearchVo.type}
@@ -165,13 +165,14 @@
       <if test="announceSearchVo.status != null">
         and status = #{announceSearchVo.status}
       </if>
-      <if test="announceSearchVo.createTImeFrom != null and announceSearchVo.createTImeFrom != ''">
-        and createTime <![CDATA[>=]]> #{announceSearchVo.createTImeFrom}
+      <if test="announceSearchVo.createTImeFrom != null">
+        and a.createTime <![CDATA[>=]]> #{announceSearchVo.createTImeFrom}
       </if>
-      <if test="announceSearchVo.createTImeTo != null and announceSearchVo.createTImeTo != ''">
-        and createTime <![CDATA[<=]]> #{announceSearchVo.createTImeTo}
+      <if test="announceSearchVo.createTImeTo != null">
+        and a.createTime <![CDATA[<=]]> #{announceSearchVo.createTImeTo}
       </if>
     </where>
-    order by a.createTime asc
+    order by a.createTime desc
+
   </select>
 </mapper>

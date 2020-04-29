@@ -24,10 +24,10 @@
     <div class="inner"> 
         <div class="head_left">
             <a href="/#/index" class="logo"></a>
-            <div class="selectCity">
+            <!-- <div class="selectCity">
                 <span>{{selectedCity.name}}</span>
                 <span @click="cityFlag = true">[切换城市]</span>
-            </div>
+            </div> -->
         </div>
         <ul class="head_mid">
             <li><router-link :class="{'router-link-active': this.$route.name == 'index'}" to="/index">首页</router-link></li>
@@ -66,7 +66,7 @@
             </ul>
             <ul class="account_bar" v-if="loginedUser == null">
               <li><router-link :class="{'router-link-active': this.$route.name == 'login'}" to="/login">登录</router-link></li>
-              <li><router-link :class="{'router-link-active': this.$route.name == 'register'}" to="/msgbox">注册</router-link></li>
+              <li><router-link :class="{'router-link-active': this.$route.name == 'register'}" to="/register">注册</router-link></li>
             </ul>
             <!-- <router-link class="lg_app" to="/lgapp">
                 <i class="iconfont icon-iconfontshouji"></i>拉钩APP
@@ -84,7 +84,7 @@ export default {
   components: {},
   data() {
     return {
-        loginedUser: JSON.parse(window.sessionStorage.getItem('user')),
+        // loginedUser: JSON.parse(window.sessionStorage.getItem('user')),
         flag:false,
         newsFlag:false,
         numFlag: true,
@@ -123,6 +123,9 @@ export default {
       // console.log(this.$store.state.selectedCity)
       // this.$store.commit('initSelectedCity', this.$store.state.selectedCity)
       return this.$store.state.selectedCity
+    },
+    loginedUser() {
+        return JSON.parse(window.sessionStorage.getItem('user'))
     }
     // routes() {
     //   return this.$store.state.routes

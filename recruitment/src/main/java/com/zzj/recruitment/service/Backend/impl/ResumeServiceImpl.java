@@ -159,7 +159,7 @@ public class ResumeServiceImpl implements IResumeService {
         resume.setRuserid(user.getId());
         // 根据用户Id查找对应的简历Id
         Integer resumeId = resumeMapper.selectResumeIdByUserId(user.getId());
-        if (resumeId != null && resume.getId() != null & resume.getId() != resumeId) {
+        if (resumeId != null && resume.getId() != null & !resume.getId().equals(resumeId)) {
             return ServerResponse.createResponseByErrorMsg("请确认需要修改的简历信息为您本人的！");
         } else if (resumeId == null) {
             // 万一找不到该用户的在线简历，则进行插入操作
@@ -249,9 +249,11 @@ public class ResumeServiceImpl implements IResumeService {
         baseInfoVo.setResumeattachment(updateResumeBaseInfoVo.getResumeattachment());
         // 职位类型Id
         Integer expectPositionId = updateResumeBaseInfoVo.getExpectpositionid();
-        baseInfoVo.setExpectpositionId(expectPositionId);
-        String ptName = positionTypeSetMapper.selectByPrimaryKey(expectPositionId).getPtname();
-        baseInfoVo.setExpectposition(ptName);
+        if (expectPositionId != null) {
+            baseInfoVo.setExpectpositionId(expectPositionId);
+            String ptName = positionTypeSetMapper.selectByPrimaryKey(expectPositionId).getPtname();
+            baseInfoVo.setExpectposition(ptName);
+        }
         baseInfoVo.setLowsalary(updateResumeBaseInfoVo.getLowsalary());
         baseInfoVo.setHighsalary(updateResumeBaseInfoVo.getHighsalary());
         // 构造 List<Map<String, Object>> industries; 并且更新resume industry关系表
@@ -284,7 +286,7 @@ public class ResumeServiceImpl implements IResumeService {
             baseInfoVo.setIndustries(industries);
             baseInfoVo.setIndustryDesc(new String(industryDesc));
         }
-        if (updateResumeBaseInfoVo.getCityid() != null && updateResumeBaseInfoVo.getCityid() != "") {
+        if (updateResumeBaseInfoVo.getCityid() != null && updateResumeBaseInfoVo.getCityid() != "" && updateResumeBaseInfoVo.getCityid().length() > 0) {
             String cityName = cityMapper.selectByPrimaryKey(updateResumeBaseInfoVo.getCityid()).getCityname();
             baseInfoVo.setCity(cityName);
         }
@@ -624,6 +626,7 @@ public class ResumeServiceImpl implements IResumeService {
                     for (Integer cid : certificationIdList) {
                         ResumeCertificationListVo certificationListVo = new ResumeCertificationListVo();
                         String cname = credentialMapper.selectByPrimaryKey(cid).getCname();
+                        certificationListVo.setId(cid);
                         certificationListVo.setCertificationName(cname);
                         list.add(certificationListVo);
                     }

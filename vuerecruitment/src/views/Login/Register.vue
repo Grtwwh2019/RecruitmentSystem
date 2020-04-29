@@ -139,13 +139,13 @@ export default {
       showAuth: false,
       // 注册信息
       registerForm: {
-        nickname: 'asdasd',
-        telephone: '13533941290',
-        email: '13533941290@qq.com',
-        username: 'asdasd',
-        password: 'asdasd',
+        nickname: '',
+        telephone: '',
+        email: '',
+        username: '',
+        password: '',
         // 确认密码
-        confirmPassword: 'asdasd',
+        confirmPassword: '',
         // 营业执照
         license: '',
         captcha: '',

@@ -75,7 +75,7 @@ export default {
   components: {
     announceDetailDialog
   },
-  created() {
+  mounted() {
     this.init()
   },
   computed: {
@@ -100,7 +100,7 @@ export default {
     return {
       dialogVisible: false,
       loading: false,
-      count: 0,
+      count: 1,
       readed: 1,
       announceList: [],
       announceDetail: {},

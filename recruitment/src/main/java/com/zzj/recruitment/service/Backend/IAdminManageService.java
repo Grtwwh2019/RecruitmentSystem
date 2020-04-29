@@ -37,4 +37,5 @@ public interface IAdminManageService {
 
     ServerResponse<String> forbiddenPosition(Integer positionId, Integer status);
 
+    ServerResponse getUserListByUserName(String userName, User user);
 }

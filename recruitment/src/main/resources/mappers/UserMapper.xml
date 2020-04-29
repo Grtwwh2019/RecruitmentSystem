@@ -230,7 +230,7 @@
 
   <update id="resetPasswordByUsername">
     update user set passWord = #{passwordNew}
-    where username = #{username}
+    where userName = #{username}
   </update>
 
 
@@ -268,10 +268,18 @@
   </update>
 
   <select id="selectEnterpriseAccount" resultType="com.zzj.recruitment.vo.EnterpriseAccountListVo">
-    select u.id as id, u.nickname as nickname, u.telephone as telephone, u.email as email, c.cname as companyName, u.authentication as authentication
+    select u.id as id, u.nickname as nickname, u.telephone as telephone, u.email as email,
+    u.userName as username, c.cname as companyName, u.authentication as authentication
     from `user` as u
     left join company as c on u.companyId = c.id
-    where u.authentication = #{auth}
+    left join user_role as ur on u.id = ur.user_id
+    <where>
+      <if test="auth == 1">
+        and ur.role_id = 3
+      </if>
+      and u.authentication = #{auth}
+    </where>
+
   </select>
 
   <select id="selectUserListBySearchVo" resultType="com.zzj.recruitment.vo.UserDetailInfoVo" parameterType="com.zzj.recruitment.vo.UserSearchVo">
@@ -283,19 +291,19 @@
         and id = #{id}
       </if>
       <if test="nickname != null and nickname != ''">
-        and nickName = #{nickname}
+        and upper(nickName) like upper(CONCAT('%', #{nickname}, '%'))
       </if>
       <if test="telephone != null and telephone != ''">
-        and telephone = #{telephone}
+        and upper(telephone) like upper(CONCAT('%', #{telephone}, '%'))
       </if>
       <if test="email != null and email != ''">
-        and email = #{email}
+        and upper(email) like upper(CONCAT('%', #{email}, '%'))
       </if>
       <if test="username != null and username != ''">
-        and userName = #{username}
+        and upper(username) like upper(CONCAT('%', #{username}, '%'))
       </if>
       <if test="empno != null">
-        and empNo = #{empno}
+        and empNo like concat('%', #{empno}, '%')
       </if>
       <if test="companyid != null">
         and companyId = #{companyid}
@@ -303,12 +311,16 @@
       <if test="authentication != null">
         and authentication = #{authentication}
       </if>
-      <if test="createTImeFrom != null and createTImeFrom != ''">
+      <if test="createTImeFrom != null">
         and u.createTime <![CDATA[>=]]> #{createTImeFrom}
       </if>
-      <if test="createTImeTo != null and createTImeTo != ''">
+      <if test="createTImeTo != null">
         and u.createTime <![CDATA[<=]]> #{createTImeTo}
       </if>
     </where>
+  </select>
+
+  <select id="selectUserListByUserName" resultType="com.zzj.recruitment.vo.UserListVo">
+    select id, nickName from `user` where id != #{userId} and nickName like CONCAT('%', #{userName},'%') order by id
   </select>
 </mapper>

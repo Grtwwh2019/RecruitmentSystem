@@ -2,7 +2,7 @@
 <template>
 <div class='jobsDetail'
   v-loading="loading"
-  element-loading-text="正在投递..."
+  element-loading-text="正在加载..."
   element-loading-spinner="el-icon-loading"
   element-loading-background="rgba(0, 0, 0, 0.8)">
     <div class="jobsTop">
@@ -165,7 +165,14 @@ export default {
               message: resp.msg,
               type: 'success'
             });
-          } 
+          } else {
+            this.$message({
+              center: true,
+              showClose: true,
+              message: resp.msg,
+              type: 'error'
+            });
+          }
           // else {
           //   this.$message({
           //     center: true,
@@ -186,6 +193,7 @@ export default {
       })
     },
     getDetail() {
+      this.loading = true
       let param = {
         type: 0,
         id: this.jobListParam.id
@@ -195,6 +203,7 @@ export default {
           this.jobData = resp.data
           // console.log(resp)
         }
+        this.loading = false
       })
     },
     getUserCollectionStatus() {

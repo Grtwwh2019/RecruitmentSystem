@@ -215,6 +215,9 @@
     left join industryset as i on com.industryId = i.id
     left join city as c on com.ccity = c.id
     <where>
+      <if test="companyId != null">
+        and com.id = #{companyId}
+      </if>
       <if test="industry != null">
         and com.industryId = #{industry}
       </if>
@@ -230,12 +233,19 @@
       <if test="cname != null and cname != ''">
         and upper(com.cname) like upper(CONCAT('%',#{cname},'%'))
       </if>
+      <if test="createTImeFrom != null">
+        and com.createTime <![CDATA[>=]]> #{createTImeFrom}
+      </if>
+      <if test="createTImeTo != null">
+        and com.createTime <![CDATA[<=]]> #{createTImeTo}
+      </if>
     </where>
     order by financing desc
   </select>
 
   <select id="selectDetailByCompanyId" parameterType="integer" resultType="com.zzj.recruitment.vo.CompanyDetailVo">
-    select c.id as id, c.logo as logo, c.cname as cname, c.cintroduction as cintroduction, c.financing as financing, i.iName as industry, c.csize as csize, c.ccity as ccityId, city.cityName as ccityName, c.fullname as fullname, c.representative as representative, c.assets as assets, c.establishtime as establishtime, c.photo as photo, c. createTime as createtime
+    select c.id as id, c.logo as logo, c.cname as cname, c.cintroduction as cintroduction, c.financing as financing,
+    c.industryId as industryid, i.iName as industry, c.csize as csize, c.ccity as ccityId, city.cityName as ccityName, c.fullname as fullname, c.representative as representative, c.assets as assets, c.establishtime as establishtime, c.photo as photo, c. createTime as createtime
     from company as c
     left join city on c.ccity = city.id
     left join industryset as i on c.industryId = i.id

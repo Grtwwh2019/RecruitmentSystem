@@ -3,13 +3,16 @@ package com.zzj.recruitment.controller.Backend;
 import com.github.pagehelper.PageInfo;
 import com.zzj.recruitment.common.ServerResponse;
 import com.zzj.recruitment.common.constant.Const;
+import com.zzj.recruitment.common.constant.ResponseCode;
 import com.zzj.recruitment.pojo.Announce;
 import com.zzj.recruitment.pojo.Company;
 import com.zzj.recruitment.pojo.Role;
 import com.zzj.recruitment.pojo.User;
 import com.zzj.recruitment.service.Backend.IAdminManageService;
 import com.zzj.recruitment.service.IRoleService;
+import com.zzj.recruitment.service.IUserService;
 import com.zzj.recruitment.util.CookieUtil;
+import com.zzj.recruitment.util.JsonUtil;
 import com.zzj.recruitment.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,7 +20,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 管理员
@@ -37,6 +43,35 @@ public class AdminManageController {
 
     @Autowired
     IAdminManageService adminManageService;
+
+    @Autowired
+    IUserService userService;
+
+    @PostMapping("/login.do")
+    public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpServletResponse){
+        ServerResponse<User> response = userService.userlogin(username,password);
+        if(response.isSuccess()){
+            User user = response.getData();
+            boolean isPermitted = false;
+            List<Role> roles = roleService.getAllRolesByUserId(user.getId());
+            for (Role role : roles) {
+                if (role.getId() == Const.Role.ROLE_admin.getCode()) {
+                    isPermitted = true;
+                    break;
+                }
+            }
+            // 如果有权限
+            if (isPermitted) {
+                CookieUtil.writeLoginToken(httpServletResponse,session.getId());
+                redisTemplate.opsForValue().set(session.getId(), user, Const.RedisCacheExtime.REDIS_SESSION_EXTIME, TimeUnit.SECONDS);
+                return response;
+            } else{
+                return ServerResponse.createResponseByErrorCustom(403,"不是管理员,无法登录");
+            }
+        }
+        return response;
+    }
+
 
 
     /**
@@ -208,7 +243,7 @@ public class AdminManageController {
      * @param request
      * @return
      */
-    @GetMapping("/getAllUserList.do/{pageNum}")
+    @PostMapping("/getAllUserList.do/{pageNum}")
     public ServerResponse<PageInfo> getAllUserList(@Validated @RequestBody UserSearchVo userSearchVo, @PathVariable("pageNum") Integer pageNum, HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (loginToken != null) {
@@ -273,7 +308,7 @@ public class AdminManageController {
      * @param request
      * @return
      */
-    @GetMapping("/getAllAnnounceList.do/{pageNum}")
+    @PostMapping("/getAllAnnounceList.do/{pageNum}")
     public ServerResponse<PageInfo> getAllAnnounceList(@Validated @RequestBody AnnounceSearchVo announceSearchVo, @PathVariable("pageNum") Integer pageNum, HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (loginToken != null) {
@@ -368,7 +403,7 @@ public class AdminManageController {
      * @param request
      * @return
      */
-    @GetMapping("/getPositionList.do/{pageNum}")
+    @PostMapping("/getPositionList.do/{pageNum}")
     public ServerResponse<PageInfo> getPositionList(@PathVariable("pageNum") Integer pageNum, @Validated @RequestBody CompanyPositionSearchVo employmentSearchVo, HttpServletRequest request) {
         String loginToken = CookieUtil.readLoginToken(request);
         if (loginToken != null) {
@@ -427,5 +462,35 @@ public class AdminManageController {
         return ServerResponse.createResponseByErrorMsg("您未登录，请先登录！");
     }
 
+    /**
+     *
+     * @param userName
+     * @return
+     */
+    @GetMapping({"/getUserListByUserName.do/{userName}"})
+    public ServerResponse getUserListByUserName(
+            @PathVariable(value = "userName") String userName, HttpServletRequest request) {
+        String loginToken = CookieUtil.readLoginToken(request);
+        if (loginToken != null) {
+            User user = (User) redisTemplate.opsForValue().get(loginToken);
+            if (user != null) {
+                // 判断角色是否为管理员 (roleId == 4)
+                boolean isPermitted = false;
+                List<Role> roles = roleService.getAllRolesByUserId(user.getId());
+                for (Role role : roles) {
+                    if (role.getId() == Const.Role.ROLE_admin.getCode()) {
+                        isPermitted = true;
+                        break;
+                    }
+                }
+                // 如果有权限
+                if (isPermitted) {
+                    return adminManageService.getUserListByUserName(userName, user);
+                }
+                return ServerResponse.createResponseByErrorMsg("您没有权限进行操作！");
+            }
+        }
+        return ServerResponse.createResponseByErrorMsg("您未登录，请先登录！");
+    }
 
 }

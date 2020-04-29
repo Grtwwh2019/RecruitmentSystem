@@ -1,5 +1,9 @@
 <template>
-  <div class="companyDetail">
+  <div class="companyDetail"
+  v-loading="loading"
+  element-loading-text="正在加载..."
+  element-loading-spinner="el-icon-loading"
+  element-loading-background="rgba(0, 0, 0, 0.8)">
     <div class="top_info">
       <div class="top_info_wrap">
         <img v-if="companyDetail.logo" :src="ftp_prefix + 'img/' + companyDetail.logo" :alt="companyDetail.cname + 'Logo'" width="164" height="164">
@@ -140,6 +144,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       ftp_prefix: 'http://attachment.grtwwh.com:8080/',
       showStts: 0,
       photo: [],
@@ -197,6 +202,7 @@ export default {
       })
     },
     getDetail() {
+      this.loading = true
       let param = {
         type: 1,
         id: this.$route.params.id
@@ -209,6 +215,7 @@ export default {
           console.log(this.photo)
         }
       })
+      this.loading = false
     }
   }
 

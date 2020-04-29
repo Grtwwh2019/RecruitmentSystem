@@ -248,16 +248,15 @@ public class UserController {
         CookieUtil.delLoginToken(httpServletRequest, httpServletResponse);
         // 从缓存中删除SessionID
         User user = (User) redisTemplate.opsForValue().get(loginToken);
-        Boolean deleteResult = redisTemplate.delete(loginToken);
-        redisTemplate.delete(Const.RESUME_INFO + user.getId());
-        redisTemplate.delete(Const.collectionCache.POSITION + user.getId());
-        redisTemplate.delete(Const.collectionCache.COMPANY + user.getId());
-        redisTemplate.delete(Const.ANNOUNCE_LIST + user.getId());
-        redisTemplate.delete(Const.RIGHT_RESOURCE + user.getId());
-        if (deleteResult) {
-            return ServerResponse.createResponseBySuccessMsg("注销成功！");
+        if (user != null) {
+            redisTemplate.delete(loginToken);
+            redisTemplate.delete(Const.RESUME_INFO + user.getId());
+            redisTemplate.delete(Const.collectionCache.POSITION + user.getId());
+            redisTemplate.delete(Const.collectionCache.COMPANY + user.getId());
+            redisTemplate.delete(Const.ANNOUNCE_LIST + user.getId());
+            redisTemplate.delete(Const.RIGHT_RESOURCE + user.getId());
         }
-        return ServerResponse.createResponseByErrorMsg("注销失败，未知错误！");
+        return ServerResponse.createResponseBySuccessMsg("注销成功！");
     }
 
     /**

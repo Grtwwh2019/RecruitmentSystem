@@ -53,7 +53,8 @@
                             </div> -->
                             <div style="padding: 8px 0 8px 15px;position: relative;min-height: 40px;">
                               <div class="my_intro" style="word-break:break-all;width: 90%;margin-top: 13px;display: flex;font-size: 14px;color: #666;line-height: 30px;">
-                                <p>{{mineData.baseInfo.advantage}}</p>
+                                <p v-if="!mineData.baseInfo.advantage || mineData.baseInfo.advantage.length <=0">请填写个人优势</p>
+                                <p v-else>{{mineData.baseInfo.advantage}}</p>
                               </div>
                               <div class="editor-tool" style="margin-left: 83%">
                                 <el-button class="edit_btn el-icon-edit" @click="showDialog('advantage')" type="text">编辑</el-button>
@@ -77,7 +78,8 @@
                              <!-- <div class="school_img">
                                 <img :src="mineData.edu.img">
                              </div> -->
-                             <div class="school_info" style="padding: 8px 0 8px 15px;position: relative;min-height: 40px;" v-for="(school, index) in mineData.educationExpList" :key="index">
+                             <div v-if="mineData.educationExpList.length <= 0">暂无教育经历，请添加。</div>
+                             <div v-else class="school_info" style="padding: 8px 0 8px 15px;position: relative;min-height: 40px;" v-for="(school, index) in mineData.educationExpList" :key="index">
                                  <div class="sc_in">
                                      <h3>{{school.schoolName}}</h3>
                                      <p class="r1">{{school.startdate}} 至 {{school.enddate}}</p>
@@ -95,7 +97,8 @@
                                     <i class="iconfont icon-tianjia" @click="showDialog('addWork')"></i>添加
                                 </div>
                              </div>
-                             <ul class="work-exp_group" v-for="(workExp,index) in mineData.workExpList" :key="index">
+                             <div v-if="mineData.workExpList.length <= 0">暂无工作经历，请添加。</div>
+                             <ul v-else class="work-exp_group" v-for="(workExp,index) in mineData.workExpList" :key="index">
                                <li class="work-exp_list" style="padding: 8px 0 8px 15px;position: relative;min-height: 40px;">
                                 <div class="primary-info" style="padding: 7px 0;color: #61687c;white-space: pre-wrap;overflow: hidden;word-break: break-all;">
                                   <div class="info-text">
@@ -115,7 +118,7 @@
                                     </span>{{workExp.workcontent}}
                                   </div>
                                   <div class="keywords" style="padding: 7px 0 5px;">
-                                    <span v-for="tag in workExp.skillTags" v-if="tag"
+                                    <span v-for="(tag, index) in workExp.skillTags" :key="index" v-if="tag"
                                      style="display: inline-block;font-size: 12px;line-height: 20px;color: #9fa3b0;padding: 0 14px;margin-right: 10px;border: 1px solid #cfd1d7;border-radius: 50px;">
                                       {{tag.skillTag}}
                                     </span>
@@ -145,7 +148,8 @@
                                     <i class="iconfont icon-tianjia" @click="showDialog('addProject')"></i>添加
                                 </div>
                             </div>
-                            <ul class="project-exp" v-for="(project, index) in mineData.projectExpList" :key="index">
+                            <div v-if="mineData.projectExpList.length <= 0">暂无项目经历，请添加。</div>
+                            <ul v-else class="project-exp" v-for="(project, index) in mineData.projectExpList" :key="index">
                                <li class="work-exp_list" style="padding: 8px 0 8px 15px;position: relative;min-height: 40px;">
                                 <div class="primary-info" style="padding: 7px 0;color: #61687c;white-space: pre-wrap;overflow: hidden;word-break: break-all;">
                                   <div class="info-text">
@@ -210,7 +214,7 @@
                                               overflow: hidden;
                                               vertical-align: top;
                                               position: relative;"
-                                        v-for="(item, index) in mineData.certificationList">
+                                        v-for="(item, index) in mineData.certificationList" :key="index">
                                         {{item.certificationName}}
                                       </span>
                                       
@@ -441,7 +445,8 @@ export default {
         fileName: this.mineData.baseInfo.headermask,
         remotePath: "img"
       }
-      if (params.fileName != null && params.fileName != '' && params.fileName.length != 0) {
+      if (params.fileName != null && params.fileName != '' 
+        && params.fileName.length != 0 && params.fileName != 'yazi.jpeg') {
         deleteFile(params).then(resp => {
           if (resp && resp.status == 0) {
             console.log(resp)
@@ -714,13 +719,16 @@ export default {
       }
     },
     updateResumeBaseInfo(resumebaseInfo) {
+      resumebaseInfo.id = this.mineData.baseInfo.id
       updateResumeBaseInfo(resumebaseInfo).then(resp => {
-        if (resp && resp.status == 0) {
-          // success
-          Message.success({message: "保存成功！"})
-          this.getResumeInfo()
-        } else {
-          Message.error({message: resp.msg ? resp.msg : "未知错误，请联系管理员"})
+        if (resp) {
+          if (resp.status == 0) {
+            // success
+            Message.success({message: "保存成功！"})
+            this.getResumeInfo()
+          } else {
+            Message.error({message: resp.msg ? resp.msg : "未知错误，请联系管理员"})
+          }
         }
       })
     },

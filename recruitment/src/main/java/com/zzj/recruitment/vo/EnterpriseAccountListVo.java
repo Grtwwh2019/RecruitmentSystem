@@ -24,6 +24,8 @@ public class EnterpriseAccountListVo {
 
     private String nickname;
 
+    private String username;
+
     private String telephone;
 
     private String email;

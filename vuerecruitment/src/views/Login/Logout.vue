@@ -18,7 +18,8 @@ export default {
           Message.success({message: resp.msg})
         }
       })
-      window.sessionStorage.removeItem("user")
+      // window.sessionStorage.removeItem("user")
+      window.localStorage.removeItem("user")
       let path = this.$route.query.redirect;
       this.$router.replace((path == '/' || path == undefined) ? '/index' : path);
     }

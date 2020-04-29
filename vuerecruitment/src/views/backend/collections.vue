@@ -154,6 +154,13 @@ export default {
     }
   },
   watch: {
+    // 处理Vue中相同组件不同路径的页面重新渲染
+    '$route' (to, from) {
+      // 对路由变化作出响应...
+      this.collectionList = []
+      this.pageNum = 1
+      this.type = to.query.type
+    },
     type:{
       handler(newVal, oldVal) {
         // debugger
@@ -212,8 +219,8 @@ export default {
       window.open(routeUrl.href, '_blank');
     },
     changeType(type) {
-      this.collectionList = []
-      this.pageNum = 1
+      // this.collectionList = []
+      // this.pageNum = 1
       // setTimeout(() => {
       // },200)
       switch(type) {
@@ -245,7 +252,7 @@ export default {
           break
       }
       
-      this.type = type
+      // this.type = type
       
     },
     load(){

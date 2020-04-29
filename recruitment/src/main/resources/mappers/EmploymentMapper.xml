@@ -270,7 +270,10 @@
 
   <select id="selectDetailByPositionId" resultType="com.zzj.recruitment.vo.PositionDetailVo" parameterType="integer">
     select e.id as id, e.ename as ename, pt.ptName as etype, e.etypeid as etypeid, city.cityName as ecity, e.ecityid as ecityid,
-    e.esalaryfloor as esalaryfloor, e.esalaryceilie as esalaryceilie, e.educationrequire as educationrequire, e.ecompanyId as ecompanyId, com.cname as ecompany, com.logo as companyLogo, e.eresponsibility as eresponsibility, e.erequirement as erequirement, u.nickName as publisher, e.createTime as createtime, e.estatus as estatus
+    e.esalaryfloor as esalaryfloor, e.esalaryceilie as esalaryceilie, e.educationrequire as educationrequire,
+    e.ecompanyId as ecompanyId, com.cname as ecompany, com.logo as companyLogo,
+    e.eresponsibility as eresponsibility, e.erequirement as erequirement,
+    e.epublisher as publisherId, u.nickName as publisher, e.createTime as createtime, e.estatus as estatus
     from employment as e
     left join positiontypeset as pt on e.etypeid = pt.id
     left join city on e.ecityid = city.id
@@ -291,6 +294,9 @@
     left join industryset as i on com.industryId = i.id
     left join `user` as u on e.epublisher = u.id
     <where>
+      <if test="searchVo.companyId != null">
+        and e.ecompanyId = #{searchVo.companyId}
+      </if>
       <if test="searchVo.industry != null">
         and i.id = #{searchVo.industry}
       </if>
@@ -307,13 +313,19 @@
         and e.ecityid = #{searchVo.city}
       </if>
       <if test="searchVo.ename != null">
-        and e.ename like CONCAT('%',#{searchVo.ename},'%')
+        and upper(e.ename) like upper(CONCAT('%',#{searchVo.ename},'%'))
       </if>
       <if test="searchVo.publisherId != null">
         and e.epublisher = #{searchVo.publisherId}
       </if>
       <if test="searchVo.estatus != null">
         and e.estatus = #{searchVo.estatus}
+      </if>
+      <if test="searchVo.createTImeFrom != null">
+        and e.createTime <![CDATA[>=]]> #{searchVo.createTImeFrom}
+      </if>
+      <if test="searchVo.createTImeTo != null">
+        and e.createTime <![CDATA[<=]]> #{searchVo.createTImeTo}
       </if>
       <if test="userid != null">
         and e.epublisher = #{userid}

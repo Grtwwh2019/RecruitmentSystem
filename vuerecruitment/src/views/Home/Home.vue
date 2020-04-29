@@ -3,7 +3,8 @@
     <Head></Head>
     <div>
       <transition enter-active-class="animated bounceInLeft">
-       <router-view/>
+       <!-- <router-view :key="$route.fullPath"/> -->
+       <router-view />
       </transition>
     </div>
     <Foot></Foot>

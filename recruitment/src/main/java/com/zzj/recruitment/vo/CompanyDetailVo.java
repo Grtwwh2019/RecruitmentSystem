@@ -37,6 +37,8 @@ public class CompanyDetailVo {
 
     private Integer financing;
 
+    private Integer industryid;
+
     private String industry;
 
     private Integer csize;

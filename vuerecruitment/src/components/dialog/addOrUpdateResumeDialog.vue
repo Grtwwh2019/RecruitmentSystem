@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="addOrUpdateData.title" width="30%":visible.sync="showVisiable" :close-on-click-modal="false" :close-on-press-escape="false"  @open="handleOpen" :before-close="handleClose">
+  <el-dialog :title="addOrUpdateData.title" width="30%" :visible.sync="showVisiable" :close-on-click-modal="false" :close-on-press-escape="false"  @open="handleOpen" :before-close="handleClose">
 
     <el-form v-if="this.addOrUpdateData.dialogType == 'addEdu' || this.addOrUpdateData.dialogType == 'editEdu'" style="width:90%; margin-left:3%;" ref="addOrUpdateForm" :model="addOrUpdateForm" label-width="80px" :rules="rules" > 
       
@@ -315,7 +315,7 @@ export default {
   },
   methods: {
     handleCertificationListChange(value) { 
-      if (value.length > 30) {
+      if (value && value.length > 30) {
         this.$alert('所选证书不得超过30个', '提示', {
           confirmButtonText: '确定',
           type: 'warning',

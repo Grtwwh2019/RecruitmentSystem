@@ -26,13 +26,12 @@
                   @click="changeCaptcha"
                   style="width: 350px; height: 35px"
                   :src="imgurl"
-                  >
-                </img>
+                  />
             </el-form-item>
             <!-- <el-checkbox size="normal" class="loginRemember" v-model="checked"></el-checkbox> -->
-            <el-button size="normal" type="primary" style="width: 100%;" @click="submitLogin">登录</el-button>
+            <el-button size="normal" type="primary" style="width: 100%;background-color:#00b38a;border:#00b38a;" @click="submitLogin">登录</el-button>
             <el-button style="margin-left:50px; margin-top: 20px;" size="mini" round @click="toRegister">免费注册</el-button>
-            <el-button style="margin-left:80px; margin-top: 20px;" size="middle" type="text" @click="toForgetPsd">忘记密码</el-button>
+            <el-button style="margin-left:80px; margin-top: 20px;color:#00b38a;" size="middle" type="text" @click="toForgetPsd">忘记密码</el-button>
         </el-form>
 </template>
 
@@ -52,8 +51,8 @@ export default {
           imgurl: '',
           // 登录信息
           loginForm: {
-              username: 'zzj1234',
-              password: '123456',
+              username: '',
+              password: '',
               captcha: '',
               captchaToken: ''
           },
@@ -102,7 +101,9 @@ export default {
                           user.role = result.data
                         }
                         // console.log(user)
-                        window.sessionStorage.setItem("user", JSON.stringify(user));
+                        // let uuid = this.uuid()
+                        // window.localStorage.setItem("user", uuid)
+                        window.localStorage.setItem("user", JSON.stringify(user));
                         let path = this.$route.query.redirect;
                         this.$router.replace((path == '/' || path == undefined) ? '/index' : path);
                       } else {
@@ -123,7 +124,21 @@ export default {
                   return false;
               }
           });
+      },
+      uuid() {
+        var s = [];
+        var hexDigits = "0123456789abcdef";
+        for (var i = 0; i < 36; i++) {
+          s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+        s[8] = s[13] = s[18] = s[23] = "-";
+
+        var uuid = s.join("");
+        return uuid;
       }
+
   }
 }
 </script>
@@ -143,7 +158,7 @@ export default {
     .loginTitle {
         margin: 15px auto 20px auto;
         text-align: center;
-        color: #505458;
+        color: #00b38a;
     }
 
     .loginRemember {

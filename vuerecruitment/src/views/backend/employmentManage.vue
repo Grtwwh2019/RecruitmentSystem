@@ -1,5 +1,9 @@
 <template>
-  <div class="employment-manage">
+  <div class="employment-manage"
+    v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
     <div class="title" style="margin:0 auto;width: 928px;">
       <div class="title_box" style="padding-top:30px;color:rgb(0, 179, 138);font-size:26px;">
         招聘信息管理
@@ -183,6 +187,7 @@ export default {
   },
   data() {
     return {
+      loading:false,
       dialogType: "",
       dialogVisible: false,
       employmentDetail: {},
@@ -282,6 +287,7 @@ export default {
       }
     },
     async getEmploymentList(pageNum) {
+      this.loading = true
       if (this.searchVo.valueDate) {
         this.searchVo.createTImeFrom = this.searchVo.valueDate[0]
         this.searchVo.createTImeTo = this.searchVo.valueDate[1]
@@ -297,6 +303,7 @@ export default {
       } else{
         this.$message.warning(resp.msg ? resp.msg : "未知错误，请联系管理员")
       }
+      this.loading = false
     },
     tableRowClassName({row, rowIndex}) {
       if (row.estatus === 0) {

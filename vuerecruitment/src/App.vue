@@ -2,7 +2,8 @@
   <div id="app">
 
     <!-- <transition enter-active-class="animated bounceInLeft"> -->
-      <router-view/>
+      <!-- :key="$route.path" 处理Vue中相同组件不同路径的页面重新渲染 -->
+      <router-view />
     <!-- </transition> -->
   </div>
 </template>
@@ -10,7 +11,6 @@
 <script>
 export default {
   name: 'App'
-
 }
 </script>
 
@@ -20,6 +20,7 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
 }
 ul{
   list-style: none;

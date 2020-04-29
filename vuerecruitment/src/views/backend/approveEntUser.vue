@@ -1,5 +1,9 @@
 <template>
-  <div class="approveEntUser">
+  <div class="approveEntUser"
+    v-loading="loading"
+    element-loading-text="拼命加载中"
+    element-loading-spinner="el-icon-loading"
+    element-loading-background="rgba(0, 0, 0, 0.8)">
     <div class="title" style="margin:0 auto;width: 928px;">
       <div class="title_box" style="padding-top:30px;color:rgb(0, 179, 138);font-size:26px;">
         企业用户审批
@@ -105,6 +109,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       pageNum: 1,
       // 是否已认证，0---禁用（账号被禁用），1---是，2---否(账号正常)，
@@ -138,11 +143,13 @@ export default {
       this.dialogVisible = true
     },
     getApplyEntUserList(pageNum) {
+      this.loading = true
       getApplyEntUserList(pageNum).then(resp => {
         if (resp && resp.status == 0) {
           this.enterpriseUserInfoList = resp.data
           // console.log(this.enterpriseUserInfoList)
         }
+        this.loading = false
       })
     },
     handleCurrentChange(currentPage){

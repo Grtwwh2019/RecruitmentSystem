@@ -66,7 +66,7 @@ public class AdminManageServiceImpl implements IAdminManageService {
                 Boolean delete = redisTemplate.delete(Const.COMPANY_DETAIL + companyId);
                 log.info("缓存招聘信息删除结果：" + delete);
             }
-            return ServerResponse.createResponseBySuccess("删除公司信息成功！");
+            return ServerResponse.createResponseBySuccessMsg("删除公司信息成功！");
         }
         return ServerResponse.createResponseByErrorMsg("删除公司信息失败！");
     }
@@ -102,6 +102,7 @@ public class AdminManageServiceImpl implements IAdminManageService {
         companyDetail.setCname(updateCompany.getCname());
         companyDetail.setCintroduction(updateCompany.getCintroduction());
         companyDetail.setFinancing(updateCompany.getFinancing());
+        companyDetail.setIndustryid(updateCompany.getIndustryid());
         // 获得行业
         Industryset industry = industrysetMapper.selectByPrimaryKey(updateCompany.getIndustryid());
         companyDetail.setIndustry(industry.getIname());
@@ -172,7 +173,7 @@ public class AdminManageServiceImpl implements IAdminManageService {
                 // 修改角色
                 result = userRoleMapper.insertNewRole(entUserId, Const.Role.ROLE_enterAccount.getCode());
                 if (result > 0) {
-                    return ServerResponse.createResponseBySuccess("该用户：" + entUserId + "，通过认证！");
+                    return ServerResponse.createResponseBySuccessMsg("该用户：" + entUserId + "，通过认证！");
                 }
             }
         } else if (approve == 2) {
@@ -182,7 +183,7 @@ public class AdminManageServiceImpl implements IAdminManageService {
             if (result > 0) {
                 userRoleMapper.deleteByUidRid(entUserId, Const.Role.ROLE_enterAccount.getCode());
             }
-            return ServerResponse.createResponseBySuccess("该用户：" + entUserId + "，拒绝认证！");
+            return ServerResponse.createResponseBySuccessMsg("该用户：" + entUserId + "，拒绝认证！");
         }
         return ServerResponse.createResponseByErrorMsg("审批失败，请联系管理员！");
     }
@@ -221,13 +222,13 @@ public class AdminManageServiceImpl implements IAdminManageService {
             // 启用账号，authentication恢复其认证情况
             Integer userAuth = (Integer) redisTemplate.opsForValue().get(Const.FORBID_USER_ORG_AUTH + userId);
             if (userAuth == null) {
-                return ServerResponse.createResponseBySuccess("该用户状态正常，已启用，用户Id为：" + userId);
+                return ServerResponse.createResponseBySuccessMsg("该用户状态正常，已启用，用户Id为：" + userId);
             }
             Integer result = userMapper.updateAuthenticationByUserId(userId, userAuth);
             if (result > 0) {
                 // 删除缓存中的认证情况
                 redisTemplate.delete(Const.FORBID_USER_ORG_AUTH + userId);
-                return ServerResponse.createResponseBySuccess("启用账号成功，启用用户Id为：" + userId);
+                return ServerResponse.createResponseBySuccessMsg("启用账号成功，启用用户Id为：" + userId);
             }
         } else if (status == 2) {
             // 禁用账号，在缓存中保存其原来的认证情况，然后将authentication设为0表示账号被禁用
@@ -235,7 +236,7 @@ public class AdminManageServiceImpl implements IAdminManageService {
             redisTemplate.opsForValue().set(Const.FORBID_USER_ORG_AUTH + userId, user.getAuthentication());
             Integer result = userMapper.updateAuthenticationByUserId(userId, Const.authentication.FORBIDED.getCode());
             if (result > 0) {
-                return ServerResponse.createResponseBySuccess("禁用账号成功，被禁用户Id为：" + userId);
+                return ServerResponse.createResponseBySuccessMsg("禁用账号成功，被禁用户Id为：" + userId);
             }
         }
         return ServerResponse.createResponseByErrorMsg("账号管理操作失败，请联系管理员！");
@@ -286,10 +287,10 @@ public class AdminManageServiceImpl implements IAdminManageService {
             }
         }
         if (flag) {
-            // 发布以后存入缓存
+            // 发布以后存入缓存????
             AnnounceListVo announceListVo = this.assembleAnnounceDetail(announce);
-            redisTemplate.opsForValue().set(Const.ANNOUNCE_DETAIL + announce.getId(), announceListVo, Const.RedisCacheExtime.REDIS_EXTIME_DAY, TimeUnit.SECONDS);
-            return ServerResponse.createResponseBySuccess(announceId == null ? "发布" : "更新" + "公告成功！", announceListVo);
+//            redisTemplate.opsForValue().set(Const.ANNOUNCE_DETAIL + announce.getId(), announceListVo, Const.RedisCacheExtime.REDIS_EXTIME_DAY, TimeUnit.SECONDS);
+            return ServerResponse.createResponseBySuccess((announceId == null ? "发布" : "更新" ) + "公告成功！", announceListVo);
         }
         return ServerResponse.createResponseByErrorMsg("发布公告失败！");
     }
@@ -307,6 +308,7 @@ public class AdminManageServiceImpl implements IAdminManageService {
         User sender = userMapper.selectByPrimaryKey(announce.getSender());
         announceListVo.setSender(sender.getNickname());
         announceListVo.setReceiver(announce.getReceiver());
+        announceListVo.setCreateTime(announce.getCreatetime());
 //        announceListVo.setStatus(announce.getStatus());
         return announceListVo;
     }
@@ -331,7 +333,7 @@ public class AdminManageServiceImpl implements IAdminManageService {
             delete = redisTemplate.hasKey(Const.ANNOUNCE_DETAIL + announceId) ? redisTemplate.delete(Const.ANNOUNCE_DETAIL + announceId) : true;
         }
         if (delete) {
-            return ServerResponse.createResponseBySuccess("删除公告成功！");
+            return ServerResponse.createResponseBySuccessMsg("删除公告成功！");
         }
         return ServerResponse.createResponseByErrorMsg("删除公告失败！");
     }
@@ -372,18 +374,25 @@ public class AdminManageServiceImpl implements IAdminManageService {
             if (status == Const.employmentStatus.FORBIDDEN.getStatus()) {
                 // 封禁
                 // 删除在缓存中的招聘信息
-                if (result > 0) {
-                    redisTemplate.delete(Const.POSITION_DETAIL + positionId);
-                }
+//                if (result > 0) {
+//                    redisTemplate.delete(Const.POSITION_DETAIL + positionId);
+//                }
             } else if (status == Const.employmentStatus.NORMAL.getStatus()) {
                 // 解封
             }
             if (result > 0) {
-                return ServerResponse.createResponseBySuccess((status == 0 ? "封禁" : "解封" )+ "成功！");
+                redisTemplate.delete(Const.POSITION_DETAIL + positionId);
+                return ServerResponse.createResponseBySuccessMsg((status == 0 ? "封禁" : "解封" )+ "成功！");
             }
         } else {
-            return ServerResponse.createResponseBySuccess("状态未改变，已" + (status == 0 ? "封禁" : "解封"));
+            return ServerResponse.createResponseBySuccessMsg("状态未改变，已" + (status == 0 ? "封禁" : "解封"));
         }
         return ServerResponse.createResponseByErrorMsg("操作失败，请联系管理员");
+    }
+
+    @Override
+    public ServerResponse getUserListByUserName(String userName, User user) {
+        List<UserListVo> userList = userMapper.selectUserListByUserName(userName, user.getId());
+        return ServerResponse.createResponseBySuccess(userList);
     }
 }

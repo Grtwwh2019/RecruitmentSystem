@@ -2,10 +2,7 @@ package com.zzj.recruitment.dao;
 
 import com.zzj.recruitment.pojo.Role;
 import com.zzj.recruitment.pojo.User;
-import com.zzj.recruitment.vo.EnterpriseAccountListVo;
-import com.zzj.recruitment.vo.EnterpriseUserInfoVo;
-import com.zzj.recruitment.vo.UserDetailInfoVo;
-import com.zzj.recruitment.vo.UserSearchVo;
+import com.zzj.recruitment.vo.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -42,4 +39,7 @@ public interface UserMapper {
     List<EnterpriseAccountListVo> selectEnterpriseAccount(int auth);
 
     List<UserDetailInfoVo> selectUserListBySearchVo(UserSearchVo userSearchVo);
+
+    List<UserListVo> selectUserListByUserName(@Param("userName") String userName, @Param("userId") Integer userId);
+
 }

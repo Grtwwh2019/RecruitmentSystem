@@ -265,7 +265,7 @@
 
   <select id="selectCertificationByResumeId" resultType="com.zzj.recruitment.vo.ResumeCertificationListVo"
           parameterType="integer">
-    select c.id, c.cname as certificationName
+    select c.id as id, c.cname as certificationName
     from resumecertificate as rc
     left join credential as c on rc.cid = c.id
     where rc.rid = #{resumeId}

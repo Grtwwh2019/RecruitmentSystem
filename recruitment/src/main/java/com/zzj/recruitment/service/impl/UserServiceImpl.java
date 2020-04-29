@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -121,6 +122,9 @@ public class UserServiceImpl implements IUserService
                     // todo 只要创建了用户就自动新建一个在线简历
                     Resume resume = new Resume();
                     resume.setRuserid(user.getId());
+                    resume.setLowsalary(new BigDecimal(0));
+                    resume.setHighsalary(new BigDecimal(0));
+                    resume.setCityid("000000");
                     result = resumeMapper.insertSelective(resume);
                     if (result > 0) {
                         return ServerResponse.createResponseBySuccessMsg("注册成功！");
