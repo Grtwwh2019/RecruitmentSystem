@@ -19,9 +19,10 @@
                 </el-form-item>
 
                 <el-form-item prop="ecityid" label="工作城市">
+                    <!-- <el-cascader readonly :options="this.$store.state.citySet" :show-all-levels="false" v-model="dataSource.ecityid"></el-cascader> -->
                     <el-input
                     readonly
-                    v-model="dataSource.ecityid" 
+                    v-model="dataSource.ecityid"
                     >
                     </el-input>
                 </el-form-item>
@@ -146,7 +147,27 @@ export default {
             })
         },
         handleOpen() {
+            console.log(this.$store.state.positionTypeSet)
             this.dataSource.educationrequire = this.degree[this.dataSource.educationrequire]
+            // this.dataSource.ecityid = (Number)(this.dataSource.ecityid)
+            this.$store.state.citySet.forEach(children => {
+                children.children.forEach(element => {
+                    if (element.value == (Number)(this.dataSource.ecityid)) {
+                        this.dataSource.ecityid = element.label
+                        return
+                    }
+                });
+            });
+            this.$store.state.positionTypeSet.forEach(element => {
+                element.children.forEach(element => {
+                    element.children.forEach(element => {
+                        if (element.value == (Number)(this.dataSource.etypeid)){
+                            this.dataSource.etypeid = element.label
+                            return
+                        }
+                    })
+                });
+            });
             this.dataSource.estatus = this.dataSource.estatus == 0 ? '封禁' : '正常'
         },
         handleClose() {

@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header class="homeHeader">
-        <div class="title">北理珠招聘管理系统</div>
+        <div class="title">校园招聘后台管理系统</div>
         <div>
             <el-button icon="el-icon-bell" type="text" style="margin-right: 8px;color: #000000;" size="normal"></el-button>
             <el-dropdown class="userInfo" @command="commandHandler">
@@ -53,12 +53,12 @@
                 <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
                 <el-breadcrumb-item>{{this.$router.currentRoute.meta.title}}</el-breadcrumb-item>
             </el-breadcrumb>
-            <div class="welcomeLogo">
+            <!-- <div class="welcomeLogo">
                 <el-image :src="ftp_prefix + 'img/' + welcomeLogo"></el-image>
-            </div>
+            </div> -->
 
             <div class="homeWelcome" v-if="this.$router.currentRoute.path=='/home'">
-                欢迎来到北理珠招聘管理系统！
+                欢迎来到校园招聘后台管理系统！
             </div>
             
             <router-view class="homeRouterView"/>
@@ -86,8 +86,8 @@ export default {
     },
     data() {
         return {
-            welcomeLogo: 'blz.jpg',
-            ftp_prefix: 'http://attachment.grtwwh.com:8080/',
+            // welcomeLogo: 'blz.jpg',
+            // ftp_prefix: 'http://attachment.grtwwh.com:8080/',
             user: JSON.parse(window.sessionStorage.getItem("user"))
         }
     },
