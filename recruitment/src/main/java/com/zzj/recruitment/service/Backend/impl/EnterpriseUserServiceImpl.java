@@ -52,6 +52,9 @@ public class EnterpriseUserServiceImpl implements IEnterpriseUserService {
     UserMapper userMapper;
 
     @Autowired
+    ResumeDeliveryMapper resumeDeliveryMapper;
+
+    @Autowired
     IResumeService resumeService;
 
 
@@ -163,6 +166,9 @@ public class EnterpriseUserServiceImpl implements IEnterpriseUserService {
                 Boolean delete = redisTemplate.delete(Const.POSITION_DETAIL + eid);
                 log.info("缓存招聘信息删除结果：" + delete);
             }
+            // 与该招聘信息关联的简历投递情况信息也要删除
+            int deleteResult = resumeDeliveryMapper.deleteByEmploymentId(eid);
+            log.info("已删除跟employmentId：" + eid + " 相关的简历投递信息，共： " + deleteResult + "条");
             return ServerResponse.createResponseBySuccessMsg("删除招聘信息成功！");
         }
         return ServerResponse.createResponseByErrorMsg("删除招聘信息失败！");

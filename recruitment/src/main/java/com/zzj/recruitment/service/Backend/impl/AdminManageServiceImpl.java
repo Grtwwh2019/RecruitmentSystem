@@ -59,7 +59,7 @@ public class AdminManageServiceImpl implements IAdminManageService {
     @Override
     public ServerResponse<String> deleteCompanyInfo(Integer companyId) {
         int result = companyMapper.deleteByPrimaryKey(companyId);
-        // 删除公司信息会涉及到其他相关的信息吗？
+        // todo 删除公司信息会涉及到其他相关的信息吗？需要删除该公司下的所有员工吗？
         if (result > 0) {
             // 缓存也要删除
             if (redisTemplate.hasKey(Const.COMPANY_DETAIL + companyId)) {

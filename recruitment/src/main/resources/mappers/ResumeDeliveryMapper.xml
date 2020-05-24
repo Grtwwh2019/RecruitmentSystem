@@ -94,4 +94,8 @@
     left join industryset as i on com.industryId = i.id
     where resume_id = #{resumeId}
   </select>
+
+  <delete id="deleteByEmploymentId" parameterType="integer">
+    delete from resumedelivery where employment_id = #{eid}
+  </delete>
 </mapper>

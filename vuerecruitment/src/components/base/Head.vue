@@ -230,13 +230,13 @@ ul{list-style: none;}
     line-height: 15px;
 }
 .logo {
-  width: 50px;
+  width: 70px;
   height: 21px;
   float: left;
-  margin-top: 9px;
+  margin-top: 12px;
   background-image: url('../../assets/images/sprite_logo1.png');
   background-repeat: no-repeat;
-  background-position: -10px -10px;
+  background-position: -1px -6px;
   background-size: 68px 138px;
   display: block;
   padding-left: 0;

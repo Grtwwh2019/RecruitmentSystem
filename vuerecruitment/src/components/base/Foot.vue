@@ -51,7 +51,7 @@
     <div class="copyright">
          <div class="cr_inner">
             <div class="cri_left">
-                <span><em>©</em> 2020 北理招聘网</span>
+                <span><em>©</em> 2020 校园招聘网</span>
                 <router-link to="">京ICP备88888888号-2</router-link>
                 <router-link to=""><i class="foot_tag"></i>京公网安备 888888888888号</router-link>
                 <div class="cri_box">

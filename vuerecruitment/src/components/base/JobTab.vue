@@ -137,10 +137,10 @@
       // console.log("获取近一个月日期范围：\n开始日期:"+list[0]+";\n结束日期:"+list[1]);
       let params = {
         type: 0,
-        pageNum:'',
+        pageNum:'1',
         searchVo: {
-          "createTImeFrom": list[0],
-          "createTImeTo": list[1]
+        //   "createTImeFrom": list[0],
+        //   "createTImeTo": list[1]
         }
       }
       searchList(params).then(resp => {

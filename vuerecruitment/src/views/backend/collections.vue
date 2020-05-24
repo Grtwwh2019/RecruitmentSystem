@@ -25,7 +25,7 @@
                     <h2 :title="collection.ename" style="cursor: pointer;" @click="toJobDetail(collection)">
                       <a>
                         <em style="max-width: 200px;">{{collection.ename}}</em>
-                        <span>（{{collection.esalaryceilie}} - {{collection.esalaryfloor}}）</span>
+                        <span>（{{collection.esalaryfloor}} - {{collection.esalaryceilie}}）</span>
                       </a>
                     </h2>
                     <span class="co_time">{{collection.createTime}}</span>
@@ -76,7 +76,7 @@
                               style="font-size: 18px;color: #0d9572;" >
                               {{delivery.ename}}
                           </em>
-                          <span class="d_job_salary" style="font-size: 17px;color: #e6775c;">（{{delivery.esalaryceilie}} - {{delivery.esalaryfloor}}）</span>
+                          <span class="d_job_salary" style="font-size: 17px;color: #e6775c;">（{{delivery.esalaryfloor}} - {{delivery.esalaryceilie}}）</span>
                           <!--  -->
                       </a>
                     </div>

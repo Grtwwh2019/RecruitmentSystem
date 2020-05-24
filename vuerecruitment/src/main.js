@@ -47,7 +47,7 @@ router.beforeEach(async (to,from,next)=>{
         })
       }
     }
-    window.sessionStorage.setItem("user", window.localStorage.getItem("user"))
+    window.sessionStorage.setItem("user", window.sessionStorage.getItem("user"))
     initConst(router, store)
     next()
   }

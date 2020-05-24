@@ -112,7 +112,7 @@ public class Const {
      * Redis的过期时间
      */
     public interface RedisCacheExtime{
-        int REDIS_SESSION_EXTIME = 60 * 30;//30分钟
+        int REDIS_SESSION_EXTIME = 60 * 60 * 24;//30分钟
         int REDIS_EXTIME_DAY = 60 * 60 * 24;//一天
     }
 

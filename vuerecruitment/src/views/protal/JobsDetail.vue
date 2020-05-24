@@ -22,7 +22,7 @@
                      <li>{{jobData.etype}}</li>
                        <!-- <li v-for="(item, index) in jobData.tab" :key="index">{{item}}</li> -->
                    </ul>
-                   <p class="time">{{jobData.time}}发布于北理珠招聘</p>
+                   <p class="time">{{jobData.time}}发布于校园招聘</p>
                </div>
             </div>
             <div class="ph_right">

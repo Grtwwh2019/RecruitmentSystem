@@ -100,13 +100,13 @@ export default {
         if (valid) {
           this.loading = true
           this.post('/admin/login.do', this.loginForm).then(resp => {
-            if (resp) {
+            if (resp && resp.status == 0) {
               window.sessionStorage.setItem("user", JSON.stringify(resp.data));
               this.$store.commit('initCurrentUser', resp.data)
               let path = this.$route.query.redirect;
               this.$router.replace((path == '/' || path == undefined) ? '/home' : path);
-              this.loading = false
             }
+            this.loading = false
           })
         } else {
           console.log('error submit!!')

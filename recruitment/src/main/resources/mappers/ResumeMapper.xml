@@ -761,7 +761,7 @@
         and rd.createTime <![CDATA[<=]]> #{searchVo.createTImeTo}
       </if>
     </where>
-    group by id
+    group by rd.id
     order by rd.createTime desc
   </select>
 </mapper>

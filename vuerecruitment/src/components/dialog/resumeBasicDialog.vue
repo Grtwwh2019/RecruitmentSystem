@@ -139,6 +139,24 @@ export default {
     baseInfo: {type: Object, default: null}
   },
   data() {
+    var checkPhone = (rule, value, callback) => {
+      const phoneReg = /^1[3|4|5|6|7|8][0-9]{9}$/
+      if (!value) {
+        return callback(new Error('电话号码不能为空'))
+      }
+      setTimeout(() => {
+        
+        if (!Number.isInteger(+value)) {
+          callback(new Error('请输入数字值'))
+        } else {
+          if (phoneReg.test(value)) {
+            callback()
+          } else {
+            callback(new Error('电话号码格式不正确'))
+          }
+        }
+      }, 100)
+    }
     return {
       positionTypeProp: {emitPath : false},
       industryProp: {multiple: true,emitPath : false},
@@ -149,8 +167,8 @@ export default {
         realname: [{required: true, message: '请输入姓名', trigger: 'blur'}],
         birthday: [{required: true, message: '请输入生日', trigger: 'blur'}],
         gender: [{required: true, message: '请输入性别', trigger: 'blur'}],
-        telephone: [{required: true, message: '请输入手机号码', trigger: 'blur'}],
-        email: [{required: true, message: '请输入联系邮箱', trigger: 'blur'}],
+        telephone: [{validator: checkPhone, trigger: 'blur'}, {required: true, message: '请输入手机号码', trigger: 'blur'}],
+        email: [{ type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }, {required: true, message: '请输入邮箱', trigger: 'blur'}],
         currentstatus: [{required: true, message: '请输入当前身份', trigger: 'blur'}],
         advantage: [{required: true, message: '必填', trigger: 'blur'}],
         expectpositionid: [{required: true, message: '必填', trigger: 'blur'}],

@@ -35,7 +35,7 @@
           <h1 style="margin-bottom:30px;">认证流程</h1>
           <div class="step-num">1</div>
           <h2>选择认证类型</h2>
-          <p>认证类型分为实习员工，准入职员工，正式员工。</p>
+          <p>认证类型为企业用户。</p>
           </div>
           <div class="authentic-step">
           <div class="step-num step2">2</div>
@@ -49,8 +49,8 @@
           </div>
           <div class="authentic-step">
           <div class="step-num step4">4</div>
-          <h2>管理员审理</h2>
-          <p>管理员会审核认证材料，并在5个工作日内通过站内信通知审核结果。</p>
+          <h2>企业审理</h2>
+          <p>企业会审核认证材料，并在5个工作日内通过公告通知审核结果。</p>
           </div>
           </div>
           </div>

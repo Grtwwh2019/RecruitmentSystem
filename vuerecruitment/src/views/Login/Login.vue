@@ -103,7 +103,7 @@ export default {
                         // console.log(user)
                         // let uuid = this.uuid()
                         // window.localStorage.setItem("user", uuid)
-                        window.localStorage.setItem("user", JSON.stringify(user));
+                        window.sessionStorage.setItem("user", JSON.stringify(user));
                         let path = this.$route.query.redirect;
                         this.$router.replace((path == '/' || path == undefined) ? '/index' : path);
                       } else {

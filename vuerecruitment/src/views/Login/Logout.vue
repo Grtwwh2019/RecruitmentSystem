@@ -19,7 +19,7 @@ export default {
         }
       })
       // window.sessionStorage.removeItem("user")
-      window.localStorage.removeItem("user")
+      window.sessionStorage.removeItem("user")
       let path = this.$route.query.redirect;
       this.$router.replace((path == '/' || path == undefined) ? '/index' : path);
     }

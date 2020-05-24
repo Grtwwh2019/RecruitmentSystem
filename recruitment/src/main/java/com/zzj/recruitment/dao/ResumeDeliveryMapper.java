@@ -22,4 +22,6 @@ public interface ResumeDeliveryMapper {
     Integer selectDeliveredByResumeIdEmpId(@Param("resumeId") Integer resumeId, @Param("employmentId") Integer employmentId);
 
     List<PosisitonListVo> selectResumeDeliverListByResumeId(Integer resumeId);
+
+    int deleteByEmploymentId(Integer eid);
 }
